@@ -1,0 +1,316 @@
+.dashboard-container {
+    text-align: center;
+    padding: 20px;
+    padding-top: 80px;
+    max-width: 800px;
+    margin: 0 auto;
+    /* min-height: calc(100vh - 80px); //Ensures it fills remaining space */
+    overflow-y: auto; /* Allows scrolling within container if needed */
+    background-color: #f0f2f5; /* Light gray background */
+    color: #333; /* Dark text for contrast */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh; /* Allows content to extend beyond viewport */
+    overflow-y: auto; /* Enables vertical scrolling */
+}
+
+.navbar {
+    z-index: 1050;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Styling for the navbar brand */
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.predict-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.description {
+    margin-bottom: 15px;
+    font-size: 16px;
+    line-height: 1.4;
+    white-space: normal; /* Prevent truncation */
+    overflow: visible; /* Ensure full text shows */
+}
+
+.predict-button:hover {
+    background-color: #0056b3;
+}
+
+.error {
+    color: #dc3545; /* Red for errors */
+    margin-top: 10px;
+}
+
+.prediction-container {
+    margin-top: 20px;
+    text-align: left;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.prediction-header {
+    padding: 15px;
+    background-color: #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    color: #212529; /* Dark gray text */
+}
+
+.prediction-header:hover {
+    background-color: #e9ecef;
+}
+
+.dropdown-arrow {
+    font-size: 12px;
+    transition: transform 0.3s ease;
+    color: #007bff; /* Blue arrow */
+}
+
+.dropdown-arrow.open {
+    transform: rotate(180deg);
+}
+
+.details-dropdown {
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    animation: slideIn 0.3s ease-out;
+    color: #343a40; /* Darker text for contrast */
+}
+
+.details-dropdown p {
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+.refinement-container {
+    margin-top: 20px;
+    color: #333; /* Dark text */
+}
+
+.symptom-prompt {
+    margin-top: 15px;
+}
+
+.yes-button, .no-button {
+    padding: 8px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    color: white; /* White text for buttons */
+}
+
+.yes-button {
+    background-color: #28a745;
+}
+
+.yes-button:hover {
+    background-color: #218838;
+}
+
+.no-button {
+    background-color: #dc3545;
+}
+
+.no-button:hover {
+    background-color: #c82333;
+}
+
+.chatbot-suggestion {
+    margin-top: 15px;
+    color: #6c757d; /* Gray for suggestion */
+}
+.details-section {
+    margin-bottom: 15px;
+}
+
+.details-section h4 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 16px;
+}
+
+.details-section ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 0;
+}
+
+.details-section li {
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: normal; /* Ensure full sentences */
+}
+
+/* Chatbot Styles */
+.chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000; /* Keeps chatbot above content but below navbar */
+}
+
+.chatbot-toggle {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chatbot-toggle:hover {
+    background-color: #218838;
+}
+
+.chatbot-window {
+    width: 300px;
+    height: 400px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.dashboard-container::-webkit-scrollbar {
+    display: none; /* Hides scrollbar in Chrome, Safari */
+}
+.dashboard-container {
+    scrollbar-width: none; /* Hides scrollbar in Firefox */
+    -ms-overflow-style: none; /* Hides scrollbar in Edge/IE */
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ddd;
+}
+
+.chat-message {
+    margin-bottom: 10px;
+}
+
+.chat-message.user {
+    text-align: right;
+}
+
+.chat-message.bot {
+    text-align: left;
+}
+
+.chat-message span {
+    display: inline-block;
+    padding: 8px;
+    border-radius: 5px;
+    background-color: #f1f1f1;
+    max-width: 80%;
+}
+
+.chat-message.user span {
+    background-color: #28a745;
+    color: white;
+}
+
+.chat-input-form {
+    display: flex;
+    padding: 10px;
+}
+
+.chat-input-form input {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px 0 0 5px;
+}
+
+.chat-input-form button {
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+/* Hide scrollbar for chat-messages (WebKit browsers) */
+.chat-messages::-webkit-scrollbar {
+    display: none; /* Hides scrollbar in Chrome, Safari */
+}
+
+/* Hide scrollbar for chat-messages (Firefox) */
+.chat-messages {
+    scrollbar-width: none; /* Hides scrollbar in Firefox */
+    -ms-overflow-style: none; /* Hides scrollbar in Edge/IE */
+}
+
+/* Typing Animation */
+.typing-animation {
+    display: inline-block;
+    font-style: italic;
+    color: #666;
+}
+
+.typing-animation span {
+    animation: bounce 0.6s infinite;
+    background-color: transparent; /* No background for dots */
+    padding: 0; /* Remove padding from dots */
+}
+
+.typing-animation span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-animation span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

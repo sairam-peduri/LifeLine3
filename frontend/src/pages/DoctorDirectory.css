@@ -1,0 +1,18 @@
+.doctor-directory {
+    padding: 20px;
+  }
+  
+  .doctor-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .doctor-card {
+    background: #f4f4f4;
+    padding: 15px;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  

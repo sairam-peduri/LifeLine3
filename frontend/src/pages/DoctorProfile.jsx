@@ -1,0 +1,60 @@
+// src/pages/DoctorProfile.jsx
+
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { BACKEND_URL } from "../config";
+import { useAuth } from "../context/AuthContext";
+
+const DoctorProfile = () => {
+  const { uid } = useParams(); // ✅ Extract doctor uid from route
+  console.log("Doctor UID from URL:", uid); // check if undefined
+  const navigate = useNavigate();
+  const { firebaseUser } = useAuth();
+  const [doctor, setDoctor] = useState(null);
+
+  // ✅ Fetch doctor info from backend
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const token = await firebaseUser.getIdToken();
+        const res = await axios.get(`${BACKEND_URL}/api/doctors/${uid}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setDoctor(res.data.doctor);
+      } catch (err) {
+        console.error("Failed to fetch doctor:", err);
+      }
+    };
+    if (firebaseUser && uid) load();
+  }, [firebaseUser, uid]);
+
+  // ✅ Create or get chat room, then redirect to chat
+  const startChat = async () => {
+    try {
+      const token = await firebaseUser.getIdToken();
+      await axios.post(
+        `${BACKEND_URL}/api/chat/room`,
+        { doctorId: uid },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      navigate(`/chat/${uid}`);
+    } catch (err) {
+      console.error("Failed to start chat:", err);
+    }
+  };
+
+  if (!doctor) return <p>Loading doctor...</p>;
+
+  return (
+    <div style={{ padding: 20 }}>
+      <h2>{doctor.name}</h2>
+      <p><strong>Specialization:</strong> {doctor.specialization}</p>
+      <p><strong>Workplace:</strong> {doctor.workplace}</p>
+      <p><strong>Consultation Fee:</strong> ₹{doctor.consultationFee}</p>
+      <button onClick={startChat}>💬 Chat</button>
+    </div>
+  );
+};
+
+export default DoctorProfile;

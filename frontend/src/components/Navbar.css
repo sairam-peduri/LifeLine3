@@ -1,0 +1,92 @@
+/* Ensure the navbar stays fixed at the top */
+.navbar {
+  z-index: 1050;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+html {
+  scroll-padding-top: 6rem; /* helps with anchor scrolling */
+}
+.page-content {
+  padding-top: 6rem; /* or adjust if navbar height is different */
+}
+
+/* Styling for the navbar brand */
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Navbar toggler button */
+.navbar-toggler {
+  border: none;
+  outline: none;
+}
+
+/* Custom styling for the offcanvas menu */
+.offcanvas {
+  background: #212529; /* Dark theme */
+  color: #fff;
+}
+
+/* Offcanvas header styling */
+.offcanvas-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Offcanvas navigation links */
+.navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: #00ff99; /* Custom highlight color */
+}
+
+/* Dropdown menu styling */
+.dropdown-menu-dark {
+  background: #343a40;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-menu-dark .dropdown-item {
+  color: rgba(255, 255, 255, 0.8);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-menu-dark .dropdown-item:hover {
+  background: #00ff99;
+  color: #000;
+}
+
+/* Search bar inside offcanvas */
+.offcanvas-body .form-control {
+  background: #333;
+  color: white;
+  border: 1px solid #555;
+}
+
+.offcanvas-body .form-control:focus {
+  background: #444;
+  color: white;
+  border-color: #00ff99;
+  box-shadow: none;
+}
+
+/* Search button */
+.offcanvas-body .btn-success {
+  background: #00ff99;
+  border-color: #00cc77;
+  color: #000;
+}
+
+.offcanvas-body .btn-success:hover {
+  background: #00cc77;
+  border-color: #009966;
+}
+
+#offcanvasDarkNavbarLabel{
+  color:white;
+}

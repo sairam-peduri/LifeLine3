@@ -1,0 +1,55 @@
+.profile-wrapper {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.profile-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar {
+  width: 100px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+
+.profile-info p {
+  margin: 0.4rem 0;
+}
+
+.logout-btn,
+.view-history-btn {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #2b6cb0;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.recent-predictions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.prediction-box {
+  flex: 1;
+  min-width: 250px;
+  background: #edf2f7;
+  padding: 1rem;
+  border-radius: 8px;
+}

@@ -1,0 +1,31 @@
+body {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.form-box {
+    background: white;
+    color: black;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-box h2 {
+    font-weight: bold;
+}
+
+.form-box .btn {
+    font-size: 1.1rem;
+}
+
+.form-box a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.form-box a:hover {
+    text-decoration: underline;
+}
