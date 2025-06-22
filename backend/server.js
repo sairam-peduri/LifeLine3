@@ -19,14 +19,14 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://life-line3.vercel.app/", 
+    origin: "https://life-line3.vercel.app", 
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 app.set("io", io); 
 
-app.use(cors({ origin: "https://life-line3.vercel.app/", credentials: true }));
+app.use(cors({ origin: "https://life-line3.vercel.app", credentials: true }));
 app.use(express.json());
 
 mongoose
