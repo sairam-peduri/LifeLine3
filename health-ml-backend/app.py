@@ -112,7 +112,6 @@ def predict():
 
         result = None
 
-        # ✅ Try email first
         if user_email:
             result = users_collection.update_one(
                 {"email": user_email},
@@ -127,7 +126,6 @@ def predict():
             )
             print(f"📌 Update with email result: matched={result.matched_count}, modified={result.modified_count}")
 
-        # ❗Fallback: Try by UID if email failed
         if (not result or result.matched_count == 0) and user_uid:
             result = users_collection.update_one(
                 {"uid": user_uid},
@@ -174,11 +172,9 @@ def disease_details():
 
         raw_text = response.text.strip()
 
-        # Fallback
         if not raw_text:
             return jsonify({"error": "Empty Gemini response"}), 500
 
-        # Parse sections
         headings = ["Symptoms", "Causes", "Diagnosis", "Treatment", "Prevention"]
         structured = {}
         for heading in headings:
@@ -197,8 +193,6 @@ def disease_details():
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
-# POST: Health assistant chat
-# POST: Health assistant chat
 @app.route('/api/chat', methods=['POST'])
 def chat():
     try:
@@ -220,7 +214,6 @@ def chat():
         return jsonify({"response": "An error occurred while processing your message."}), 500
 
 
-# GET: Prediction history
 @app.route('/api/history', methods=['GET'])
 def get_history():
     try:
@@ -237,7 +230,6 @@ def get_history():
         print("❌ History error:", e)
         return jsonify({"error": str(e)}), 500
 
-# Start server
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5001))
     app.run(debug=True, host="0.0.0.0", port=port)

@@ -8,7 +8,6 @@ const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
 
-// 🔐 Firebase Admin Setup
 const serviceAccount = require("./firebaseServiceAccountKey.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -18,27 +17,23 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-// 🔌 Socket.IO Setup
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5174", // Replace with your frontend port
+    origin: "https://life-line3.vercel.app/", 
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
-app.set("io", io); // So you can access it in routes
+app.set("io", io); 
 
-// 🌐 Middleware
-app.use(cors({ origin: "http://localhost:5174", credentials: true }));
+app.use(cors({ origin: "https://life-line3.vercel.app/", credentials: true }));
 app.use(express.json());
 
-// 🌍 MongoDB
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
-// 📦 Routes
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/doctors", require("./routes/doctors"));
 app.use("/api/user", require("./routes/user"));
@@ -47,8 +42,7 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/transactions", require("./routes/transactions"));
 
 
-// 🧠 ML Proxy Routes
-const FLASK_API_URL = "http://localhost:5001/api";
+const FLASK_API_URL = "https://lifeline3.onrender.com/api";
 
 app.get("/api/get_symptoms", async (req, res) => {
   try {
@@ -71,7 +65,6 @@ app.post("/api/predict", async (req, res) => {
   }
 });
 
-// 💬 Real-time Chat (Socket.io)
 io.on("connection", (socket) => {
   console.log("🟢 Socket connected:", socket.id);
 
@@ -89,11 +82,9 @@ io.on("connection", (socket) => {
   });
 });
 
-// 🩺 Health Check
 app.get("/", (req, res) => res.send("✅ LifeLine Backend running..."));
 
-// 🚀 Start Server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on https://lifeline3-1.onrender.com`);
 });
