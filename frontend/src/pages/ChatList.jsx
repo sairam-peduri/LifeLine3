@@ -2,11 +2,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import { BACKEND_URL } from "../config";
 import { useAuth } from "../context/AuthContext";
 
 const ChatList = () => {
-  const { firebaseUser } = useAuth();
+  const { user,firebaseUser } = useAuth();
   const [rooms, setRooms] = useState([]);
   const [userMap, setUserMap] = useState({});
   const navigate = useNavigate();
@@ -58,6 +59,8 @@ const ChatList = () => {
   };
 
   return (
+    <div>
+    <Navbar user={user} />
     <div style={{ padding: 20 }}>
       <h2>Your Conversations</h2>
       {rooms.map((room) => {
@@ -83,6 +86,7 @@ const ChatList = () => {
           </div>
         );
       })}
+    </div>
     </div>
   );
 };

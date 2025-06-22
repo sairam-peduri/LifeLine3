@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import "./home.css";
 
 function Home() {
@@ -6,6 +7,7 @@ function Home() {
 
     return (
         <div>
+            <Navbar/>
             <section className="hero">
                 <h1>AI-Powered Personal Health Dashboard</h1>
                 <div className="description">

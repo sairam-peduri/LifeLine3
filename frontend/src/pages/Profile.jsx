@@ -59,7 +59,7 @@ const Profile = () => {
 
   return (
     <div className="profile-wrapper">
-      <Navbar />
+      <Navbar user={user} />
 
       <div className="profile-card">
         <div className="profile-sidebar">

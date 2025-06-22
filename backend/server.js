@@ -43,6 +43,9 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/doctors", require("./routes/doctors"));
 app.use("/api/user", require("./routes/user"));
 app.use("/api/chat", require("./routes/chat")); // ✅ Chat routes
+app.use("/uploads", express.static("uploads"));
+app.use("/api/transactions", require("./routes/transactions"));
+
 
 // 🧠 ML Proxy Routes
 const FLASK_API_URL = "http://localhost:5001/api";

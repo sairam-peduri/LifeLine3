@@ -119,5 +119,30 @@ router.get("/user/:id", verifyToken, async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-  
+
+// ✅ PUT /api/auth/wallet — fixed here
+router.put("/wallet", verifyToken, async (req, res) => {
+  try {
+    const { walletAddress } = req.body;
+    const uid = req.uid; // ✅ fixed
+
+    if (!walletAddress) {
+      return res.status(400).json({ error: "Missing wallet address" });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { uid },
+      { walletAddress },
+      { new: true }
+    );
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    res.json({ message: "Wallet updated", user });
+  } catch (err) {
+    console.error("Wallet update error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 module.exports = router;

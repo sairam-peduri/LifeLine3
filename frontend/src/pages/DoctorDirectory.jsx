@@ -2,10 +2,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
 
 const DoctorDirectory = () => {
-  const { firebaseUser } = useAuth();
+  const { user, firebaseUser } = useAuth();
   const [doctors, setDoctors] = useState([]);
 
   useEffect(() => {
@@ -25,6 +26,8 @@ const DoctorDirectory = () => {
   }, [firebaseUser]);
 
   return (
+    <div>
+    <Navbar user={user} />
     <div style={{ padding: "20px" }}>
       <h2>Doctor Directory</h2>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
@@ -53,6 +56,7 @@ const DoctorDirectory = () => {
           ))
         )}
       </div>
+    </div>
     </div>
   );
 };

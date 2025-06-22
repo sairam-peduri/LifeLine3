@@ -30,3 +30,19 @@ router.get("/:uid", verifyToken, async (req, res) => {
 });
 
 module.exports = router;
+
+// routes/doctors.js
+
+router.get("/doctor/:uid", verifyToken, async (req, res) => {
+  try {
+    const doctor = await User.findOne({ uid: req.params.uid, role: "doctor" });
+    if (!doctor) return res.status(404).json({ error: "Doctor not found" });
+
+    res.json({ doctor });
+  } catch (err) {
+    console.error("Error fetching doctor:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+

@@ -10,7 +10,13 @@ const userSchema = new mongoose.Schema({
   walletAddress: { type: String, default: null },
   tier: { type: String, enum: ["free", "advanced", "prime"], default: "free" },
   predictionHistory: { type: Array, default: [] },
-  healthReports: { type: Array, default: [] },
+  healthRecords: [
+    {
+      filename: String,
+      fileUrl: String, // path or full URL
+      uploadedAt: { type: Date, default: Date.now }
+    }
+  ],
   chatRooms: [{ type: String }],
   isProfileComplete: { type: Boolean, default: false },
   // Doctor-only fields:
