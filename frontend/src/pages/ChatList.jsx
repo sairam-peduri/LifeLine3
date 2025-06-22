@@ -1,11 +1,10 @@
-// src/pages/ChatList.jsx
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { BACKEND_URL } from "../config";
 import { useAuth } from "../context/AuthContext";
-import "./ChatList.css"; // 💡 Custom CSS for better style
+import "./ChatList.css";
 
 const ChatList = () => {
   const { user, firebaseUser } = useAuth();

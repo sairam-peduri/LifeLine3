@@ -1,12 +1,12 @@
-/* src/components/Footer.css */
-/* Footer.css */
+
 .footer {
     background-color: #111;
     color: #eee;
     text-align: center;
     padding: 1rem 0;
+    width:100%;
     font-size: 0.9rem;
-    margin-top: auto; /* Push to bottom if space */
+    margin-top: auto;
   }
   
   .footer-links a {

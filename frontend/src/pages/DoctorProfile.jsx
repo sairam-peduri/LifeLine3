@@ -1,5 +1,3 @@
-// src/pages/DoctorProfile.jsx
-
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -8,13 +6,12 @@ import { BACKEND_URL } from "../config";
 import { useAuth } from "../context/AuthContext";
 
 const DoctorProfile = () => {
-  const { uid } = useParams(); // ✅ Extract doctor uid from route
-  console.log("Doctor UID from URL:", uid); // check if undefined
+  const { uid } = useParams(); 
+  console.log("Doctor UID from URL:", uid); 
   const navigate = useNavigate();
   const { user,firebaseUser } = useAuth();
   const [doctor, setDoctor] = useState(null);
 
-  // ✅ Fetch doctor info from backend
   useEffect(() => {
     const load = async () => {
       try {
@@ -30,7 +27,6 @@ const DoctorProfile = () => {
     if (firebaseUser && uid) load();
   }, [firebaseUser, uid]);
 
-  // ✅ Create or get chat room, then redirect to chat
   const startChat = async () => {
     try {
       const token = await firebaseUser.getIdToken();

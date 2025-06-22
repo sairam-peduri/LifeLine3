@@ -3,20 +3,19 @@ import React from "react";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
-import "./App.css"; // Import your global styles
-import About from "./pages/About"; // ✅ NEW
-import ChatList from "./pages/ChatList"; // ✅ NEW
-import Contact from "./pages/Contact"; // ✅ NEW
+import About from "./pages/About";
+import ChatList from "./pages/ChatList";
+import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
 import DoctorDirectory from "./pages/DoctorDirectory";
-import DoctorProfile from "./pages/DoctorProfile"; // ✅ NEW
+import DoctorProfile from "./pages/DoctorProfile";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import PatientDoctorChat from "./pages/PatientDoctorChat"; // ✅ NEW
-import PaymentPage from "./pages/PaymentPage"; // ✅ NEW
+import PatientDoctorChat from "./pages/PatientDoctorChat";
+import PaymentPage from "./pages/PaymentPage";
 import Profile from "./pages/Profile";
 import SignupDetails from "./pages/SignupDetails";
-import TransactionHistory from "./pages/TransactionHistory"; // ✅ NEW
+import TransactionHistory from "./pages/TransactionHistory";
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -36,7 +35,7 @@ function App() {
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/doctors" element={<ProtectedRoute><DoctorDirectory /></ProtectedRoute>} />
-          {/* ✅ CHAT ROUTES */}
+          {/*  CHAT ROUTES */}
           <Route path="/doctor/:uid" element={<ProtectedRoute><DoctorProfile /></ProtectedRoute>} />
           <Route path="/chat" element={<ProtectedRoute><ChatList /></ProtectedRoute>} />
           <Route path="/pay/:doctorId" element={<ProtectedRoute><PaymentPage /></ProtectedRoute>} />

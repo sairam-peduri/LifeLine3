@@ -1,4 +1,4 @@
-// src/pages/Contact.jsx
+
 import React, { useEffect } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
@@ -21,7 +21,7 @@ const Contact = () => {
   return (
     <div>
       <Navbar />
-      <section className="reveal contact-section">
+      <section className="reveal contact-section contactsec">
         <h1>Contact Us</h1>
         <p>Need help? We’re here for you.</p>
         <p>Email us at <a href="mailto:sairampeduri@gmail.com">sairampeduri@gmail.com</a></p>

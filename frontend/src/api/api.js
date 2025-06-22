@@ -59,18 +59,6 @@ export const predictDisease = async ({ symptoms, additional_symptoms = [], refin
       throw err.response?.data?.error || "Prediction failed";
     }
   };
-  
-
-// If you want to use it in other pages (optional)
-// export const getDiseaseDetails = async (disease) => {
-//   try {
-//     const response = await PredictionAPI.post("/details", { disease });
-//     return response.data;
-//   } catch (err) {
-//     console.error("❌ Error in getDiseaseDetails:", err);
-//     throw err.response?.data?.error || "Failed to fetch details";
-//   }
-// };
 
 export const getPredictionHistory = async (username, token) => {
   try {
@@ -129,5 +117,5 @@ export const sendMessage = async (data, token) => {
 // Default Axios instance pointing to AUTH base by default
 const API = axios.create({ baseURL: AUTH_BASE_URL });
 
-export default API; // ✅ Add this line
+export default API;
 

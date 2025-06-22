@@ -1,4 +1,3 @@
-/* src/pages/StaticPages.css */
 .static-page {
     padding-top: 80px;
     max-width: 800px;
@@ -27,10 +26,6 @@
     font-style: italic;
   }
   
-  /* Scroll-triggered reveal */
-  /* JavaScript code removed. Move it to a separate .js file or <script> tag. */
-  
-  /* src/components/Footer.css */
   .footer {
     background: #222;
     color: #ddd;

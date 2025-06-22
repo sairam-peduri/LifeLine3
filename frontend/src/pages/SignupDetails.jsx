@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { auth } from "../firebase";
-import "./Auth.css"; // ✅ Assuming you’re using the same Auth.css as login
+import "./Auth.css";
 
 export default function SignupDetails() {
   const { refreshUser } = useAuth();

@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom"; // 🆕 Link added
 import io from "socket.io-client";
 import ChatBubble from "../components/ChatBubble";
 import Navbar from "../components/Navbar";
@@ -60,28 +60,37 @@ const PatientDoctorChat = () => {
   return (
     <div>
       <Navbar user={user} />
-    <div style={{ padding: 20 }}>
-      <h2>Live Chat</h2>
-      <div style={{ maxHeight: "400px", overflowY: "auto", border: "1px solid #ccc", padding: 10 }}>
-        {messages.map((m, i) => (
-          <ChatBubble
-            key={i}
-            senderName={m.senderName}
-            text={m.text}
-            mine={m.senderId === firebaseUser.uid}
+      <div style={{ padding: 20 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h2>Live Chat</h2>
+          <Link to={`/payment/${doctorId}`}>
+            <button style={{ padding: "8px 16px", backgroundColor: "#3182ce", color: "#fff", border: "none", borderRadius: "4px" }}>
+              💳 Pay Doctor
+            </button>
+          </Link>
+        </div>
+
+        <div style={{ maxHeight: "400px", overflowY: "auto", border: "1px solid #ccc", padding: 10, marginTop: 10 }}>
+          {messages.map((m, i) => (
+            <ChatBubble
+              key={i}
+              senderName={m.senderName}
+              text={m.text}
+              mine={m.senderId === firebaseUser.uid}
+            />
+          ))}
+        </div>
+
+        <div style={{ marginTop: 10 }}>
+          <input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            style={{ width: "80%", padding: 8 }}
+            placeholder="Type a message"
           />
-        ))}
+          <button onClick={sendMessage} style={{ padding: "8px 16px" }}>Send</button>
+        </div>
       </div>
-      <div style={{ marginTop: 10 }}>
-        <input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          style={{ width: "80%", padding: 8 }}
-          placeholder="Type a message"
-        />
-        <button onClick={sendMessage} style={{ padding: "8px 16px" }}>Send</button>
-      </div>
-    </div>
     </div>
   );
 };

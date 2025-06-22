@@ -1,5 +1,3 @@
-// src/context/AuthContext.jsx
-
 import { useWallet } from "@solana/wallet-adapter-react";
 import axios from "axios";
 import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
@@ -10,17 +8,16 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // Custom backend user
-  const [firebaseUser, setFirebaseUser] = useState(null); // Firebase Auth user
+  const [user, setUser] = useState(null); 
+  const [firebaseUser, setFirebaseUser] = useState(null); 
   const [loading, setLoading] = useState(true);
   const wallet = useWallet();
 
-  // ✅ Update wallet address on backend if changed
   const syncWalletAddress = async () => {
     if (!wallet.publicKey || !firebaseUser) return;
 
     const currentAddress = wallet.publicKey.toBase58();
-    if (user?.walletAddress === currentAddress) return; // skip if same address
+    if (user?.walletAddress === currentAddress) return; 
 
     try {
       const token = await firebaseUser.getIdToken();
@@ -29,13 +26,12 @@ export const AuthProvider = ({ children }) => {
         { walletAddress: currentAddress },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setUser(res.data.user); // update local user state
+      setUser(res.data.user); 
     } catch (err) {
       console.error("❌ Failed to sync wallet address:", err);
     }
   };
 
-  // ✅ Google Sign-In + backend login
   const loginWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
@@ -64,7 +60,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ Logout & cleanup
   const logout = async () => {
     await signOut(auth);
     setUser(null);
@@ -72,7 +67,6 @@ export const AuthProvider = ({ children }) => {
     window.location.href = "/login";
   };
 
-  // ✅ Restore auth state on reload
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
@@ -98,15 +92,12 @@ export const AuthProvider = ({ children }) => {
 
     return unsubscribe;
   }, []);
-
-  // ✅ Automatically sync wallet on change
   useEffect(() => {
     if (wallet.connected && firebaseUser) {
       syncWalletAddress();
     }
   }, [wallet.publicKey, wallet.connected, firebaseUser]);
 
-  // ✅ Manual user refresh
   const refreshUser = async () => {
     const current = auth.currentUser;
     if (!current) return;

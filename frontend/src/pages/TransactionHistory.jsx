@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Navbar from "../components/Navbar"; // ✅ Import Navbar
-import { useAuth } from "../context/AuthContext"; // ✅ Import context
+import Navbar from "../components/Navbar";
+import { useAuth } from "../context/AuthContext";
 
 const TransactionHistory = () => {
-  const { user, firebaseUser } = useAuth(); // ✅ Use context to get user
+  const { user, firebaseUser } = useAuth(); 
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 

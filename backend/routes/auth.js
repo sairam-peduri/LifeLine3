@@ -1,4 +1,3 @@
-// routes/auth.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
@@ -14,7 +13,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Middleware: verifies Firebase token and attaches uid + email to req
 const verifyToken = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith('Bearer '))
@@ -32,7 +30,6 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
-// POST /api/auth/login
 router.post('/login', verifyToken, async (req, res) => {
   try {
     const { name, email, uid } = req.body;
@@ -65,7 +62,6 @@ router.post('/login', verifyToken, async (req, res) => {
   }
 });
 
-// GET /api/auth/me
 router.get('/me', verifyToken, async (req, res) => {
   try {
     const user = await User.findOne({ email: req.email });
@@ -77,7 +73,6 @@ router.get('/me', verifyToken, async (req, res) => {
   }
 });
 
-// POST /api/auth/complete-profile
 router.post('/complete-profile', verifyToken, async (req, res) => {
   try {
     const { gender, dob, role, specialization, about, workplace, consultationFee } = req.body;
@@ -120,11 +115,11 @@ router.get("/user/:id", verifyToken, async (req, res) => {
   }
 });
 
-// ✅ PUT /api/auth/wallet — fixed here
+
 router.put("/wallet", verifyToken, async (req, res) => {
   try {
     const { walletAddress } = req.body;
-    const uid = req.uid; // ✅ fixed
+    const uid = req.uid; 
 
     if (!walletAddress) {
       return res.status(400).json({ error: "Missing wallet address" });

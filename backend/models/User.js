@@ -13,13 +13,12 @@ const userSchema = new mongoose.Schema({
   healthRecords: [
     {
       filename: String,
-      fileUrl: String, // path or full URL
+      fileUrl: String,
       uploadedAt: { type: Date, default: Date.now }
     }
   ],
   chatRooms: [{ type: String }],
   isProfileComplete: { type: Boolean, default: false },
-  // Doctor-only fields:
   specialization: String,
   workplace: String,
   about: String,

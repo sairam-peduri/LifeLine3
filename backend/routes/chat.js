@@ -6,9 +6,8 @@ const ChatRoom = require("../models/ChatRoom");
 const Message = require("../models/Message");
 const User = require("../models/User");
 
-// ✅ Create or return existing chat room
 router.post("/room", verifyToken, async (req, res) => {
-  const doctorId = req.body.doctorId; // uid of doctor
+  const doctorId = req.body.doctorId; 
   const patientId = req.user.uid;
 
   if (!doctorId || doctorId === patientId) {
@@ -30,7 +29,6 @@ router.post("/room", verifyToken, async (req, res) => {
     });
     await room.save();
 
-    // Add room to both doctor and patient chatRooms
     await User.updateOne({ uid: doctorId }, { $addToSet: { chatRooms: roomId } });
     await User.updateOne({ uid: patientId }, { $addToSet: { chatRooms: roomId } });
   }
@@ -38,7 +36,6 @@ router.post("/room", verifyToken, async (req, res) => {
   res.json({ roomId });
 });
 
-// ✅ Send a new message
 router.post("/message", verifyToken, async (req, res) => {
   const { roomId, text } = req.body;
 
@@ -62,7 +59,6 @@ router.post("/message", verifyToken, async (req, res) => {
   res.json({ message });
 });
 
-// ✅ Get all messages for a room
 router.get("/messages/:roomId", verifyToken, async (req, res) => {
   const { roomId } = req.params;
 
@@ -74,7 +70,6 @@ router.get("/messages/:roomId", verifyToken, async (req, res) => {
   res.json({ messages: room.messages });
 });
 
-// ✅ Fetch all rooms a user is in
 router.get("/rooms", verifyToken, async (req, res) => {
   const user = await User.findOne({ uid: req.user.uid });
   if (!user || !user.chatRooms || user.chatRooms.length === 0) {
@@ -83,7 +78,6 @@ router.get("/rooms", verifyToken, async (req, res) => {
 
   const rooms = await ChatRoom.find({ roomId: { $in: user.chatRooms } }).populate("messages");
 
-  // Fetch and attach the other user’s name
   const roomData = await Promise.all(
     rooms.map(async (room) => {
       const otherUid = [room.patientId, room.doctorId].find(id => id !== req.user.uid);

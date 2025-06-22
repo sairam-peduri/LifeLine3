@@ -4,17 +4,17 @@
     padding-top: 80px;
     max-width: 800px;
     margin: 0 auto;
-    /* min-height: calc(100vh - 80px); //Ensures it fills remaining space */
-    overflow-y: auto; /* Allows scrolling within container if needed */
-    background-color: #f0f2f5; /* Light gray background */
-    color: #333; /* Dark text for contrast */
+    /* min-height: calc(100vh - 80px);  */
+    overflow-y: auto; 
+    background-color: #f0f2f5; 
+    color: #333; 
 }
 
 body {
     margin: 0;
     padding: 0;
-    min-height: 100vh; /* Allows content to extend beyond viewport */
-    overflow-y: auto; /* Enables vertical scrolling */
+    min-height: 100vh; 
+    overflow-y: auto; 
 }
 
 .navbar {
@@ -22,7 +22,6 @@ body {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Styling for the navbar brand */
 .navbar-brand {
     font-size: 1.5rem;
     font-weight: bold;
@@ -44,8 +43,8 @@ body {
     margin-bottom: 15px;
     font-size: 16px;
     line-height: 1.4;
-    white-space: normal; /* Prevent truncation */
-    overflow: visible; /* Ensure full text shows */
+    white-space: normal; 
+    overflow: visible; 
 }
 
 .predict-button:hover {
@@ -53,7 +52,7 @@ body {
 }
 
 .error {
-    color: #dc3545; /* Red for errors */
+    color: #dc3545;
     margin-top: 10px;
 }
 
@@ -75,7 +74,7 @@ body {
     align-items: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    color: #212529; /* Dark gray text */
+    color: #212529;
 }
 
 .prediction-header:hover {
@@ -85,7 +84,7 @@ body {
 .dropdown-arrow {
     font-size: 12px;
     transition: transform 0.3s ease;
-    color: #007bff; /* Blue arrow */
+    color: #007bff;
 }
 
 .dropdown-arrow.open {
@@ -99,7 +98,7 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     animation: slideIn 0.3s ease-out;
-    color: #343a40; /* Darker text for contrast */
+    color: #343a40; 
 }
 
 .details-dropdown p {
@@ -109,7 +108,7 @@ body {
 
 .refinement-container {
     margin-top: 20px;
-    color: #333; /* Dark text */
+    color: #333;
 }
 
 .symptom-prompt {
@@ -123,7 +122,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    color: white; /* White text for buttons */
+    color: white; 
 }
 
 .yes-button {
@@ -144,7 +143,7 @@ body {
 
 .chatbot-suggestion {
     margin-top: 15px;
-    color: #6c757d; /* Gray for suggestion */
+    color: #6c757d; 
 }
 .details-section {
     margin-bottom: 15px;
@@ -166,16 +165,14 @@ body {
     margin-bottom: 8px;
     font-size: 14px;
     line-height: 1.5;
-    white-space: normal; /* Ensure full sentences */
+    white-space: normal; 
 }
 
-/* Chatbot Styles */
 .chatbot-container {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    z-index: 1000; /* Keeps chatbot above content but below navbar */
-}
+    z-index: 1000; }
 
 .chatbot-toggle {
     padding: 10px 20px;
@@ -203,11 +200,11 @@ body {
 }
 
 .dashboard-container::-webkit-scrollbar {
-    display: none; /* Hides scrollbar in Chrome, Safari */
+    display: none; 
 }
 .dashboard-container {
-    scrollbar-width: none; /* Hides scrollbar in Firefox */
-    -ms-overflow-style: none; /* Hides scrollbar in Edge/IE */
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
 }
 
 .chat-messages {
@@ -263,18 +260,15 @@ body {
     cursor: pointer;
 }
 
-/* Hide scrollbar for chat-messages (WebKit browsers) */
 .chat-messages::-webkit-scrollbar {
-    display: none; /* Hides scrollbar in Chrome, Safari */
+    display: none; 
 }
 
-/* Hide scrollbar for chat-messages (Firefox) */
 .chat-messages {
-    scrollbar-width: none; /* Hides scrollbar in Firefox */
-    -ms-overflow-style: none; /* Hides scrollbar in Edge/IE */
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
 }
 
-/* Typing Animation */
 .typing-animation {
     display: inline-block;
     font-style: italic;
@@ -283,8 +277,8 @@ body {
 
 .typing-animation span {
     animation: bounce 0.6s infinite;
-    background-color: transparent; /* No background for dots */
-    padding: 0; /* Remove padding from dots */
+    background-color: transparent; 
+    padding: 0;
 }
 
 .typing-animation span:nth-child(2) {

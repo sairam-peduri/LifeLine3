@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaExclamationTriangle } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import {
   chatWithBot,
@@ -10,8 +10,6 @@ import {
 import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
 import "./Dashboard.css";
-// In src/pages/Dashboard.jsx
-import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const { user, firebaseUser } = useAuth();
@@ -85,7 +83,7 @@ const Dashboard = () => {
       const token = await firebaseUser.getIdToken();
       const payload = {
         symptoms: symptomList,
-        username: user?.uid || user?.email || "", // ✅ Changed here
+        username: user?.uid || user?.email || "", 
       };
 
       const result = await predictDisease(payload, token);

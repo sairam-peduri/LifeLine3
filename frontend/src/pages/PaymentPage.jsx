@@ -69,7 +69,6 @@ const PaymentPage = () => {
   
       setStatus(`✅ Payment sent! TX ID: ${txid}`);
   
-      // ✅ Send transaction record to backend
       const token = await firebaseUser.getIdToken();
       await axios.post(
         `${BACKEND_URL}/api/transactions/send`,

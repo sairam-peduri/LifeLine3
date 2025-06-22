@@ -1,4 +1,3 @@
-// src/components/Navbar.jsx
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useEffect, useState } from "react";
@@ -20,7 +19,7 @@ export default function Navbar() {
   }, [user]);
 
   const handleLogin = () => {
-    window.location.href = "/login"; // or "/signup"
+    window.location.href = "/login"; 
   };
   
   useEffect(() => {
