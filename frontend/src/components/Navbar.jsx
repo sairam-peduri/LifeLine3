@@ -19,6 +19,10 @@ export default function Navbar() {
     setIsDoctor(user?.role === "doctor");
   }, [user]);
 
+  const handleLogin = () => {
+    window.location.href = "/login"; // or "/signup"
+  };
+  
   useEffect(() => {
     async function fetchBalance() {
       if (!wallet.publicKey) {
@@ -82,7 +86,9 @@ export default function Navbar() {
       >
         <div className="offcanvas-header">
           <h5 className="offcanvas-title">
-            {user?.name || "User"}
+          <span>
+          {user ? user.name : <button onClick={handleLogin} className="btn btn-outline-light btn-sm">Login</button>}
+          </span>
           </h5>
           <button
             className="btn-close btn-close-white"
