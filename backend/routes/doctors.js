@@ -3,7 +3,6 @@ const router = express.Router();
 const User = require("../models/User");
 const { verifyToken } = require("../middlewares/auth");
 
-// GET /api/doctors
 router.get("/", async (req, res) => {
   try {
     const doctors = await User.find({ role: "doctor" }).select(
@@ -16,7 +15,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/doctors/:uid
 router.get("/:uid", verifyToken, async (req, res) => {
   try {
     const doctor = await User.findOne({ uid: req.params.uid, role: "doctor" });
@@ -31,7 +29,6 @@ router.get("/:uid", verifyToken, async (req, res) => {
 
 module.exports = router;
 
-// routes/doctors.js
 
 router.get("/doctor/:uid", verifyToken, async (req, res) => {
   try {
