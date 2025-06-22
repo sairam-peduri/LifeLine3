@@ -1,4 +1,3 @@
-// src/pages/Profile.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -10,18 +9,19 @@ import {
   PieChart,
   ResponsiveContainer,
   Tooltip,
-  XAxis, YAxis
+  XAxis,
+  YAxis,
 } from "recharts";
 import { getPredictionHistory } from "../api/api";
 import Navbar from "../components/Navbar";
-import { useAuth } from "../context/AuthContext"; // ✅ Import useAuth
+import { useAuth } from "../context/AuthContext";
 import "./Profile.css";
 
 const COLORS = ["#3182ce", "#63b3ed", "#90cdf4", "#a0aec0", "#68d391", "#f6ad55", "#fc8181", "#ed64a6", "#d53f8c"];
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { user, token } = useAuth(); // ✅ use context
+  const { user, token } = useAuth();
   const [history, setHistory] = useState([]);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const Profile = () => {
 
     const fetchData = async () => {
       try {
-        const res = await getPredictionHistory(user.name, token); // ✅ pass token
+        const res = await getPredictionHistory(user.name, token);
         setHistory(res.reverse());
       } catch (err) {
         console.error("Error fetching history:", err);
@@ -40,7 +40,7 @@ const Profile = () => {
   }, [user, token]);
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <div className="loading-screen">Loading profile...</div>;
   }
 
   const diseaseChart = Object.entries(
@@ -61,10 +61,10 @@ const Profile = () => {
     <div className="profile-wrapper">
       <Navbar user={user} />
 
-      <div className="profile-card">
+      <div className="profile-card user-card">
         <div className="profile-sidebar">
-          <img className="avatar" src="/user-avatar.svg" alt="User" />
-          <div className="profile-title">{user.name}</div>
+          <img className="avatar" src="./assets/avatar.jpg" alt="User Avatar" />
+          <div className="profile-name">{user.name}</div>
           <div className="profile-role">{user.role || "Patient"}</div>
         </div>
         <div className="profile-info">
@@ -110,7 +110,14 @@ const Profile = () => {
           <h2>🧬 Symptoms Distribution</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
-              <Pie data={symptomChart} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100}>
+              <Pie
+                data={symptomChart}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+              >
                 {symptomChart.map((entry, idx) => (
                   <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
                 ))}
@@ -121,11 +128,12 @@ const Profile = () => {
         </div>
       )}
 
-      <div className="profile-button-container">
-        <button className="view-history-btn" onClick={() => navigate("/history")}>
-          View Full History
-        </button>
-      </div>
+<div className="profile-button-container">
+  <button className="view-history-btn" onClick={() => navigate("/transactions")}>
+    💸 View Transaction History
+  </button>
+</div>
+
     </div>
   );
 };

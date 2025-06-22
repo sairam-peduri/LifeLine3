@@ -1,0 +1,12 @@
+/* src/pages/Reveal.css */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease-out;
+    will-change: opacity, transform;
+  }
+  .reveal.active {
+    opacity: 1;
+    transform: none;
+  }
+  

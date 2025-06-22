@@ -1,0 +1,48 @@
+/* src/pages/StaticPages.css */
+.static-page {
+    padding-top: 80px;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  .hero-section {
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .content-section {
+    margin: 40px 0;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-in, transform 0.8s ease-in;
+  }
+  .content-section.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .fact-card {
+    background: #f0f8ff;
+    padding: 20px;
+    border-left: 5px solid #3182ce;
+    font-style: italic;
+  }
+  
+  /* Scroll-triggered reveal */
+  /* JavaScript code removed. Move it to a separate .js file or <script> tag. */
+  
+  /* src/components/Footer.css */
+  .footer {
+    background: #222;
+    color: #ddd;
+    text-align: center;
+    padding: 20px 0;
+  }
+  .footer a {
+    color: #63b3ed;
+    text-decoration: none;
+    margin: 0 8px;
+  }
+  .footer a:hover {
+    color: #fff;
+  }
+  

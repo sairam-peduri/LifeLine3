@@ -5,9 +5,10 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { BACKEND_URL } from "../config";
 import { useAuth } from "../context/AuthContext";
+import "./ChatList.css"; // 💡 Custom CSS for better style
 
 const ChatList = () => {
-  const { user,firebaseUser } = useAuth();
+  const { user, firebaseUser } = useAuth();
   const [rooms, setRooms] = useState([]);
   const [userMap, setUserMap] = useState({});
   const navigate = useNavigate();
@@ -25,15 +26,12 @@ const ChatList = () => {
         );
         setRooms(sorted);
 
-        // Get all other user IDs in the chat
         const otherUserIds = sorted
           .map(room => [room.patientId, room.doctorId].find(id => id !== firebaseUser.uid))
           .filter(Boolean);
 
-        // Remove duplicates
         const uniqueIds = [...new Set(otherUserIds)];
 
-        // Fetch their details in parallel
         const fetchedMap = {};
         await Promise.all(
           uniqueIds.map(async (uid) => {
@@ -60,33 +58,22 @@ const ChatList = () => {
 
   return (
     <div>
-    <Navbar user={user} />
-    <div style={{ padding: 20 }}>
-      <h2>Your Conversations</h2>
-      {rooms.map((room) => {
-        const last = room.messages.at(-1);
-        const otherId = [room.patientId, room.doctorId].find(id => id !== firebaseUser.uid);
-        const otherName = userMap[otherId] || "Unknown";
+      <Navbar user={user} />
+      <div className="chat-list-wrapper">
+        <h2 className="chat-list-title">💬 Your Conversations</h2>
+        {rooms.map((room) => {
+          const last = room.messages.at(-1);
+          const otherId = [room.patientId, room.doctorId].find(id => id !== firebaseUser.uid);
+          const otherName = userMap[otherId] || "Unknown";
 
-        return (
-          <div
-            key={room.roomId}
-            style={{
-              border: "1px solid gray",
-              borderRadius: 8,
-              padding: 12,
-              marginBottom: 10,
-              cursor: "pointer",
-              backgroundColor: "#f9f9f9",
-            }}
-            onClick={() => goToChat(room)}
-          >
-            <strong>{otherName}</strong>
-            <p style={{ margin: 4 }}>{last?.text || "No messages yet"}</p>
-          </div>
-        );
-      })}
-    </div>
+          return (
+            <div key={room.roomId} className="chat-room-item" onClick={() => goToChat(room)}>
+              <div className="chat-name">{otherName}</div>
+              <div className="chat-preview">{last?.text || <i>No messages yet</i>}</div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

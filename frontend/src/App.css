@@ -1,0 +1,12 @@
+section {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 0 16px;
+  }
+  h1 { font-size: 2.4rem; margin-bottom: 12px; color: #2d3748; }
+  ul { margin-left: 20px; margin-top: 8px; }
+  li { margin-bottom: 6px; font-size: 1.05rem; color: #4a5568; }
+  a { color: #3182ce; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  
+  

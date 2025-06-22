@@ -13,9 +13,6 @@ import "./Dashboard.css";
 // In src/pages/Dashboard.jsx
 import { Link } from "react-router-dom";
 
-
-
-
 const Dashboard = () => {
   const { user, firebaseUser } = useAuth();
   const navigate = useNavigate();

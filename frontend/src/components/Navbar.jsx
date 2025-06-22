@@ -151,16 +151,13 @@ export default function Navbar() {
               </span>
               <ul className="dropdown-menu dropdown-menu-dark">
                 <li>
-                  <span className="dropdown-item">About</span>
-                </li>
-                <li>
-                  <span className="dropdown-item">Facts</span>
+                  <span className="dropdown-item" onClick={() => navigate("/about")}>About</span>
                 </li>
                 <li>
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <span className="dropdown-item">Contact</span>
+                  <span className="dropdown-item" onClick={() => navigate("/contact")}>Contact</span>
                 </li>
               </ul>
             </li>

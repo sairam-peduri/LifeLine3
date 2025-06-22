@@ -1,55 +1,93 @@
 .profile-wrapper {
+  padding: 30px;
   max-width: 1200px;
   margin: auto;
-  padding: 2rem;
 }
 
 .profile-card {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 10px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  flex-wrap: wrap;
 }
 
 .profile-sidebar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  text-align: center;
+  flex: 1;
 }
 
 .avatar {
   width: 100px;
+  height: 100px;
   border-radius: 50%;
-  margin-bottom: 1rem;
+}
+
+.profile-name {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.profile-role {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.profile-info {
+  flex: 2;
 }
 
 .profile-info p {
-  margin: 0.4rem 0;
-}
-
-.logout-btn,
-.view-history-btn {
-  margin-top: 1rem;
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 8px;
-  background-color: #2b6cb0;
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
+  margin: 8px 0;
+  font-size: 1rem;
 }
 
 .recent-predictions {
   display: flex;
-  gap: 1rem;
+  gap: 15px;
   flex-wrap: wrap;
 }
 
 .prediction-box {
   flex: 1;
   min-width: 250px;
-  background: #edf2f7;
-  padding: 1rem;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
+  padding: 15px;
+  background: #f9fafb;
+}
+
+.profile-button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.view-history-btn {
+  padding: 10px 25px;
+  background-color: #3182ce;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.view-history-btn:hover {
+  background-color: #2563eb;
+}
+
+.loading-screen {
+  text-align: center;
+  padding: 80px;
+  font-size: 1.2rem;
+  color: #666;
 }

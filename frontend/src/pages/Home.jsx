@@ -17,8 +17,7 @@ function Home() {
                     <p>Revolutionize your health with our AI-powered personal health dashboard. Get real-time insights, predict diseases, and receive preventive tips for a healthier life.</p>
                 </div>
                 <div className="buttons">
-                    <button onClick={() => navigate("/login")}>Login</button>
-                    <button onClick={() => navigate("/signup")}>Sign Up</button>
+                    <button onClick={() => navigate("/login")}>Login/Signup</button>
                 </div>
             </section>
         </div>
