@@ -8,10 +8,14 @@ const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
 
-const serviceAccount = require("./firebaseServiceAccountKey.json");
+const admin = require("firebase-admin");
+
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
+
 
 dotenv.config();
 const app = express();
