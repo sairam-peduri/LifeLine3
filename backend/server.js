@@ -20,16 +20,9 @@ admin.initializeApp({
 const app = express();
 const server = http.createServer(app);
 
-const io = new Server(server, {
-  cors: {
-    origin: "https://life-line3.vercel.app", // ✅ No trailing slash
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
-app.set("io", io);
 
-app.use(cors({ origin: "https://life-line3.vercel.app", credentials: true }));
+
+app.use(cors({ origin: "https://life-line3-1.vercel.app", credentials: true }));
 app.use(express.json());
 
 mongoose
@@ -66,6 +59,15 @@ app.post("/api/predict", async (req, res) => {
     res.status(500).json({ message: "Prediction failed" });
   }
 });
+
+const io = new Server(server, {
+  cors: {
+    origin: "https://life-line3.vercel.app", // ✅ No trailing slash
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+app.set("io", io);
 
 // ✅ WebSocket events
 io.on("connection", (socket) => {
