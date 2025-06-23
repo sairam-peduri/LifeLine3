@@ -104,7 +104,7 @@ const Dashboard = () => {
 
   const fetchDetails = async (disease) => {
     try {
-      const res = await fetch("http://localhost:5001/api/details", {
+      const res = await fetch("http://lifeline3-1.onrender.com/api/details", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

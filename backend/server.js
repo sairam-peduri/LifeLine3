@@ -22,7 +22,7 @@ const server = http.createServer(app);
 
 
 
-app.use(cors({ origin: "https://life-line3-1.vercel.app", credentials: true }));
+app.use(cors({ origin: "https://life-line3.vercel.app", credentials: true }));
 app.use(express.json());
 
 mongoose
@@ -68,7 +68,6 @@ const io = new Server(server, {
   },
 });
 app.set("io", io);
-
 // ✅ WebSocket events
 io.on("connection", (socket) => {
   console.log("🟢 Socket connected:", socket.id);

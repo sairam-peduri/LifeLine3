@@ -15,7 +15,7 @@ const Login = () => {
       const token = await user.getIdToken();
 
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "http://lifeline3-1.onrender.com/api/auth/login",
         {
           email: user.email,
           name: user.displayName,
