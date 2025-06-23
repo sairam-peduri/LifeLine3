@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom"; // 🆕 Link added
+import { useParams } from "react-router-dom"; // 🆕 Link added
 import io from "socket.io-client";
 import ChatBubble from "../components/ChatBubble";
 import Navbar from "../components/Navbar";
@@ -63,11 +63,9 @@ const PatientDoctorChat = () => {
       <div style={{ padding: 20 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h2>Live Chat</h2>
-          <Link to={`/payment/${doctorId}`}>
-            <button style={{ padding: "8px 16px", backgroundColor: "#3182ce", color: "#fff", border: "none", borderRadius: "4px" }}>
-              💳 Pay Doctor
-            </button>
-          </Link>
+          <button onClick={() => navigate(`/pay/${doctor.uid}`)}>
+          💰 Pay Consultation Fee
+          </button>
         </div>
 
         <div style={{ maxHeight: "400px", overflowY: "auto", border: "1px solid #ccc", padding: 10, marginTop: 10 }}>

@@ -50,7 +50,7 @@ const DoctorProfile = () => {
       <h2>{doctor.name}</h2>
       <p><strong>Specialization:</strong> {doctor.specialization}</p>
       <p><strong>Workplace:</strong> {doctor.workplace}</p>
-      <p><strong>Consultation Fee:</strong> ₹{doctor.consultationFee}</p>
+      <p><strong>Consultation Fee:</strong> {doctor.consultationFee} SOL</p>
       <button onClick={startChat}>💬 Chat</button>
       <button onClick={() => navigate(`/pay/${doctor.uid}`)}>
       💰 Pay Consultation Fee
