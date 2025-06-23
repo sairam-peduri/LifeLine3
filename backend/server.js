@@ -8,27 +8,26 @@ const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
 
-const admin = require("firebase-admin");
+dotenv.config(); // ✅ Load environment variables early
 
+// ✅ Firebase Admin Initialization (only once)
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-
-dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://life-line3.vercel.app", 
+    origin: "https://life-line3.vercel.app", // ✅ No trailing slash
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
-app.set("io", io); 
+app.set("io", io);
 
 app.use(cors({ origin: "https://life-line3.vercel.app", credentials: true }));
 app.use(express.json());
@@ -41,10 +40,9 @@ mongoose
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/doctors", require("./routes/doctors"));
 app.use("/api/user", require("./routes/user"));
-app.use("/api/chat", require("./routes/chat")); // ✅ Chat routes
+app.use("/api/chat", require("./routes/chat"));
 app.use("/uploads", express.static("uploads"));
 app.use("/api/transactions", require("./routes/transactions"));
-
 
 const FLASK_API_URL = "https://lifeline3.onrender.com/api";
 
@@ -69,6 +67,7 @@ app.post("/api/predict", async (req, res) => {
   }
 });
 
+// ✅ WebSocket events
 io.on("connection", (socket) => {
   console.log("🟢 Socket connected:", socket.id);
 
