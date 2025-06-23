@@ -13,7 +13,7 @@ const DoctorDirectory = () => {
     const fetchDoctors = async () => {
       try {
         const token = await firebaseUser.getIdToken(true);
-        const res = await axios.get("http://lifeline3-1.onrender.com/api/doctors", {
+        const res = await axios.get("https://lifeline3-1.onrender.com/api/doctors", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setDoctors(res.data.doctors || []);

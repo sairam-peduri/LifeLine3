@@ -14,7 +14,7 @@ const TransactionHistory = () => {
         if (!firebaseUser) return;
 
         const token = await firebaseUser.getIdToken();
-        const res = await axios.get("http://lifeline3-1.onrender.com/api/transactions/history", {
+        const res = await axios.get("https://lifeline3-1.onrender.com/api/transactions/history", {
           headers: { Authorization: `Bearer ${token}` },
         });
 

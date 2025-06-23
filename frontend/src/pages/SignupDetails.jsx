@@ -42,7 +42,7 @@ export default function SignupDetails() {
       }
 
       await axios.post(
-        "http://lifeline3-1.onrender.com/api/auth/complete-profile",
+        "https://lifeline3-1.onrender.com/api/auth/complete-profile",
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );

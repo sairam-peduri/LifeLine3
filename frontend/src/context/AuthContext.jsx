@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const token = await firebaseUser.getIdToken();
       const res = await axios.put(
-        "http://lifeline3-1.onrender.com/api/auth/wallet",
+        "https://lifeline3-1.onrender.com/api/auth/wallet",
         { walletAddress: currentAddress },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
       const token = await result.user.getIdToken();
 
       const res = await axios.post(
-        "http://llifeline3-1.onrender.com/api/auth/login",
+        "https://llifeline3-1.onrender.com/api/auth/login",
         {
           email: result.user.email,
           name: result.user.displayName,
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }) => {
       if (firebaseUser) {
         try {
           const token = await firebaseUser.getIdToken(true);
-          const res = await axios.get("http://lifeline3-1.onrender.com/api/auth/me", {
+          const res = await axios.get("https://lifeline3-1.onrender.com/api/auth/me", {
             headers: { Authorization: `Bearer ${token}` },
           });
 
@@ -103,7 +103,7 @@ export const AuthProvider = ({ children }) => {
     if (!current) return;
     try {
       const token = await current.getIdToken(true);
-      const res = await axios.get("http://lifeline3-1.onrender.com/api/auth/me", {
+      const res = await axios.get("https://lifeline3-1.onrender.com/api/auth/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setFirebaseUser(current);
