@@ -157,9 +157,10 @@ def disease_details():
 
         prompt = (
         f"Explain the disease '{disease}' in simple terms. "
-        "Structure the response using clear headings (like 'Symptoms:', 'Causes:', etc.) followed by numbered or hyphen-style bullet points (without using asterisks). "
+        "Structure the response using clear headings (like 'Symptoms:', 'Causes:', etc.) followed by numbered or hyphen-style bullet points (without using asterisks at any where). "
         "Use only clean formatting like:\n"
         "Symptoms:\n- ...\n- ...\nCauses:\n- ...\n"
+        "Place every line on seperate line."
         "Do not use asterisks or markdown symbols like *, **, #, etc."
         )
 
