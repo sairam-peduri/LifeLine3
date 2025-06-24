@@ -8,16 +8,14 @@ import {
   Pie,
   PieChart,
   ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
+  Tooltip, XAxis, YAxis
 } from "recharts";
 import { getPredictionHistory } from "../api/api";
 import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
 import "./Profile.css";
 
-const COLORS = ["#3182ce", "#63b3ed", "#90cdf4", "#a0aec0", "#68d391", "#f6ad55", "#fc8181", "#ed64a6", "#d53f8c"];
+const COLORS = ["#00d2ff", "#3a7bd5", "#6a82fb", "#f093fb", "#f5576c", "#4facfe", "#43e97b", "#ff6a00", "#ffe000"];
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -26,22 +24,17 @@ const Profile = () => {
 
   useEffect(() => {
     if (!user || !token) return;
-
-    const fetchData = async () => {
+    (async () => {
       try {
         const res = await getPredictionHistory(user.name, token);
         setHistory(res.reverse());
       } catch (err) {
         console.error("Error fetching history:", err);
       }
-    };
-
-    fetchData();
+    })();
   }, [user, token]);
 
-  if (!user) {
-    return <div className="loading-screen">Loading profile...</div>;
-  }
+  if (!user) return <div className="loading-screen">Loading profile…</div>;
 
   const diseaseChart = Object.entries(
     history.reduce((acc, item) => {
@@ -59,11 +52,11 @@ const Profile = () => {
 
   return (
     <div className="profile-wrapper">
-      <Navbar user={user} />
+      <Navbar />
 
       <div className="profile-card user-card">
         <div className="profile-sidebar">
-          <img className="avatar" src="./assets/avatar.jpg" alt="User Avatar" />
+          <img className="avatar" src="/assets/avatar.jpg" alt="User Avatar" />
           <div className="profile-name">{user.name}</div>
           <div className="profile-role">{user.role || "Patient"}</div>
         </div>
@@ -95,11 +88,11 @@ const Profile = () => {
           <h2>📊 Most Predicted Diseases</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={diseaseChart}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
+              <CartesianGrid stroke="#444" />
+              <XAxis dataKey="name" stroke="#ccc" />
+              <YAxis stroke="#ccc" />
               <Tooltip />
-              <Bar dataKey="count" fill="#3182ce" />
+              <Bar dataKey="count" fill="#00d2ff" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -114,8 +107,7 @@ const Profile = () => {
                 data={symptomChart}
                 dataKey="value"
                 nameKey="name"
-                cx="50%"
-                cy="50%"
+                cx="50%" cy="50%"
                 outerRadius={100}
               >
                 {symptomChart.map((entry, idx) => (
@@ -128,12 +120,11 @@ const Profile = () => {
         </div>
       )}
 
-<div className="profile-button-container">
-  <button className="view-history-btn" onClick={() => navigate("/transactions")}>
-    💸 View Transaction History
-  </button>
-</div>
-
+      <div className="profile-button-container">
+        <button className="view-history-btn" onClick={() => navigate("/transactions")}>
+          💸 View Transaction History
+        </button>
+      </div>
     </div>
   );
 };

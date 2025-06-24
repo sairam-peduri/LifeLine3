@@ -1,0 +1,77 @@
+.contact-page {
+    background: #0f111b;
+    color: #e2e8f0;
+    font-family: "Poppins", sans-serif;
+    padding-top: 80px;
+  }
+  
+  .hero-contact {
+    text-align: center;
+    padding: 80px 20px 40px;
+    background: linear-gradient(to bottom right, #1e293b, #0f172a);
+  }
+  
+  .hero-contact h1 {
+    font-size: 2.5rem;
+    color: #00e0ff;
+    margin-bottom: 10px;
+  }
+  
+  .hero-contact p {
+    font-size: 1.1rem;
+    color: #cbd5e1;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .contact-section {
+    max-width: 800px;
+    margin: auto;
+    padding: 60px 20px;
+  }
+  
+  .contact-section h2 {
+    font-size: 1.6rem;
+    color: #00e0ff;
+    margin-bottom: 16px;
+  }
+  
+  .contact-section p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #cbd5e1;
+    margin-bottom: 20px;
+  }
+  
+  .contact-link {
+    color: #38bdf8;
+    text-decoration: underline;
+  }
+  
+  .social-links {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 10px;
+    margin-bottom: 30px;
+  }
+  
+  .social-links li {
+    margin: 10px 0;
+  }
+  
+  .social-links a {
+    color: #63b3ed;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  
+  .social-links a:hover {
+    color: #00e0ff;
+  }
+  
+  .response-note {
+    font-style: italic;
+    color: #a0aec0;
+    margin-top: 30px;
+  }
+  

@@ -2,12 +2,11 @@ import React from "react";
 import "./Footer.css";
 
 const Footer = () => (
-  <footer className="footer">
+  <footer className="footer-modern">
     <div className="footer-content">
-      <div>© 2025 Life Line. Built by <a href="https://www.linkedin.com/in/peduri-venkata-sairam/">P.Venkata Sairam</a>.</div>
-      <div>
-        <a href="mailto:sairampeduri@gmail.com">Email</a> <span>   </span>| 
-        <span>    </span>
+      <p>© 2025 LifeLine. Built by <a href="https://www.linkedin.com/in/peduri-venkata-sairam/">P.Venkata Sairam</a>.</p>
+      <div className="footer-links">
+        <a href="mailto:sairampeduri@gmail.com">Email</a>
         <a href="https://www.linkedin.com/in/peduri-venkata-sairam/">LinkedIn</a>
       </div>
     </div>

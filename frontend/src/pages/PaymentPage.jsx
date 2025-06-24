@@ -11,10 +11,11 @@ import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { BACKEND_URL } from "../config";
 import { useAuth } from "../context/AuthContext";
+import "./PaymentPage.css";
 
 const PaymentPage = () => {
   const { doctorId } = useParams();
-  const { user,firebaseUser } = useAuth();
+  const { user, firebaseUser } = useAuth();
   const wallet = useWallet();
   const [doctor, setDoctor] = useState(null);
   const [status, setStatus] = useState("");
@@ -42,16 +43,16 @@ const PaymentPage = () => {
 
   const sendPayment = async () => {
     try {
-      if (!wallet.publicKey) return alert("Connect wallet first!");
-      if (!doctor?.walletAddress) return alert("Doctor wallet not set.");
-  
-      setStatus("Preparing transaction...");
+      if (!wallet.publicKey) return alert("Please connect your wallet first.");
+      if (!doctor?.walletAddress) return alert("Doctor's wallet not available.");
+
+      setStatus("⏳ Preparing transaction...");
       const connection = new Connection("https://api.devnet.solana.com");
-  
+
       const toPubkey = new PublicKey(doctor.walletAddress);
       const fromPubkey = wallet.publicKey;
       const lamports = doctor.consultationFee * 1e9;
-  
+
       const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey,
@@ -59,16 +60,16 @@ const PaymentPage = () => {
           lamports,
         })
       );
-  
+
       const { blockhash } = await connection.getLatestBlockhash();
       transaction.recentBlockhash = blockhash;
       transaction.feePayer = fromPubkey;
-  
+
       const signed = await wallet.signTransaction(transaction);
       const txid = await connection.sendRawTransaction(signed.serialize());
-  
-      setStatus(`✅ Payment sent! TX ID: ${txid}`);
-  
+
+      setStatus(`✅ Payment successful! TX ID: ${txid}`);
+
       const token = await firebaseUser.getIdToken();
       await axios.post(
         `${BACKEND_URL}/api/transactions/send`,
@@ -76,33 +77,40 @@ const PaymentPage = () => {
           from: fromPubkey.toBase58(),
           to: doctor.walletAddress,
           amount: doctor.consultationFee,
-          txId:txid,
-          receiverId: doctor.uid, 
+          txId: txid,
+          receiverId: doctor.uid,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
     } catch (err) {
       console.error("Payment failed:", err);
-      setStatus("❌ Payment failed. Try again.");
+      setStatus("❌ Payment failed. Please try again.");
     }
   };
-  
-  if (!doctor) return <p>Loading doctor info...</p>;
+
+  if (!doctor) {
+    return (
+      <div className="payment-wrapper">
+        <Navbar user={user} />
+        <div className="payment-card">Loading doctor info...</div>
+      </div>
+    );
+  }
 
   return (
-    <div>
-        <Navbar user={user} />
-    <div style={{ padding: 20 }}>
-      <h2>Pay Dr. {doctor.name}</h2>
-      <p>
-        <strong>Consultation Fee:</strong> {doctor.consultationFee} SOL
-      </p>
-      <p>
-        <strong>Doctor's Wallet:</strong> {doctor.walletAddress}
-      </p>
-      <button onClick={sendPayment}>💳 Pay Now</button>
-      {status && <p style={{ marginTop: 10 }}>{status}</p>}
-    </div>
+    <div className="payment-wrapper">
+      <Navbar user={user} />
+      <div className="payment-card">
+        <h2>💳 Pay Dr. {doctor.name}</h2>
+        <p><strong>Consultation Fee:</strong> {doctor.consultationFee} SOL</p>
+        <p><strong>Doctor’s Wallet:</strong> {doctor.walletAddress}</p>
+
+        <button className="pay-now-btn" onClick={sendPayment}>
+          🔐 Send Payment
+        </button>
+
+        {status && <div className="payment-status">{status}</div>}
+      </div>
     </div>
   );
 };

@@ -1,0 +1,78 @@
+body {
+    background-color: #0e0f1a;
+    font-family: "Poppins", sans-serif;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .doctor-profile-wrapper {
+    padding: 40px 20px;
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  .loading-doctor {
+    text-align: center;
+    padding: 60px;
+    font-size: 1.2rem;
+    color: #999;
+  }
+  
+  .doctor-profile-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+  }
+  
+  .doctor-profile-card h2 {
+    color: #00d2ff;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+  
+  .doctor-profile-card p {
+    margin: 12px 0;
+    font-size: 1.05rem;
+    color: #ccc;
+  }
+  
+  .doctor-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+  }
+  
+  .chat-btn,
+  .pay-btn {
+    padding: 12px 22px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+  }
+  
+  .chat-btn {
+    background: linear-gradient(to right, #00d2ff, #3a7bd5);
+    color: white;
+  }
+  
+  .chat-btn:hover {
+    background: linear-gradient(to right, #3a7bd5, #00d2ff);
+  }
+  
+  .pay-btn {
+    background: linear-gradient(to right, #00c9a7, #92fe9d);
+    color: black;
+  }
+  
+  .pay-btn:hover {
+    background: linear-gradient(to right, #92fe9d, #00c9a7);
+  }
+  

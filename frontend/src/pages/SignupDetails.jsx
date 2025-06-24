@@ -60,7 +60,9 @@ export default function SignupDetails() {
   return (
     <div className="auth-container">
       <form className="auth-box" onSubmit={handleSubmit}>
-        <h2>Complete Your Profile</h2>
+        <h2>📝 Complete Your Profile</h2>
+        <p className="subtext">Tell us more about yourself to personalize your experience.</p>
+
         {error && <p className="error-text">{error}</p>}
 
         <label>Role</label>
@@ -110,7 +112,7 @@ export default function SignupDetails() {
               required
             />
 
-            <label>Consultation Fee (SOL)</label>
+            <label>Consultation Fee (in SOL)</label>
             <input
               type="number"
               value={consultationFee}

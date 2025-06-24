@@ -2,11 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaExclamationTriangle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
-import {
-  chatWithBot,
-  getSymptoms,
-  predictDisease
-} from "../api/api";
+import { chatWithBot, getSymptoms, predictDisease } from "../api/api";
 import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
 import "./Dashboard.css";
@@ -14,260 +10,152 @@ import "./Dashboard.css";
 const Dashboard = () => {
   const { user, firebaseUser } = useAuth();
   const navigate = useNavigate();
-
   const [symptomOptions, setSymptomOptions] = useState([]);
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [prediction, setPrediction] = useState("");
   const [details, setDetails] = useState(null);
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const [error, setError] = useState("");
   const [chatbotSuggested, setChatbotSuggested] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const [isChatLoading, setIsChatLoading] = useState(false);
-
-  const chatContainerRef = useRef(null);
-
-  const isProfileIncomplete = user && (!user.name || !user.gender || !user.dob);
+  const chatRef = useRef(null);
 
   useEffect(() => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    const fetchInitialData = async () => {
-      try {
-        const symptoms = await getSymptoms();
-        setSymptomOptions(symptoms);
-      } catch (err) {
-        console.error("Fetch error:", err);
-        setError("Failed to fetch initial data.");
-      }
-    };
-
-    fetchInitialData();
-  }, [user, firebaseUser, navigate]);
+    if (!user) return navigate("/login");
+    getSymptoms()
+      .then(setSymptomOptions)
+      .catch(() => setError("Could not load symptoms."));
+  }, [user, navigate]);
 
   useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-    }
-  }, [chatMessages, isChatLoading]);
-
-  const handleChange = (selectedOptions) => {
-    setSelectedSymptoms(selectedOptions || []);
-    setPrediction("");
-    setDetails(null);
-    setIsDetailsOpen(false);
-    setError("");
-    setChatbotSuggested(false);
-  };
+    chatRef.current?.scrollTo(0, chatRef.current.scrollHeight);
+  }, [chatMessages]);
 
   const handlePredict = async () => {
-    setPrediction("");
-    setDetails(null);
-    setError("");
-    setIsDetailsOpen(false);
-    setChatbotSuggested(false);
-
     if (selectedSymptoms.length === 0) {
-      setError("Please select at least one symptom.");
+      setError("Select at least one symptom.");
       return;
     }
-
-    const symptomList = selectedSymptoms.map((s) => s.value);
+    setError("");
+    setPrediction("");
+    setDetails(null);
+    setChatbotSuggested(false);
 
     try {
       const token = await firebaseUser.getIdToken();
-      const payload = {
-        symptoms: symptomList,
-        username: user?.uid || user?.email || "", 
-      };
-
-      const result = await predictDisease(payload, token);
-      console.log("✅ Prediction result:", result);
-
-      if (result.disease) {
-        setPrediction(result.disease);
-        fetchDetails(result.disease);
+      const { disease } = await predictDisease(
+        { symptoms: selectedSymptoms.map(s => s.value), username: user.uid },
+        token
+      );
+      if (disease) {
+        setPrediction(disease);
+        const res = await fetch("https://lifeline3.onrender.com/api/details", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ disease })
+        });
+        const info = await res.json();
+        setDetails(info.details || { Summary: info.summary } || {});
       } else {
-        setError("Prediction failed. Try using the chatbot for better help.");
+        setError("No prediction. Try chat.");
         setChatbotSuggested(true);
       }
-    } catch (err) {
-      console.error("❌ Prediction error:", err);
-      setError("Prediction error. Try again later.");
+    } catch {
+      setError("Prediction failed. Try again later.");
     }
   };
 
-  const fetchDetails = async (disease) => {
-    try {
-      const res = await fetch("https://lifeline3.onrender.com/api/details", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ disease }),
-      });
-
-      const data = await res.json();
-
-      if (data.details) {
-        setDetails(data.details);
-      } else if (data.summary) {
-        setDetails({ Summary: data.summary });
-      } else {
-        setDetails(null);
-      }
-    } catch (err) {
-      console.error("Failed to fetch disease details:", err);
-      setDetails(null);
-    }
-  };
-
-  const toggleDetails = () => setIsDetailsOpen(!isDetailsOpen);
-
-  const handleChatSubmit = async (e) => {
+  const handleChat = async e => {
     e.preventDefault();
     if (!chatInput.trim()) return;
-
-    const userMessage = { text: chatInput, sender: "user" };
-    setChatMessages((prev) => [...prev, userMessage]);
+    const msg = text => ({ text, sender: text === chatInput ? "user" : "bot" });
+    setChatMessages(prev => [...prev, msg(chatInput)]);
     setIsChatLoading(true);
 
     try {
       const token = await firebaseUser.getIdToken();
-      const response = await chatWithBot({ message: chatInput }, token);
+      const { response } = await chatWithBot({ message: chatInput }, token);
 
-      const replyText =
-        typeof response?.response === "string" && response.response.trim()
-          ? response.response
-          : "Sorry, I couldn’t understand that. Please rephrase.";
-
-      const botMessage = { text: replyText, sender: "bot" };
-      setChatMessages((prev) => [...prev, botMessage]);
-    } catch (error) {
-      console.error("Chat error:", error);
-      setChatMessages((prev) => [
-        ...prev,
-        { text: "Sorry, I couldn’t respond!", sender: "bot" },
-      ]);
+      setChatMessages(prev => [...prev, msg(response || "I didn't catch that.")]);
+    } catch {
+      setChatMessages(prev => [...prev, msg("Error. Please try again.")]);
     } finally {
       setIsChatLoading(false);
       setChatInput("");
     }
   };
 
-  if (!user) return <p>Loading...</p>;
+  if (!user) return <div className="loading-screen">Loading…</div>;
 
   return (
-    <div>
-      <Navbar user={user} />
-      <h2>Welcome to the Dashboard, {user.name || "User"}!</h2>
+    <div className="dashboard-page">
+      <Navbar />
 
-      {isProfileIncomplete && (
-        <div className="profile-warning-banner">
-          <div className="warning-content">
-            <FaExclamationTriangle />
-            <span>
-              <strong>Profile Incomplete:</strong> Please complete your profile for better recommendations.
-            </span>
-          </div>
-          <button onClick={() => navigate("/profile")} className="complete-now-btn">
-            Complete Now
-          </button>
-        </div>
-      )}
+      <div className="alert-bar">
+        <FaExclamationTriangle />
+        {(!user.name || !user.gender || !user.dob) ? (
+          <span>
+            Profile incomplete. <Link to="/profile">Complete now</Link>.
+          </span>
+        ) : null}
+      </div>
 
-      <div className="dashboard-container">
-        <h2>Health Prediction Dashboard</h2>
+      <div className="dash-container">
+        <h1>Health Prediction</h1>
         <Select
           options={symptomOptions}
           isMulti
-          onChange={handleChange}
-          placeholder="Type to search symptoms..."
+          placeholder="Select symptoms..."
+          onChange={opts => { setSelectedSymptoms(opts); setPrediction(""); setError(""); setChatbotSuggested(false); }}
           value={selectedSymptoms}
         />
-
-        <button onClick={handlePredict} className="predict-button">
-          Predict
-        </button>
-
-        <div className="details-section">
-          <small><strong><p style={{ color: "red" }}>Note:</p></strong></small>
-          <p>
-            <small>
-              If symptoms are not in the list, use the Chatbot. This is just a prediction. Please visit a doctor for emergencies.
-            </small>
-            <Link to="/doctors">
-                <button style={{ marginTop: "20px" }}>View Available Doctors</button>
-            </Link>
-          </p>
-        </div>
-
-        {error && <p className="error">{error}</p>}
+        <button className="btn-predict" onClick={handlePredict}>Predict</button>
+        {error && <div className="error-msg">{error}</div>}
+        {chatbotSuggested && <div className="hint">Try our chatbot!</div>}
 
         {prediction && (
-          <div className="prediction-container">
-            <div className="prediction-header" onClick={toggleDetails}>
-              <strong>Predicted Disease:</strong> {prediction}
-              <span className={`dropdown-arrow ${isDetailsOpen ? "open" : ""}`}>▼</span>
+          <div className="result-card">
+            <div className="result-header" onClick={() => setShowDetails(!showDetails)}>
+              <span>Prediction: {prediction}</span>
+              <span className={`arrow ${showDetails ? "open" : ""}`}>▼</span>
             </div>
-            {details && isDetailsOpen ? (
-              <div className="details-dropdown">
-                {Object.entries(details).map(([heading, content], index) => (
-                  <div key={index}>
-                    <h4>{heading}</h4>
-                    {Array.isArray(content) ? (
-                      <ul>{content.map((item, i) => <li key={i}>{item}</li>)}</ul>
-                    ) : (
-                      <p>{content}</p>
-                    )}
+            {showDetails && (
+              <div className="result-details">
+                {Object.entries(details).map(([k, v]) => (
+                  <div key={k}>
+                    <h4>{k}</h4>
+                    {Array.isArray(v) ? <ul>{v.map((i,i2)=><li key={i2}>{i}</li>)}</ul> : <p>{v}</p>}
                   </div>
                 ))}
-                <p><strong>Note:</strong> Please consult a doctor for accurate diagnosis.</p>
+                <p><strong>Note:</strong> See a doctor for a confirmed diagnosis.</p>
               </div>
-            ) : (
-              isDetailsOpen && <div className="details-dropdown"><p>Loading details...</p></div>
             )}
           </div>
         )}
 
-        {chatbotSuggested && (
-          <p className="chatbot-suggestion">
-            <strong>Suggestion:</strong> Please use the chatbot for further assistance.
-          </p>
-        )}
+        <Link to="/doctors" className="link-doctors">View Available Doctors →</Link>
 
-        <div className="chatbot-container">
-          <button className="chatbot-toggle" onClick={() => setChatOpen(!chatOpen)}>
-            {chatOpen ? "Close Chat" : "Chat with Us"}
+        <div className="chat-widget">
+          <button className="btn-chat-toggle" onClick={() => setChatOpen(!chatOpen)}>
+            {chatOpen ? 'Close Chat' : 'Chat with Us'}
           </button>
           {chatOpen && (
-            <div className="chatbot-window">
-              <div className="chat-messages" ref={chatContainerRef}>
-                {chatMessages.length === 0 && (
-                  <p>Hi! Ask me anything about your symptoms or health concerns.</p>
-                )}
-                {chatMessages.map((msg, index) => (
-                  <div key={index} className={`chat-message ${msg.sender}`}>
-                    <span>{msg.text}</span>
-                  </div>
+            <div className="chat-box">
+              <div ref={chatRef} className="chat-messages">
+                {chatMessages.length === 0 && <p>How can I assist?</p>}
+                {chatMessages.map((m,i) => (
+                  <div key={i} className={`msg ${m.sender}`}>{m.text}</div>
                 ))}
-                {isChatLoading && (
-                  <div className="chat-message bot">
-                    <span className="typing-animation">Typing...</span>
-                  </div>
-                )}
+                {isChatLoading && <div className="msg bot">Typing…</div>}
               </div>
-              <form onSubmit={handleChatSubmit} className="chat-input-form">
+              <form onSubmit={handleChat}>
                 <input
-                  type="text"
                   value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  placeholder="Type your message..."
+                  onChange={e=>setChatInput(e.target.value)}
+                  placeholder="Say something..."
                   disabled={isChatLoading}
                 />
                 <button type="submit" disabled={isChatLoading}>Send</button>

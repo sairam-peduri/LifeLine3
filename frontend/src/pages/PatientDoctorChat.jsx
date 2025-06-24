@@ -1,11 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"; // 🆕 Link added
+import { useNavigate, useParams } from "react-router-dom";
 import io from "socket.io-client";
 import ChatBubble from "../components/ChatBubble";
 import Navbar from "../components/Navbar";
 import { BACKEND_URL } from "../config";
 import { useAuth } from "../context/AuthContext";
+import "./PatientDoctorChat.css";
 
 const socket = io(BACKEND_URL);
 
@@ -15,6 +16,7 @@ const PatientDoctorChat = () => {
   const [roomId, setRoomId] = useState("");
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!firebaseUser || !doctorId) return;
@@ -46,29 +48,28 @@ const PatientDoctorChat = () => {
 
   const sendMessage = async () => {
     if (!text.trim()) return;
-
     const token = await firebaseUser.getIdToken();
     const res = await axios.post(`${BACKEND_URL}/api/chat/message`, { roomId, text }, {
       headers: { Authorization: `Bearer ${token}` },
     });
-
     socket.emit("send-message", { roomId, message: res.data.message });
     setMessages((prev) => [...prev, res.data.message]);
     setText("");
   };
 
   return (
-    <div>
+    <div className="chat-container">
       <Navbar user={user} />
-      <div style={{ padding: 20 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2>Live Chat</h2>
-          <button onClick={() => navigate(`/pay/${doctor.uid}`)}>
-          💰 Pay Consultation Fee
+
+      <div className="chat-body">
+        <div className="chat-header">
+          <h2>💬 Live Chat</h2>
+          <button className="pay-button" onClick={() => navigate(`/pay/${doctorId}`)}>
+            💰 Pay Consultation Fee
           </button>
         </div>
 
-        <div style={{ maxHeight: "400px", overflowY: "auto", border: "1px solid #ccc", padding: 10, marginTop: 10 }}>
+        <div className="chat-box">
           {messages.map((m, i) => (
             <ChatBubble
               key={i}
@@ -79,14 +80,14 @@ const PatientDoctorChat = () => {
           ))}
         </div>
 
-        <div style={{ marginTop: 10 }}>
+        <div className="chat-input-area">
           <input
+            className="chat-input"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            style={{ width: "80%", padding: 8 }}
-            placeholder="Type a message"
+            placeholder="Type your message here..."
           />
-          <button onClick={sendMessage} style={{ padding: "8px 16px" }}>Send</button>
+          <button className="send-button" onClick={sendMessage}>Send</button>
         </div>
       </div>
     </div>

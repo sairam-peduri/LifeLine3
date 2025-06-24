@@ -4,12 +4,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { BACKEND_URL } from "../config";
 import { useAuth } from "../context/AuthContext";
+import "./DoctorProfile.css";
 
 const DoctorProfile = () => {
-  const { uid } = useParams(); 
-  console.log("Doctor UID from URL:", uid); 
+  const { uid } = useParams();
   const navigate = useNavigate();
-  const { user,firebaseUser } = useAuth();
+  const { user, firebaseUser } = useAuth();
   const [doctor, setDoctor] = useState(null);
 
   useEffect(() => {
@@ -41,21 +41,23 @@ const DoctorProfile = () => {
     }
   };
 
-  if (!doctor) return <p>Loading doctor...</p>;
+  if (!doctor) return <div className="loading-doctor">Loading doctor profile...</div>;
 
   return (
-    <div>
-    <Navbar user={user} />
-    <div style={{ padding: 20 }}>
-      <h2>{doctor.name}</h2>
-      <p><strong>Specialization:</strong> {doctor.specialization}</p>
-      <p><strong>Workplace:</strong> {doctor.workplace}</p>
-      <p><strong>Consultation Fee:</strong> {doctor.consultationFee} SOL</p>
-      <button onClick={startChat}>💬 Chat</button>
-      <button onClick={() => navigate(`/pay/${doctor.uid}`)}>
-      💰 Pay Consultation Fee
-      </button>
-    </div>
+    <div className="doctor-profile-wrapper">
+      <Navbar user={user} />
+      <div className="doctor-profile-card">
+        <h2 className="doctor-name">{doctor.name}</h2>
+        <p><strong>Specialization:</strong> {doctor.specialization}</p>
+        <p><strong>Workplace:</strong> {doctor.workplace}</p>
+        <p><strong>Consultation Fee:</strong> {doctor.consultationFee} SOL</p>
+        <div className="doctor-buttons">
+          <button className="chat-btn" onClick={startChat}>💬 Chat</button>
+          <button className="pay-btn" onClick={() => navigate(`/pay/${doctor.uid}`)}>
+            💰 Pay Consultation Fee
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

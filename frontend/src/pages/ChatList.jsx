@@ -56,22 +56,26 @@ const ChatList = () => {
   };
 
   return (
-    <div>
+    <div className="chat-list-container">
       <Navbar user={user} />
       <div className="chat-list-wrapper">
         <h2 className="chat-list-title">💬 Your Conversations</h2>
-        {rooms.map((room) => {
-          const last = room.messages.at(-1);
-          const otherId = [room.patientId, room.doctorId].find(id => id !== firebaseUser.uid);
-          const otherName = userMap[otherId] || "Unknown";
+        {rooms.length === 0 ? (
+          <p className="no-chats">No conversations found.</p>
+        ) : (
+          rooms.map((room) => {
+            const last = room.messages.at(-1);
+            const otherId = [room.patientId, room.doctorId].find(id => id !== firebaseUser.uid);
+            const otherName = userMap[otherId] || "Unknown";
 
-          return (
-            <div key={room.roomId} className="chat-room-item" onClick={() => goToChat(room)}>
-              <div className="chat-name">{otherName}</div>
-              <div className="chat-preview">{last?.text || <i>No messages yet</i>}</div>
-            </div>
-          );
-        })}
+            return (
+              <div key={room.roomId} className="chat-room-item" onClick={() => goToChat(room)}>
+                <div className="chat-name">{otherName}</div>
+                <div className="chat-preview">{last?.text || <i>No messages yet</i>}</div>
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

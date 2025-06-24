@@ -1,25 +1,10 @@
-
 .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.8s ease-out;
-    will-change: opacity, transform;
-    padding-top:9%
-  }
-  .reveal.active {
-    opacity: 1;
-    transform: none;
-  }
-  
-  .about-paragraph {
-    padding: 0 10%;
-    line-height: 1.8;
-    font-size: 1.1rem;
-    color: #333;
-    text-align: justify;
-  }
-
-.contactsec{
-  padding-bottom: 16%;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s ease;
 }
-  
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}

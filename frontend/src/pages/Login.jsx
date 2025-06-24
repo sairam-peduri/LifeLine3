@@ -43,13 +43,16 @@ const Login = () => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-box">
-        <h2>Login</h2>
-        <button onClick={loginWithGoogle}>🔐 Sign in with Google</button>
-        {/* <div className="switch-link">
-          Don’t have an account? <a href="/signup">Signup</a>
-        </div> */}
+    <div className="login-page">
+      <div className="login-box">
+        <h1>🔐 Login to LifeLine</h1>
+        <p className="login-desc">
+          Securely access your health dashboard with your Google account.
+          We use Firebase Authentication to protect your medical data.
+        </p>
+        <button className="google-btn" onClick={loginWithGoogle}>
+          <span className="icon">🟦</span> Sign in with Google
+        </button>
       </div>
     </div>
   );

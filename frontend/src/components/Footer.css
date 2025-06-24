@@ -1,21 +1,24 @@
+.footer-modern {
+  background: #0a0f1b;
+  color: #bbb;
+  padding: 2rem 0;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  margin-top: auto;
+}
 
-.footer {
-    background-color: #111;
-    color: #eee;
-    text-align: center;
-    padding: 1rem 0;
-    width:100%;
-    font-size: 0.9rem;
-    margin-top: auto;
-  }
-  
-  .footer-links a {
-    color: #80d4ff;
-    margin: 0 10px;
-    text-decoration: none;
-  }
-  
-  .footer-links a:hover {
-    text-decoration: underline;
-  }
-   
+.footer-modern a {
+  color: #00ffff;
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+.footer-modern a:hover {
+  text-decoration: underline;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}

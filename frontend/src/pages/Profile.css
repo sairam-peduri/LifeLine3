@@ -1,22 +1,31 @@
+body {
+  background-color: #0c0f1d;
+  font-family: "Poppins", sans-serif;
+  color: #eee;
+  margin: 0;
+  padding: 0;
+}
+
 .profile-wrapper {
-  padding: 30px;
+  padding: 40px 20px;
   max-width: 1200px;
   margin: auto;
 }
 
 .profile-card {
-  background: #fff;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border-radius: 15px;
   padding: 25px;
-  margin-bottom: 25px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.08);
 }
 
 .user-card {
   display: flex;
   align-items: flex-start;
-  gap: 30px;
   flex-wrap: wrap;
+  gap: 30px;
 }
 
 .profile-sidebar {
@@ -25,20 +34,23 @@
 }
 
 .avatar {
-  width: 100px;
-  height: 100px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
+  border: 2px solid #00d2ff;
 }
 
 .profile-name {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: bold;
-  margin-top: 10px;
+  margin-top: 12px;
+  color: #00ffff;
 }
 
 .profile-role {
-  color: #777;
+  color: #aaa;
   font-size: 0.9rem;
+  margin-top: 5px;
 }
 
 .profile-info {
@@ -48,46 +60,59 @@
 .profile-info p {
   margin: 8px 0;
   font-size: 1rem;
+  color: #ddd;
+}
+
+h2 {
+  color: #00d2ff;
+  margin-bottom: 20px;
 }
 
 .recent-predictions {
   display: flex;
-  gap: 15px;
   flex-wrap: wrap;
+  gap: 15px;
 }
 
 .prediction-box {
   flex: 1;
   min-width: 250px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
   padding: 15px;
-  background: #f9fafb;
+  color: #eee;
+}
+
+.prediction-box p {
+  margin: 8px 0;
+  font-size: 0.95rem;
+}
+
+.view-history-btn {
+  padding: 12px 25px;
+  background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.view-history-btn:hover {
+  transform: scale(1.05);
 }
 
 .profile-button-container {
   text-align: center;
-  margin-top: 20px;
-}
-
-.view-history-btn {
-  padding: 10px 25px;
-  background-color: #3182ce;
-  color: white;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.view-history-btn:hover {
-  background-color: #2563eb;
+  margin-top: 30px;
 }
 
 .loading-screen {
   text-align: center;
-  padding: 80px;
+  padding: 100px;
   font-size: 1.2rem;
-  color: #666;
+  color: #00ffff;
 }
