@@ -12,6 +12,7 @@ export default function Navbar() {
   const { connection } = useConnection();
   const [balance, setBalance] = useState(null);
   const [loadingBal, setLoadingBal] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     async function fetchBalance() {
@@ -45,75 +46,35 @@ export default function Navbar() {
           <span onClick={() => navigate("/dashboard")}>Home</span>
           <span onClick={() => navigate("/about")}>About</span>
           <span onClick={() => navigate("/contact")}>Contact</span>
-          <span onClick={() => navigate("/transactions")}>Wallet</span>
         </div>
 
         <div className="navbar-right">
-          {user && (
-            <>
-              <span onClick={() => navigate("/profile")}>Profile</span>
-              <span onClick={() => navigate("/doctors")}>Doctors</span>
-              <span
-                onClick={() => navigate("/chat")}
-                style={{ opacity: wallet.connected ? 1 : 0.5 }}
-              >
-                Chat
-              </span>
-              <span onClick={() => navigate("/transactions")}>Transactions</span>
-            </>
-          )}
           <WalletMultiButton />
           {wallet.connected && (
             <span className="balance">
-              {loadingBal ? "..." : `${balance?.toFixed(3)} SOL`}
+              {loadingBal ? "Loading..." : `${balance?.toFixed(4)} SOL`}
             </span>
           )}
+
           {user ? (
-            <button className="logout-btn" onClick={logout}>
-              Logout
-            </button>
+            <div className="dropdown">
+              <span onClick={() => setDropdownOpen(!dropdownOpen)}>☰</span>
+              {dropdownOpen && (
+                <div className="dropdown-content">
+                  <span onClick={() => navigate("/profile")}>Profile</span>
+                  <span onClick={() => navigate("/doctors")}>Doctors Directory</span>
+                  <span onClick={() => navigate("/chat")}>Chat Inbox 💬</span>
+                  <span onClick={() => navigate("/transactions")}>Transactions</span>
+                  <button onClick={logout}>Logout</button>
+                </div>
+              )}
+            </div>
           ) : (
             <button className="login-btn" onClick={() => navigate("/login")}>
               Login
             </button>
           )}
-          <div
-            className="menu-icon"
-            onClick={() =>
-              document.getElementById("mobile-menu").classList.toggle("open")
-            }
-          >
-            ☰
-          </div>
         </div>
-      </div>
-
-      <div id="mobile-menu" className="mobile-menu">
-        <span onClick={() => navigate("/dashboard")}>Home</span>
-        <span onClick={() => navigate("/about")}>About</span>
-        <span onClick={() => navigate("/contact")}>Contact</span>
-        <span onClick={() => navigate("/transactions")}>Wallet</span>
-        {user && (
-          <>
-            <span onClick={() => navigate("/profile")}>Profile</span>
-            <span onClick={() => navigate("/doctors")}>Doctors</span>
-            <span
-              onClick={() => navigate("/chat")}
-              style={{ opacity: wallet.connected ? 1 : 0.5 }}
-            >
-              Chat Inbox
-            </span>
-            <span onClick={() => navigate("/transactions")}>Transactions</span>
-            <button className="logout-btn" onClick={logout}>
-              Logout
-            </button>
-          </>
-        )}
-        {!user && (
-          <button className="login-btn" onClick={() => navigate("/login")}>
-            Login
-          </button>
-        )}
       </div>
     </nav>
   );

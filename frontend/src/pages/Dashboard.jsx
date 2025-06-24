@@ -78,7 +78,6 @@ const Dashboard = () => {
     try {
       const token = await firebaseUser.getIdToken();
       const { response } = await chatWithBot({ message: chatInput }, token);
-
       setChatMessages(prev => [...prev, msg(response || "I didn't catch that.")]);
     } catch {
       setChatMessages(prev => [...prev, msg("Error. Please try again.")]);
@@ -89,6 +88,35 @@ const Dashboard = () => {
   };
 
   if (!user) return <div className="loading-screen">Loading…</div>;
+
+  const selectStyles = {
+    control: (base) => ({
+      ...base,
+      backgroundColor: "#1e1e3f",
+      borderColor: "#555",
+      color: "#eee",
+    }),
+    input: (base) => ({ ...base, color: "#eee" }),
+    singleValue: (base) => ({ ...base, color: "#eee" }),
+    menu: (base) => ({ ...base, backgroundColor: "#1e1e3f", color: "#eee" }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isFocused ? "#333" : "#1e1e3f",
+      color: "#eee",
+    }),
+    multiValue: (base) => ({
+      ...base,
+      backgroundColor: "#333",
+    }),
+    multiValueLabel: (base) => ({
+      ...base,
+      color: "#eee",
+    }),
+    placeholder: (base) => ({
+      ...base,
+      color: "#bbb",
+    }),
+  };
 
   return (
     <div className="dashboard-page">
@@ -109,8 +137,14 @@ const Dashboard = () => {
           options={symptomOptions}
           isMulti
           placeholder="Select symptoms..."
-          onChange={opts => { setSelectedSymptoms(opts); setPrediction(""); setError(""); setChatbotSuggested(false); }}
+          onChange={opts => {
+            setSelectedSymptoms(opts);
+            setPrediction("");
+            setError("");
+            setChatbotSuggested(false);
+          }}
           value={selectedSymptoms}
+          styles={selectStyles}
         />
         <button className="btn-predict" onClick={handlePredict}>Predict</button>
         {error && <div className="error-msg">{error}</div>}
@@ -127,7 +161,7 @@ const Dashboard = () => {
                 {Object.entries(details).map(([k, v]) => (
                   <div key={k}>
                     <h4>{k}</h4>
-                    {Array.isArray(v) ? <ul>{v.map((i,i2)=><li key={i2}>{i}</li>)}</ul> : <p>{v}</p>}
+                    {Array.isArray(v) ? <ul>{v.map((i, i2) => <li key={i2}>{i}</li>)}</ul> : <p>{v}</p>}
                   </div>
                 ))}
                 <p><strong>Note:</strong> See a doctor for a confirmed diagnosis.</p>
@@ -146,7 +180,7 @@ const Dashboard = () => {
             <div className="chat-box">
               <div ref={chatRef} className="chat-messages">
                 {chatMessages.length === 0 && <p>How can I assist?</p>}
-                {chatMessages.map((m,i) => (
+                {chatMessages.map((m, i) => (
                   <div key={i} className={`msg ${m.sender}`}>{m.text}</div>
                 ))}
                 {isChatLoading && <div className="msg bot">Typing…</div>}
@@ -154,7 +188,7 @@ const Dashboard = () => {
               <form onSubmit={handleChat}>
                 <input
                   value={chatInput}
-                  onChange={e=>setChatInput(e.target.value)}
+                  onChange={e => setChatInput(e.target.value)}
                   placeholder="Say something..."
                   disabled={isChatLoading}
                 />
