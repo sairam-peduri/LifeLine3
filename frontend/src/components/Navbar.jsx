@@ -37,46 +37,80 @@ export default function Navbar() {
   return (
     <nav className="navbar-custom">
       <div className="navbar-container">
-        <div className="logo" onClick={() => navigate("/dashboard")}>
-          <img src="/logo192.png" alt="LifeLine Logo" />
-          <span>LifeLine</span>
+        <div className="navbar-left" onClick={() => navigate("/dashboard")}>
+          <span className="logo-text">LifeLine</span>
         </div>
-        <div className="nav-links">
+
+        <div className="navbar-center">
           <span onClick={() => navigate("/dashboard")}>Home</span>
           <span onClick={() => navigate("/about")}>About</span>
           <span onClick={() => navigate("/contact")}>Contact</span>
           <span onClick={() => navigate("/transactions")}>Wallet</span>
         </div>
-        <div className="wallet-section">
+
+        <div className="navbar-right">
+          {user && (
+            <>
+              <span onClick={() => navigate("/profile")}>Profile</span>
+              <span onClick={() => navigate("/doctors")}>Doctors</span>
+              <span
+                onClick={() => navigate("/chat")}
+                style={{ opacity: wallet.connected ? 1 : 0.5 }}
+              >
+                Chat
+              </span>
+              <span onClick={() => navigate("/transactions")}>Transactions</span>
+            </>
+          )}
           <WalletMultiButton />
           {wallet.connected && (
             <span className="balance">
-              {loadingBal ? "Loading..." : `${balance?.toFixed(4)} SOL`}
+              {loadingBal ? "..." : `${balance?.toFixed(3)} SOL`}
             </span>
           )}
-          <div className="menu-icon" onClick={() => {
-            document.getElementById("mobile-menu").classList.toggle("open");
-          }}>
+          {user ? (
+            <button className="logout-btn" onClick={logout}>
+              Logout
+            </button>
+          ) : (
+            <button className="login-btn" onClick={() => navigate("/login")}>
+              Login
+            </button>
+          )}
+          <div
+            className="menu-icon"
+            onClick={() =>
+              document.getElementById("mobile-menu").classList.toggle("open")
+            }
+          >
             ☰
           </div>
         </div>
       </div>
 
       <div id="mobile-menu" className="mobile-menu">
-        {user ? (
+        <span onClick={() => navigate("/dashboard")}>Home</span>
+        <span onClick={() => navigate("/about")}>About</span>
+        <span onClick={() => navigate("/contact")}>Contact</span>
+        <span onClick={() => navigate("/transactions")}>Wallet</span>
+        {user && (
           <>
-            <span onClick={() => navigate("/profile")}>User Details</span>
-            <span onClick={() => navigate("/doctors")}>Search Doctors</span>
+            <span onClick={() => navigate("/profile")}>Profile</span>
+            <span onClick={() => navigate("/doctors")}>Doctors</span>
             <span
               onClick={() => navigate("/chat")}
               style={{ opacity: wallet.connected ? 1 : 0.5 }}
             >
-              Chat Inbox 💬
+              Chat Inbox
             </span>
-            <button className="logout-button" onClick={logout}>Logout</button>
+            <span onClick={() => navigate("/transactions")}>Transactions</span>
+            <button className="logout-btn" onClick={logout}>
+              Logout
+            </button>
           </>
-        ) : (
-          <button className="login-button" onClick={() => navigate("/login")}>
+        )}
+        {!user && (
+          <button className="login-btn" onClick={() => navigate("/login")}>
             Login
           </button>
         )}

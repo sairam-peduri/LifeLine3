@@ -1,103 +1,101 @@
 .navbar-custom {
-  background: #0b0f19;
-  color: #fff;
-  padding: 1rem 2rem;
-  position: fixed;
+  background: linear-gradient(135deg, #0f0f25, #1a1a3d);
+  padding: 10px 30px;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  position: sticky;
   top: 0;
-  width: 100%;
-  z-index: 999;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-  font-family: 'Poppins', sans-serif;
+  z-index: 1000;
 }
 
 .navbar-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 }
 
-.logo {
+.navbar-left {
   display: flex;
   align-items: center;
   cursor: pointer;
-  gap: 10px;
-  font-weight: 600;
-  font-size: 1.4rem;
 }
 
-.logo img {
-  height: 35px;
+.logo-img {
+  width: 32px;
+  margin-right: 10px;
 }
 
-.nav-links span {
-  margin: 0 15px;
+.logo-text {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.navbar-center span,
+.navbar-right span {
+  margin: 0 12px;
   cursor: pointer;
-  color: #aaa;
+  font-weight: 500;
   transition: color 0.3s ease;
 }
 
-.nav-links span:hover {
-  color: #00ffff;
+.navbar-center span:hover,
+.navbar-right span:hover {
+  color: #8c88ff;
 }
 
-.wallet-section {
+.wallet-section,
+.navbar-right {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .balance {
-  color: #80d4ff;
-  font-size: 0.95rem;
+  color: #80ffea;
+  font-weight: 500;
+}
+
+.logout-btn,
+.login-btn {
+  background: transparent;
+  border: 1px solid #8888ff;
+  color: #ffffff;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.logout-btn:hover,
+.login-btn:hover {
+  background: #8888ff22;
 }
 
 .menu-icon {
   display: none;
-  font-size: 1.8rem;
+  font-size: 22px;
   cursor: pointer;
 }
 
 .mobile-menu {
   display: none;
   flex-direction: column;
-  background: #121826;
-  padding: 1rem;
-  border-top: 1px solid #333;
+  background-color: #121230;
+  padding: 10px 20px;
 }
 
-.mobile-menu span {
-  margin: 10px 0;
-  cursor: pointer;
-  color: #ccc;
-}
-
-.mobile-menu button {
-  margin-top: 1rem;
-}
-
-.logout-button,
-.login-button {
-  background: #ff4d4d;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.logout-button:hover,
-.login-button:hover {
-  background: #ff1a1a;
+.mobile-menu.open {
+  display: flex;
 }
 
 @media (max-width: 768px) {
-  .nav-links {
+  .navbar-center,
+  .navbar-right {
     display: none;
   }
+
   .menu-icon {
     display: block;
-  }
-  .mobile-menu.open {
-    display: flex;
   }
 }
