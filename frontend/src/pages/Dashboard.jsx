@@ -38,6 +38,7 @@ const Dashboard = () => {
       setError("Select at least one symptom.");
       return;
     }
+
     setError("");
     setPrediction("");
     setDetails(null);
@@ -46,18 +47,19 @@ const Dashboard = () => {
     try {
       const token = await firebaseUser.getIdToken();
       const { disease } = await predictDisease(
-        { symptoms: selectedSymptoms.map(s => s.value), username: user.uid },
+        { symptoms: selectedSymptoms.map((s) => s.value), username: user.uid },
         token
       );
+
       if (disease) {
         setPrediction(disease);
         const res = await fetch("https://lifeline3.onrender.com/api/details", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ disease })
+          body: JSON.stringify({ disease }),
         });
         const info = await res.json();
-        setDetails(info.details || { Summary: info.summary } || {});
+        setDetails(info.details || (info.summary && { Summary: info.summary }) || {});
       } else {
         setError("No prediction. Try chat.");
         setChatbotSuggested(true);
@@ -67,19 +69,20 @@ const Dashboard = () => {
     }
   };
 
-  const handleChat = async e => {
+  const handleChat = async (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
-    const msg = text => ({ text, sender: text === chatInput ? "user" : "bot" });
-    setChatMessages(prev => [...prev, msg(chatInput)]);
+
+    const msg = (text, sender) => ({ text, sender });
+    setChatMessages((prev) => [...prev, msg(chatInput, "user")]);
     setIsChatLoading(true);
 
     try {
       const token = await firebaseUser.getIdToken();
       const { response } = await chatWithBot({ message: chatInput }, token);
-      setChatMessages(prev => [...prev, msg(response || "I didn't catch that.")]);
+      setChatMessages((prev) => [...prev, msg(response || "I didn't catch that.", "bot")]);
     } catch {
-      setChatMessages(prev => [...prev, msg("Error. Please try again.")]);
+      setChatMessages((prev) => [...prev, msg("Error. Please try again.", "bot")]);
     } finally {
       setIsChatLoading(false);
       setChatInput("");
@@ -127,7 +130,7 @@ const Dashboard = () => {
           options={symptomOptions}
           isMulti
           placeholder="Select symptoms..."
-          onChange={opts => {
+          onChange={(opts) => {
             setSelectedSymptoms(opts);
             setPrediction("");
             setError("");
@@ -136,60 +139,72 @@ const Dashboard = () => {
           value={selectedSymptoms}
           styles={selectStyles}
         />
-        <button className="btn-predict" onClick={handlePredict}>Predict</button>
+        <button className="btn-predict" onClick={handlePredict}>
+          Predict
+        </button>
         {error && <div className="error-msg">{error}</div>}
         {chatbotSuggested && <div className="hint">Try our chatbot!</div>}
 
         {prediction && (
           <div className="result-card">
-            <div className="result-header" onClick={() => setShowDetails(!showDetails)}>
+            <div
+              className="result-header"
+              onClick={() => setShowDetails(!showDetails)}
+            >
               <span>Prediction: {prediction}</span>
               <span className={`arrow ${showDetails ? "open" : ""}`}>▼</span>
             </div>
-            {showDetails && (
+            {showDetails && details && typeof details === "object" && (
               <div className="result-details">
                 {Object.entries(details).map(([k, v]) => (
                   <div key={k}>
                     <h4>{k}</h4>
-                    {Array.isArray(v) ? <ul>{v.map((i, i2) => <li key={i2}>{i}</li>)}</ul> : <p>{v}</p>}
+                    {Array.isArray(v) ? (
+                      <ul>
+                        {v.map((i, i2) => (
+                          <li key={i2}>{i}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>{v}</p>
+                    )}
                   </div>
                 ))}
-                <p><strong>Note:</strong> See a doctor for a confirmed diagnosis.</p>
+                <p>
+                  <strong>Note:</strong> See a doctor for a confirmed diagnosis.
+                </p>
+                <p>Prediction may be wrong, please contact doctor if required.</p>
               </div>
             )}
           </div>
         )}
 
-        <Link to="/doctors" className="link-doctors">View Available Doctors →</Link>
-        <p><strong>Note:</strong>Prediction may be wrong, please contact doctor if required.</p>
+        <Link to="/doctors" className="link-doctors">
+          View Available Doctors →
+        </Link>
       </div>
 
-      {/* Floating Chatbot */}
-      <div className="floating-chat-container">
-        <button className="chat-toggle-button" onClick={() => setChatOpen(!chatOpen)}>
+      {/* Floating Chatbot Widget */}
+      <div className="chat-widget">
+        <button className="btn-chat-toggle" onClick={() => setChatOpen(!chatOpen)}>
           💬
         </button>
-
         {chatOpen && (
           <div className="chat-box">
-            <div className="chat-header">
-              <span>HealthBot</span>
-              <button onClick={() => setChatOpen(false)}>✖</button>
-            </div>
             <div className="chat-messages" ref={chatRef}>
-              {chatMessages.map((msg, i) => (
-                <div key={i} className={`chat-message ${msg.sender}`}>
+              {chatMessages.map((msg, idx) => (
+                <div key={idx} className={`msg ${msg.sender}`}>
                   {msg.text}
                 </div>
               ))}
-              {isChatLoading && <div className="chat-message bot">Typing...</div>}
+              {isChatLoading && <div className="msg bot">Typing...</div>}
             </div>
-            <form className="chat-input-area" onSubmit={handleChat}>
+            <form onSubmit={handleChat}>
               <input
                 type="text"
-                placeholder="Ask your health question..."
+                placeholder="Ask something..."
                 value={chatInput}
-                onChange={e => setChatInput(e.target.value)}
+                onChange={(e) => setChatInput(e.target.value)}
               />
               <button type="submit">Send</button>
             </form>
