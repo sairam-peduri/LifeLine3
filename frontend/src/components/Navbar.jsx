@@ -65,6 +65,7 @@ export default function Navbar() {
                   <span onClick={() => navigate("/doctors")}>Doctors Directory</span>
                   <span onClick={() => navigate("/chat")}>Chat Inbox 💬</span>
                   <span onClick={() => navigate("/transactions")}>Transactions</span>
+                  <span onClick={() => navigate("/history")}>Prediction History 📋</span>
                   <button onClick={logout}>Logout</button>
                 </div>
               )}

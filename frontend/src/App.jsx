@@ -13,6 +13,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import PatientDoctorChat from "./pages/PatientDoctorChat";
 import PaymentPage from "./pages/PaymentPage";
+import PredictionHistory from "./pages/PredictionHistory";
 import Profile from "./pages/Profile";
 import SignupDetails from "./pages/SignupDetails";
 import TransactionHistory from "./pages/TransactionHistory";
@@ -41,6 +42,7 @@ function App() {
           <Route path="/pay/:doctorId" element={<ProtectedRoute><PaymentPage /></ProtectedRoute>} />
           <Route path="/chat/:doctorId" element={<ProtectedRoute><PatientDoctorChat /></ProtectedRoute>} />
           <Route path="/transactions" element={<ProtectedRoute><TransactionHistory /></ProtectedRoute>} />
+          <Route path="/history" element={<ProtectedRoute><PredictionHistory /></ProtectedRoute>} />
           <Route path="/about" element={<About/>}/>
           <Route path="/contact" element={<Contact/>}/>
         </Routes>

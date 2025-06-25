@@ -1,3 +1,4 @@
+// server.js
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -7,38 +8,48 @@ const admin = require("firebase-admin");
 const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
+const User = require("./models/user");
 
-dotenv.config(); // ✅ Load environment variables early
+dotenv.config();
 
-// ✅ Firebase Admin Initialization (only once)
+// ✅ Firebase Admin Initialization
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
-
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
 const app = express();
 const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "https://life-line-sol.vercel.app",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+app.set("io", io);
 
-
-
+// ✅ Middleware
 app.use(cors({ origin: "https://life-line-sol.vercel.app", credentials: true }));
 app.use(express.json());
 
+// ✅ MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
+// ✅ Routes
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/doctors", require("./routes/doctors"));
 app.use("/api/user", require("./routes/user"));
 app.use("/api/chat", require("./routes/chat"));
-app.use("/uploads", express.static("uploads"));
 app.use("/api/transactions", require("./routes/transactions"));
+app.use("/uploads", express.static("uploads"));
 
 const FLASK_API_URL = "https://lifeline3.onrender.com/api";
 
+// ✅ Get Symptoms from Flask
 app.get("/api/get_symptoms", async (req, res) => {
   try {
     const response = await axios.get(`${FLASK_API_URL}/get_symptoms`);
@@ -49,26 +60,71 @@ app.get("/api/get_symptoms", async (req, res) => {
   }
 });
 
+// ✅ Predict Disease + Save to History
 app.post("/api/predict", async (req, res) => {
   try {
-    const { symptoms } = req.body;
-    const response = await axios.post(`${FLASK_API_URL}/predict`, { symptoms });
-    res.json(response.data);
+    const { symptoms, username } = req.body;
+    const flaskRes = await axios.post(`${FLASK_API_URL}/predict`, { symptoms });
+    const predictedDisease = flaskRes.data.disease;
+
+    await User.findOneAndUpdate(
+      { uid: username },
+      {
+        $push: {
+          predictionHistory: {
+            symptoms,
+            predictedDisease,
+            predictedAt: new Date(),
+          },
+        },
+      }
+    );
+
+    res.json({ disease: predictedDisease });
   } catch (err) {
     console.error("❌ Prediction failed:", err.message);
     res.status(500).json({ message: "Prediction failed" });
   }
 });
 
-const io = new Server(server, {
-  cors: {
-    origin: "https://life-line-sol.vercel.app", // ✅ No trailing slash
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
+// ✅ Prediction History API (GET with pagination)
+app.get("/api/predictions", async (req, res) => {
+  const { uid, page = 1, limit = 10 } = req.query;
+  try {
+    const user = await User.findOne({ uid });
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const total = user.predictionHistory.length;
+    const start = (page - 1) * limit;
+    const history = user.predictionHistory
+      .slice()
+      .reverse()
+      .slice(start, start + parseInt(limit));
+
+    res.json({ history, total });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
 });
-app.set("io", io);
-// ✅ WebSocket events
+
+// ✅ Delete Prediction History Item
+app.delete("/api/predictions/:uid/:entryId", async (req, res) => {
+  const { uid, entryId } = req.params;
+  try {
+    const user = await User.findOneAndUpdate(
+      { uid },
+      { $pull: { predictionHistory: { _id: entryId } } },
+      { new: true }
+    );
+    res.json({ success: true, updatedHistory: user.predictionHistory });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not delete entry" });
+  }
+});
+
+// ✅ WebSocket Events
 io.on("connection", (socket) => {
   console.log("🟢 Socket connected:", socket.id);
 
@@ -86,6 +142,7 @@ io.on("connection", (socket) => {
   });
 });
 
+// ✅ Root Route
 app.get("/", (req, res) => res.send("✅ LifeLine Backend running..."));
 
 const PORT = process.env.PORT || 5000;

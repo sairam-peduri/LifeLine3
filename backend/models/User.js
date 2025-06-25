@@ -9,7 +9,17 @@ const userSchema = new mongoose.Schema({
   dob: String,
   walletAddress: { type: String, default: null },
   tier: { type: String, enum: ["free", "advanced", "prime"], default: "free" },
-  predictionHistory: { type: Array, default: [] },
+  predictionHistory: {
+    type: [
+      {
+        symptoms: [String],
+        predictedDisease: String,
+        predictedAt: { type: Date, default: Date.now },
+      }
+    ],
+    default: [],
+  },
+  
   healthRecords: [
     {
       filename: String,

@@ -1,0 +1,74 @@
+.history-page {
+    padding-top: 80px;
+    min-height: 100vh;
+    background: #0c0f1d;
+    color: #eee;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  .history-container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.08);
+  }
+  
+  .history-container h1 {
+    text-align: center;
+    color: #00ffff;
+    margin-bottom: 1.5rem;
+  }
+  
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .history-table th,
+  .history-table td {
+    padding: 12px;
+    border-bottom: 1px solid #333;
+    text-align: left;
+  }
+  
+  .history-table th {
+    background-color: #1e293b;
+    color: #00e0ff;
+  }
+  
+  .history-table tr:hover {
+    background-color: #1a1a2e;
+  }
+  
+  .pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .pagination button {
+    padding: 8px 16px;
+    background: #00e0ff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #000;
+    font-weight: 600;
+  }
+  
+  .pagination button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  
+  .error-msg {
+    color: #ff6b6b;
+    text-align: center;
+    margin-top: 20px;
+  }
+  
