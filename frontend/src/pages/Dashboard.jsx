@@ -172,7 +172,8 @@ const Dashboard = () => {
 
         <Link to="/doctors" className="link-doctors">View Available Doctors →</Link>
 
-        <div className="chat-widget">
+      </div>
+      <div className="chat-widget">
           <button className="btn-chat-toggle" onClick={() => setChatOpen(!chatOpen)}>
             {chatOpen ? 'Close Chat' : 'Chat with Us'}
           </button>
@@ -197,7 +198,6 @@ const Dashboard = () => {
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 };
