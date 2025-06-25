@@ -1,22 +1,25 @@
+/* Existing global styles remain unchanged */
 body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background: #0c0f1d;
-    color: #eee;
-    scroll-behavior: smooth;
-  }
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #0c0f1d;
+  color: #eee;
+  scroll-behavior: smooth;
+}
 
 .dashboard-page {
   padding-top: 80px; /* space for fixed navbar */
   min-height: 100vh;
 }
+
 nav.navbar-custom {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
 .alert-bar {
   display: flex;
   align-items: center;
@@ -27,16 +30,17 @@ nav.navbar-custom {
 }
 .alert-bar svg { margin-right: 8px; }
 .alert-bar a { color: #00ffff; text-decoration: underline; }
+
 .dash-container {
-    max-width: 1000px;
-    margin-top:30%;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(14px);
-    border-radius: 14px;
-    box-shadow: 0 0 40px rgba(0,255,255,0.05);
-  }
+  max-width: 1000px;
+  margin-top: 30%;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(14px);
+  border-radius: 14px;
+  box-shadow: 0 0 40px rgba(0,255,255,0.05);
+}
 
 h1 { text-align: center; margin-bottom: 1.5rem; color: #00ffff; }
 
@@ -92,78 +96,104 @@ h1 { text-align: center; margin-bottom: 1.5rem; color: #00ffff; }
 }
 .link-doctors:hover { text-decoration: underline; }
 
-.chat-widget {
+/* ✅ Updated Floating Chatbot Styles */
+.floating-chat-container {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  z-index:1000;
+  z-index: 1000;
 }
-.btn-chat-toggle {
-  background: #28a745;
-  padding: 10px 18px;
+
+.chat-toggle-button {
+  background-color: #28a745;
+  padding: 12px 14px;
   border: none;
-  border-radius: 8px;
+  border-radius: 50%;
+  font-size: 18px;
   color: white;
   cursor: pointer;
-  transition: 0.2s;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
 }
-.btn-chat-toggle:hover { background: #218838; }
+.chat-toggle-button:hover {
+  background-color: #218838;
+}
 
 .chat-box {
-    width: 320px;
-    height: 420px;
-    background: rgba(30,30,60,0.95);
-    backdrop-filter: blur(12px);
-    border-radius: 12px;
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-  }
+  width: 320px;
+  height: 420px;
+  background: rgba(30, 30, 60, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.chat-header {
+  background: #2c2c54;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
 
 .chat-messages {
   flex: 1;
   padding: 10px;
   overflow-y: auto;
+  background-color: #1a1a2e;
+  display: flex;
+  flex-direction: column;
 }
 
-.msg {
+.chat-message {
   margin-bottom: 10px;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 12px;
   max-width: 80%;
-}
-.msg.user {
-  align-self: flex-end;
-  background: #007bff;
-  color: white;
-}
-.msg.bot {
-  align-self: flex-start;
-  background: #333;
-  color: #eee;
+  line-height: 1.4;
 }
 
-.chat-box form {
+.chat-message.user {
+  background-color: #007bff;
+  color: white;
+  align-self: flex-end;
+}
+
+.chat-message.bot {
+  background-color: #333;
+  color: #eee;
+  align-self: flex-start;
+}
+
+.chat-input-area {
   display: flex;
   border-top: 1px solid #444;
+  background: #1e1e3f;
 }
-.chat-box input {
+
+.chat-input-area input {
   flex: 1;
-  padding: 8px;
+  padding: 10px;
   background: transparent;
-  border: none;
   color: #eee;
-}
-.chat-box button {
-  padding: 8px 16px;
-  background: #28a745;
   border: none;
+  outline: none;
+}
+
+.chat-input-area button {
+  padding: 10px 15px;
+  background: #28a745;
   color: white;
+  border: none;
   cursor: pointer;
 }
 
+/* Existing Loading Style */
 .loading-screen {
   display: flex;
   justify-content: center;
@@ -172,5 +202,3 @@ h1 { text-align: center; margin-bottom: 1.5rem; color: #00ffff; }
   color: #00ffff;
   font-size: 1.2rem;
 }
-
-  

@@ -138,6 +138,7 @@ const Dashboard = () => {
         />
         <button className="btn-predict" onClick={handlePredict}>Predict</button>
         {error && <div className="error-msg">{error}</div>}
+        {chatbotSuggested && <div className="hint">Try our chatbot!</div>}
 
         {prediction && (
           <div className="result-card">
@@ -161,9 +162,40 @@ const Dashboard = () => {
 
         <Link to="/doctors" className="link-doctors">View Available Doctors →</Link>
         <p><strong>Note:</strong>Prediction may be wrong, please contact doctor if required.</p>
-
       </div>
-      {chatbotSuggested && <div className="hint">Try our chatbot!</div>}
+
+      {/* Floating Chatbot */}
+      <div className="floating-chat-container">
+        <button className="chat-toggle-button" onClick={() => setChatOpen(!chatOpen)}>
+          💬
+        </button>
+
+        {chatOpen && (
+          <div className="chat-box">
+            <div className="chat-header">
+              <span>HealthBot</span>
+              <button onClick={() => setChatOpen(false)}>✖</button>
+            </div>
+            <div className="chat-messages" ref={chatRef}>
+              {chatMessages.map((msg, i) => (
+                <div key={i} className={`chat-message ${msg.sender}`}>
+                  {msg.text}
+                </div>
+              ))}
+              {isChatLoading && <div className="chat-message bot">Typing...</div>}
+            </div>
+            <form className="chat-input-area" onSubmit={handleChat}>
+              <input
+                type="text"
+                placeholder="Ask your health question..."
+                value={chatInput}
+                onChange={e => setChatInput(e.target.value)}
+              />
+              <button type="submit">Send</button>
+            </form>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
