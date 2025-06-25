@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FaExclamationTriangle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { chatWithBot, getSymptoms, predictDisease } from "../api/api";
@@ -122,15 +121,6 @@ const Dashboard = () => {
     <div className="dashboard-page">
       <Navbar />
 
-      <div className="alert-bar">
-        <FaExclamationTriangle />
-        {(!user.name || !user.gender || !user.dob) ? (
-          <span>
-            Profile incomplete. <Link to="/profile">Complete now</Link>.
-          </span>
-        ) : null}
-      </div>
-
       <div className="dash-container">
         <h1>Health Prediction</h1>
         <Select
@@ -148,7 +138,6 @@ const Dashboard = () => {
         />
         <button className="btn-predict" onClick={handlePredict}>Predict</button>
         {error && <div className="error-msg">{error}</div>}
-        {chatbotSuggested && <div className="hint">Try our chatbot!</div>}
 
         {prediction && (
           <div className="result-card">
@@ -171,33 +160,10 @@ const Dashboard = () => {
         )}
 
         <Link to="/doctors" className="link-doctors">View Available Doctors →</Link>
+        <p><strong>Note:</strong>Prediction may be wrong, please contact doctor if required.</p>
 
       </div>
-      <div className="chat-widget">
-          <button className="btn-chat-toggle" onClick={() => setChatOpen(!chatOpen)}>
-            {chatOpen ? 'Close Chat' : 'Chat with Us'}
-          </button>
-          {chatOpen && (
-            <div className="chat-box">
-              <div ref={chatRef} className="chat-messages">
-                {chatMessages.length === 0 && <p>How can I assist?</p>}
-                {chatMessages.map((m, i) => (
-                  <div key={i} className={`msg ${m.sender}`}>{m.text}</div>
-                ))}
-                {isChatLoading && <div className="msg bot">Typing…</div>}
-              </div>
-              <form onSubmit={handleChat}>
-                <input
-                  value={chatInput}
-                  onChange={e => setChatInput(e.target.value)}
-                  placeholder="Say something..."
-                  disabled={isChatLoading}
-                />
-                <button type="submit" disabled={isChatLoading}>Send</button>
-              </form>
-            </div>
-          )}
-        </div>
+      {chatbotSuggested && <div className="hint">Try our chatbot!</div>}
     </div>
   );
 };

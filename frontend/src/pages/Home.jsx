@@ -1,117 +1,91 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import "./home.css";
+import "./About.css";
+import "./Reveal.css";
 
-function Home() {
-  const navigate = useNavigate();
+const Home = () => {
+  useEffect(() => {
+    const revealOnScroll = () => {
+      document.querySelectorAll(".reveal").forEach(el => {
+        if (el.getBoundingClientRect().top < window.innerHeight - 100) {
+          el.classList.add("active");
+        }
+      });
+    };
+    window.addEventListener("scroll", revealOnScroll);
+    revealOnScroll();
+    return () => window.removeEventListener("scroll", revealOnScroll);
+  }, []);
 
   return (
-    <div className="homepage">
+    <div className="about-page">
       <Navbar />
-      <section className="hero">
-        <h1>AI-Powered Personal Health Dashboard</h1>
-        <p>Your smart companion for disease prediction and prevention</p>
-        <p>
-          Revolutionize your health with our AI-powered personal health dashboard.
-          Get real-time insights, predict diseases, and receive preventive tips for a healthier life.
+      <section className="hero-section reveal">
+        <h1 className="hero-title">💡 About LifeLine</h1>
+        <p className="hero-subtitle">
+          Empowering preventive healthcare with Web3, AI, and real-time doctor access.
         </p>
-        <button onClick={() => navigate("/login")}>Login / Signup</button>
       </section>
 
-      <section className="intro">
-        <h2>🩺 LifeLine: Decentralized Health Consultation Platform</h2>
+      <section className="about-section reveal">
+        <h2>🌐 What is LifeLine?</h2>
         <p>
-          LifeLine is a Web3-powered health consultation platform enabling patients to connect with verified doctors, get AI-driven disease predictions based on symptoms, and pay for services using Solana (SOL) through Phantom Wallet.
+          <strong>LifeLine</strong> is an intelligent Web3-powered telehealth platform built to democratize healthcare
+          access. It combines early disease prediction, direct doctor-patient chat, and seamless wallet payments—powered by Solana.
         </p>
-        <div className="buttons">
-          <a href="#demo">🎥 Demo</a>
-          <a href="https://life-line3.vercel.app" target="_blank">🌐 Live App</a>
-        </div>
       </section>
 
-      <section className="overview">
-        <h2>🧠 Overview</h2>
-        <p>
-          Healthcare is evolving rapidly, and so should its digital presence. LifeLine offers a secure, decentralized, and intelligent solution to common health tech challenges by combining:
-        </p>
-        <ul>
-          <li>🔐 Firebase-based authentication</li>
-          <li>🩻 ML-based disease prediction</li>
-          <li>💬 Real-time doctor-patient chat (Socket.IO)</li>
-          <li>💸 Crypto payments with Phantom Wallet</li>
-          <li>📦 Tiered access (Free, Advanced, Prime)</li>
-        </ul>
-      </section>
-
-      <section className="features">
-        <h2>✨ Platform Features</h2>
+      <section className="feature-section reveal">
+        <h2>🚀 Why LifeLine Stands Out</h2>
         <div className="feature-grid">
-          <div className="feature-block">
-            <h3>🧑‍⚕️ Patient Experience</h3>
-            <ul>
-              <li>Symptom-based disease prediction (ML)</li>
-              <li>Chat with doctors in real-time</li>
-              <li>View doctor profiles & consultation fees</li>
-              <li>Pay with SOL through Phantom Wallet</li>
-              <li>Store and access health reports securely</li>
-            </ul>
+          <div className="feature-box">
+            <h3>🔍 AI Disease Detection</h3>
+            <p>Get real-time predictions based on your symptoms using ML-powered models.</p>
           </div>
-          <div className="feature-block">
-            <h3>🩺 Doctor Experience</h3>
-            <ul>
-              <li>Register with specialization and bio</li>
-              <li>Set consultation fees and availability</li>
-              <li>Engage in patient chat rooms</li>
-              <li>Receive payments in crypto</li>
-            </ul>
+          <div className="feature-box">
+            <h3>👨‍⚕️ Doctor Directory</h3>
+            <p>Find verified doctors by specialization and start chatting instantly.</p>
+          </div>
+          <div className="feature-box">
+            <h3>💬 Private Chat</h3>
+            <p>Talk with doctors directly in a secure, real-time chat room.</p>
+          </div>
+          <div className="feature-box">
+            <h3>💳 Crypto Payments</h3>
+            <p>Pay consultation fees securely in SOL via your Phantom wallet.</p>
+          </div>
+          <div className="feature-box">
+            <h3>🧾 Prediction History</h3>
+            <p>Track past diagnoses and symptoms with interactive visual insights.</p>
+          </div>
+          <div className="feature-box">
+            <h3>🧊 Decentralized Storage</h3>
+            <p>Coming soon: Store your medical records on-chain with Winter SDK.</p>
           </div>
         </div>
       </section>
 
-      <section className="auth-wallet">
-        <h2>🔐 Authentication & Wallet Integration</h2>
-        <ul>
-          <li>Firebase Gmail OAuth with welcome emails</li>
-          <li>Solana wallet connection (Phantom)</li>
-          <li>Tier-based access with secured routes</li>
-        </ul>
+      <section className="reveal impact-section">
+        <h2>🎯 Our Mission</h2>
+        <p>
+          LifeLine exists to make healthcare **borderless, efficient, and decentralized**.
+          Whether you're a patient in need or a doctor wanting to help, our platform ensures
+          privacy, ease-of-access, and instant interaction—powered by next-gen tech.
+        </p>
       </section>
 
-      <section className="backend-arch">
-        <h2>⚙️ Backend & Data</h2>
-        <ul>
-          <li>MongoDB for storing users, chats, and prediction history</li>
-          <li>Disease prediction using Python-based ML model</li>
-          <li>Real-time messaging with Socket.IO</li>
-          <li>RESTful API endpoints for health operations</li>
-        </ul>
-      </section>
-
-      <section className="architecture">
-        <h2>🏗️ Architecture</h2>
-        <div className="arch-block">
-          <h4>Apps</h4>
-          <ul>
-            <li><strong>Frontend:</strong> React + Firebase Auth + Phantom Wallet Adapter (Vercel)</li>
-            <li><strong>Backend:</strong> Node.js + Express (Render)</li>
-            <li><strong>ML Server:</strong> Python Flask (Render)</li>
-          </ul>
-          <h4>Services</h4>
-          <ul>
-            <li>/api/auth: Firebase token validation</li>
-            <li>/api/predict: Predict disease from symptoms</li>
-            <li>/api/details: Fetch disease information</li>
-            <li>/api/chat: Live messaging backend</li>
-            <li>/api/payment: Solana payment integration</li>
-          </ul>
-        </div>
+      <section className="reveal about-cta">
+        <h2>🔗 Ready to Explore?</h2>
+        <p>Join LifeLine to experience the future of healthcare—today.</p>
+        <a href="/signup">
+          <button className="about-btn">Get Started 🚀</button>
+        </a>
       </section>
 
       <Footer />
     </div>
   );
-}
+};
 
 export default Home;
