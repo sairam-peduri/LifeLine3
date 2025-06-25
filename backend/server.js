@@ -22,7 +22,7 @@ const server = http.createServer(app);
 
 
 
-app.use(cors({ origin: "https://life-line3.vercel.app", credentials: true }));
+app.use(cors({ origin: "https://life-line.vercel.app", credentials: true }));
 app.use(express.json());
 
 mongoose
@@ -62,7 +62,7 @@ app.post("/api/predict", async (req, res) => {
 
 const io = new Server(server, {
   cors: {
-    origin: "https://life-line3.vercel.app", // ✅ No trailing slash
+    origin: "https://life-line.vercel.app", // ✅ No trailing slash
     methods: ["GET", "POST"],
     credentials: true,
   },
