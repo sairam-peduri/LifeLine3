@@ -8,7 +8,7 @@ const admin = require("firebase-admin");
 const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
-const User = require("./models/user");
+const User = require("./models/User");
 
 dotenv.config();
 
