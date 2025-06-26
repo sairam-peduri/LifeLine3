@@ -30,13 +30,7 @@ const PredictionHistory = () => {
       );
       const data = await res.json();
       if (res.ok) {
-        // Normalize the fields so frontend can use them uniformly
-        const normalized = (data.history || []).map((item) => ({
-          disease: item.disease || item.predictedDisease || "Unknown",
-          symptoms: item.symptoms || [],
-          timestamp: item.timestamp || item.predictedAt,
-        }));
-        setHistory(normalized);
+        setHistory(data.history || []);
       } else {
         throw new Error(data.error || "Unknown error");
       }
@@ -76,12 +70,10 @@ const PredictionHistory = () => {
                 .map((item, idx) => (
                   <tr key={idx}>
                     <td>{idx + 1}</td>
-                    <td>{item.disease}</td>
-                    <td>{item.symptoms.join(", ")}</td>
+                    <td>{item.predictedDisease || item.disease || "Unknown"}</td>
+                    <td>{item.symptoms?.join(", ") || "N/A"}</td>
                     <td>
-                      {item.timestamp
-                        ? new Date(item.timestamp).toLocaleString()
-                        : "N/A"}
+                      {new Date(item.predictedAt || item.timestamp || Date.now()).toLocaleString()}
                     </td>
                   </tr>
                 ))}
