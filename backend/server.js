@@ -62,17 +62,12 @@ app.get("/api/get_symptoms", async (req, res) => {
 
 app.post("/api/predict", async (req, res) => {
   try {
-    const { symptoms, uid } = req.body;
-    console.log("▶️ Predict Request Received:");
-    console.log("Symptoms:", symptoms);
-    console.log("UID:", uid);
-
+    const { symptoms, userId } = req.body; // updated to expect MongoDB _id
     const flaskRes = await axios.post(`${FLASK_API_URL}/predict`, { symptoms });
     const predictedDisease = flaskRes.data.disease;
-    console.log("✅ Flask Prediction:", predictedDisease);
 
-    const user = await User.findOneAndUpdate(
-      { uid },
+    await User.findByIdAndUpdate(
+      userId,
       {
         $push: {
           predictionHistory: {
@@ -81,23 +76,16 @@ app.post("/api/predict", async (req, res) => {
             predictedAt: new Date(),
           },
         },
-      },
-      { new: true } // return updated user
+      }
     );
 
-    if (!user) {
-      console.log("❌ User not found for UID:", uid);
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    console.log("✅ Prediction pushed to user:", user.email);
     res.json({ disease: predictedDisease });
-
   } catch (err) {
     console.error("❌ Prediction failed:", err.message);
     res.status(500).json({ message: "Prediction failed" });
   }
 });
+
 
 
 // ✅ Prediction History API (GET with pagination)

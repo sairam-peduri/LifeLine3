@@ -45,13 +45,10 @@ export const getSymptoms = async () => {
   }
 };
 
-export const predictDisease = async ({ symptoms, uid }, token) => {
+export const predictDisease = async ({ symptoms, userId }, token) => {
   try {
-    const payload = { symptoms, uid }; // ✅ use uid
-    const response = await PredictionAPI.post("/predict", payload, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await PredictionAPI.post("/predict", { symptoms, userId }, {
+      headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
   } catch (err) {
@@ -59,6 +56,7 @@ export const predictDisease = async ({ symptoms, uid }, token) => {
     throw err.response?.data?.error || "Prediction failed";
   }
 };
+
 
 export const getPredictionHistory = async (email, token) => {
   try {

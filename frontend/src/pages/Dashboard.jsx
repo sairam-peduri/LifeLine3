@@ -46,9 +46,9 @@ const Dashboard = () => {
     try {
       const token = await firebaseUser.getIdToken();
       const { disease } = await predictDisease(
-        { symptoms: selectedSymptoms.map((s) => s.value), uid: user.uid }, // ✅ not username
+        { symptoms: selectedSymptoms.map((s) => s.value), userId: user._id },
         token
-      ); 
+      );      
       console.log("Sending to prediction:", {
         symptoms: selectedSymptoms.map((s) => s.value),
         uid: user.uid,
