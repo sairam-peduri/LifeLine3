@@ -45,26 +45,23 @@ export const getSymptoms = async () => {
   }
 };
 
-export const predictDisease = async ({ symptoms, userId }, token) => {
+export const predictDisease = async (data, token) => {
   try {
-    const response = await PredictionAPI.post("/predict", { symptoms, userId }, {
+    const res = await axios.post(`${PREDICTION_BASE_URL}/predict`, data, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    return response.data;
+    return res.data;
   } catch (err) {
     console.error("❌ Error in predictDisease:", err);
     throw err.response?.data?.error || "Prediction failed";
   }
 };
 
-
 export const getPredictionHistory = async (email, token) => {
   try {
     const response = await PredictionAPI.get("/history", {
       params: { email },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     });
     return response.data.history;
   } catch (err) {

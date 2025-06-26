@@ -45,13 +45,16 @@ const Dashboard = () => {
     try {
       const token = await firebaseUser.getIdToken();
       const { disease } = await predictDisease(
-        { symptoms: selectedSymptoms.map((s) => s.value), userId: user._id },
+        {
+          symptoms: selectedSymptoms.map((s) => s.value),
+          userId: user._id,
+        },
         token
-      );           
+      );
       console.log("Sending to prediction:", {
         symptoms: selectedSymptoms.map((s) => s.value),
         userId: user._id,
-      });        
+      });
       if (disease) {
         setPrediction(disease);
         const res = await fetch("https://lifeline3.onrender.com/api/details", {
@@ -110,24 +113,14 @@ const Dashboard = () => {
       backgroundColor: state.isFocused ? "#333" : "#1e1e3f",
       color: "#eee",
     }),
-    multiValue: (base) => ({
-      ...base,
-      backgroundColor: "#333",
-    }),
-    multiValueLabel: (base) => ({
-      ...base,
-      color: "#eee",
-    }),
-    placeholder: (base) => ({
-      ...base,
-      color: "#bbb",
-    }),
+    multiValue: (base) => ({ ...base, backgroundColor: "#333" }),
+    multiValueLabel: (base) => ({ ...base, color: "#eee" }),
+    placeholder: (base) => ({ ...base, color: "#bbb" }),
   };
 
   return (
     <div className="dashboard-page">
       <Navbar />
-
       <div className="dash-container">
         <h1>Health Prediction</h1>
         <Select
@@ -148,7 +141,6 @@ const Dashboard = () => {
         </button>
         {error && <div className="error-msg">{error}</div>}
         {chatbotSuggested && <div className="hint">Try our chatbot!</div>}
-
         {prediction && (
           <div className="result-card">
             <div
@@ -160,33 +152,33 @@ const Dashboard = () => {
             </div>
             {showDetails && (
               <div className="result-details">
-                {details && Object.entries(details).map(([k, v]) => (
-                  <div key={k}>
-                    <h4>{k}</h4>
-                    {Array.isArray(v) ? (
-                      <ul>
-                        {v.map((item, index) => (
-                          <li key={index}>{item}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p>{v}</p>
-                    )}
-                  </div>
-                ))}
+                {details &&
+                  Object.entries(details).map(([k, v]) => (
+                    <div key={k}>
+                      <h4>{k}</h4>
+                      {Array.isArray(v) ? (
+                        <ul>
+                          {v.map((item, index) => (
+                            <li key={index}>{item}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p>{v}</p>
+                      )}
+                    </div>
+                  ))}
                 <p><strong>Note:</strong> See a doctor for a confirmed diagnosis.</p>
                 <p>Prediction may be wrong, please contact doctor if required.</p>
               </div>
             )}
           </div>
         )}
-
         <Link to="/doctors" className="link-doctors">
           View Available Doctors →
         </Link>
       </div>
 
-      {/* ✅ Floating Chatbot */}
+      {/* Chatbot */}
       <div className="floating-chat-container">
         <button
           className="chat-toggle-button"
@@ -194,7 +186,6 @@ const Dashboard = () => {
         >
           💬
         </button>
-
         {chatOpen && (
           <div className="chat-box">
             <div className="chat-header">
