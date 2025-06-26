@@ -46,9 +46,9 @@ const Dashboard = () => {
     try {
       const token = await firebaseUser.getIdToken();
       const { disease } = await predictDisease(
-        { symptoms: selectedSymptoms.map((s) => s.value), username: user.uid },
+        { symptoms: selectedSymptoms.map((s) => s.value), uid: user.uid }, // ✅ not username
         token
-      );
+      );      
       if (disease) {
         setPrediction(disease);
         const res = await fetch("https://lifeline3.onrender.com/api/details", {

@@ -63,12 +63,13 @@ app.get("/api/get_symptoms", async (req, res) => {
 // ✅ Predict Disease + Save to History
 app.post("/api/predict", async (req, res) => {
   try {
-    const { symptoms, username } = req.body;
+    const { symptoms, uid } = req.body; // ✅ use uid
+
     const flaskRes = await axios.post(`${FLASK_API_URL}/predict`, { symptoms });
     const predictedDisease = flaskRes.data.disease;
 
     await User.findOneAndUpdate(
-      { uid: username },
+      { uid },
       {
         $push: {
           predictionHistory: {

@@ -45,20 +45,20 @@ export const getSymptoms = async () => {
   }
 };
 
-export const predictDisease = async ({ symptoms, additional_symptoms = [], refinement_count = 0, email, uid }, token) => {
-    try {
-      const payload = { symptoms, additional_symptoms, refinement_count, email, uid };
-      const response = await PredictionAPI.post("/predict", payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
-    } catch (err) {
-      console.error("❌ Error in predictDisease:", err);
-      throw err.response?.data?.error || "Prediction failed";
-    }
-  };
+export const predictDisease = async ({ symptoms, uid }, token) => {
+  try {
+    const payload = { symptoms, uid }; // ✅ use uid
+    const response = await PredictionAPI.post("/predict", payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Error in predictDisease:", err);
+    throw err.response?.data?.error || "Prediction failed";
+  }
+};
 
 export const getPredictionHistory = async (email, token) => {
   try {
@@ -89,7 +89,6 @@ export const chatWithBot = async (data, token) => {
   }
 };
 
-
 export const initiateChat = async (patientId, doctorId, token) => {
   return axios.post("/chat/initiate", { patientId, doctorId }, {
     headers: { Authorization: `Bearer ${token}` },
@@ -114,8 +113,5 @@ export const sendMessage = async (data, token) => {
   });
 };
 
-// Default Axios instance pointing to AUTH base by default
 const API = axios.create({ baseURL: AUTH_BASE_URL });
-
 export default API;
-

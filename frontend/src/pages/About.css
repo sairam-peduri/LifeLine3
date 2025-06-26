@@ -8,6 +8,7 @@
   .hero-section {
     text-align: center;
     padding: 80px 20px 40px;
+    margin:20px;
     background: linear-gradient(to bottom right, #1e293b, #0f172a);
   }
   
