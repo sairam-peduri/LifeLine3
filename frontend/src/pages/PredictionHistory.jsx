@@ -21,7 +21,7 @@ const PredictionHistory = () => {
       setLoading(true);
       const token = await firebaseUser.getIdToken();
       const res = await fetch(
-        `https://lifeline3.onrender.com/api/history?email=${encodeURIComponent(user.email)}`,
+        `https://lifeline3-1.onrender.com/api/history?email=${encodeURIComponent(user.email)}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
