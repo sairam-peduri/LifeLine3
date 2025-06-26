@@ -48,7 +48,12 @@ const Dashboard = () => {
       const { disease } = await predictDisease(
         { symptoms: selectedSymptoms.map((s) => s.value), uid: user.uid }, // ✅ not username
         token
-      );      
+      ); 
+      console.log("Sending to prediction:", {
+        symptoms: selectedSymptoms.map((s) => s.value),
+        uid: user.uid,
+      });
+           
       if (disease) {
         setPrediction(disease);
         const res = await fetch("https://lifeline3.onrender.com/api/details", {
