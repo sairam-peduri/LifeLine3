@@ -60,10 +60,10 @@ export const predictDisease = async ({ symptoms, additional_symptoms = [], refin
     }
   };
 
-export const getPredictionHistory = async (username, token) => {
+export const getPredictionHistory = async (email, token) => {
   try {
     const response = await PredictionAPI.get("/history", {
-      params: { username },
+      params: { email },
       headers: {
         Authorization: `Bearer ${token}`,
       },
