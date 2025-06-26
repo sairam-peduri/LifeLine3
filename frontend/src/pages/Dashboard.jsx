@@ -42,18 +42,16 @@ const Dashboard = () => {
     setPrediction("");
     setDetails(null);
     setChatbotSuggested(false);
-
     try {
       const token = await firebaseUser.getIdToken();
       const { disease } = await predictDisease(
         { symptoms: selectedSymptoms.map((s) => s.value), userId: user._id },
         token
-      );      
+      );           
       console.log("Sending to prediction:", {
         symptoms: selectedSymptoms.map((s) => s.value),
-        uid: user.uid,
-      });
-           
+        userId: user._id,
+      });        
       if (disease) {
         setPrediction(disease);
         const res = await fetch("https://lifeline3.onrender.com/api/details", {

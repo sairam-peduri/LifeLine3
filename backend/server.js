@@ -62,7 +62,8 @@ app.get("/api/get_symptoms", async (req, res) => {
 
 app.post("/api/predict", async (req, res) => {
   try {
-    const { symptoms, userId } = req.body; // updated to expect MongoDB _id
+    const { symptoms, userId } = req.body;
+
     const flaskRes = await axios.post(`${FLASK_API_URL}/predict`, { symptoms });
     const predictedDisease = flaskRes.data.disease;
 
