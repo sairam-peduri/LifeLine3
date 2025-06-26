@@ -60,15 +60,25 @@ app.get("/api/get_symptoms", async (req, res) => {
   }
 });
 
-app.post("/api/predict", async (req, res) => {
-  try {
-    const { symptoms, userId } = req.body;
+const { verifyToken } = require("./middleware/verifyToken");
 
-    const flaskRes = await axios.post(`${FLASK_API_URL}/predict`, { symptoms });
+app.post("/api/predict", verifyToken, async (req, res) => {
+  try {
+    const { symptoms } = req.body;
+    const uid = req.user.uid;
+
+    console.log("📥 Predict request by UID:", uid);
+    console.log("💊 Symptoms:", symptoms);
+
+    const flaskRes = await axios.post(`${FLASK_API_URL}/predict`, {
+      symptoms,
+      uid, // ✅ Send UID for fallback logging in Flask
+    });
+
     const predictedDisease = flaskRes.data.disease;
 
-    await User.findByIdAndUpdate(
-      userId,
+    const updatedUser = await User.findOneAndUpdate(
+      { uid },
       {
         $push: {
           predictionHistory: {
@@ -77,17 +87,22 @@ app.post("/api/predict", async (req, res) => {
             predictedAt: new Date(),
           },
         },
-      }
+      },
+      { new: true }
     );
 
-    res.json({ disease: predictedDisease });
+    if (!updatedUser) {
+      console.error("❌ No user found to update for uid:", uid);
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    console.log("✅ Prediction stored for:", updatedUser.email);
+    return res.json({ disease: predictedDisease });
   } catch (err) {
     console.error("❌ Prediction failed:", err.message);
-    res.status(500).json({ message: "Prediction failed" });
+    return res.status(500).json({ message: "Prediction failed" });
   }
 });
-
-
 
 // ✅ Prediction History API (GET with pagination)
 app.get("/api/predictions", async (req, res) => {

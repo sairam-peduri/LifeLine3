@@ -47,15 +47,20 @@ export const getSymptoms = async () => {
 
 export const predictDisease = async (data, token) => {
   try {
-    const res = await axios.post(`${PREDICTION_BASE_URL}/predict`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await axios.post(
+      "https://lifeline3-1.onrender.com/api/predict", // ✅ Updated to Node backend URL
+      data,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
     return res.data;
   } catch (err) {
     console.error("❌ Error in predictDisease:", err);
     throw err.response?.data?.error || "Prediction failed";
   }
 };
+
 
 export const getPredictionHistory = async (email, token) => {
   try {

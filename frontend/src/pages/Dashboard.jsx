@@ -33,45 +33,40 @@ const Dashboard = () => {
     chatRef.current?.scrollTo(0, chatRef.current.scrollHeight);
   }, [chatMessages]);
 
-  const handlePredict = async () => {
-    if (selectedSymptoms.length === 0) {
-      setError("Select at least one symptom.");
-      return;
-    }
-    setError("");
-    setPrediction("");
-    setDetails(null);
-    setChatbotSuggested(false);
-    try {
-      const token = await firebaseUser.getIdToken();
-      const { disease } = await predictDisease(
-        {
-          symptoms: selectedSymptoms.map((s) => s.value),
-          userId: user._id,
-        },
-        token
-      );
-      console.log("Sending to prediction:", {
-        symptoms: selectedSymptoms.map((s) => s.value),
-        userId: user._id,
+const handlePredict = async () => {
+  if (selectedSymptoms.length === 0) {
+    setError("Select at least one symptom.");
+    return;
+  }
+  setError("");
+  setPrediction("");
+  setDetails(null);
+  setChatbotSuggested(false);
+  try {
+    const token = await firebaseUser.getIdToken();
+    const { disease } = await predictDisease(
+      { symptoms: selectedSymptoms.map((s) => s.value) }, // ✅ Removed userId
+      token
+    );
+    console.log("✅ Prediction request sent:", selectedSymptoms.map((s) => s.value));
+
+    if (disease) {
+      setPrediction(disease);
+      const res = await fetch("https://lifeline3.onrender.com/api/details", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ disease }),
       });
-      if (disease) {
-        setPrediction(disease);
-        const res = await fetch("https://lifeline3.onrender.com/api/details", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ disease }),
-        });
-        const info = await res.json();
-        setDetails(info?.details || (info?.summary ? { Summary: info.summary } : {}));
-      } else {
-        setError("No prediction. Try chat.");
-        setChatbotSuggested(true);
-      }
-    } catch {
-      setError("Prediction failed. Try again later.");
+      const info = await res.json();
+      setDetails(info?.details || (info?.summary ? { Summary: info.summary } : {}));
+    } else {
+      setError("No prediction. Try chat.");
+      setChatbotSuggested(true);
     }
-  };
+  } catch {
+    setError("Prediction failed. Try again later.");
+  }
+};
 
   const handleChat = async (e) => {
     e.preventDefault();
