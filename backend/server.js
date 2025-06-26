@@ -60,7 +60,7 @@ app.get("/api/get_symptoms", async (req, res) => {
   }
 });
 
-const { verifyToken } = require("./middleware/verifyToken");
+const { verifyToken } = require("./middlewares/verifyToken");
 
 app.post("/api/predict", verifyToken, async (req, res) => {
   try {
