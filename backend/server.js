@@ -46,6 +46,7 @@ app.use("/api/user", require("./routes/user"));
 app.use("/api/chat", require("./routes/chat"));
 app.use("/api/transactions", require("./routes/transactions"));
 app.use("/uploads", express.static("uploads"));
+app.use("/api", require("./routes/prediction"));
 
 const FLASK_API_URL = "https://lifeline3.onrender.com/api";
 

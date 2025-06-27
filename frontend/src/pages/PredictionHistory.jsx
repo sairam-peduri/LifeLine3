@@ -20,20 +20,23 @@ const PredictionHistory = () => {
     try {
       setLoading(true);
       const token = await firebaseUser.getIdToken();
+
+      // ✅ Corrected backend URL and fetch by user._id (Mongo ID)
       const res = await fetch(
-        `https://lifeline3-1.onrender.com/api/history?email=${encodeURIComponent(user.email)}`,
+        `https://lifeline3-1.onrender.com/api/history/${user._id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      const data = await res.json();
-      if (res.ok) {
-        setHistory(data.history || []);
-      } else {
-        throw new Error(data.error || "Unknown error");
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
+
+      const data = await res.json();
+      setHistory(data.history || []);
     } catch (err) {
       console.error("Error loading history:", err);
       setError("Failed to load prediction history.");
