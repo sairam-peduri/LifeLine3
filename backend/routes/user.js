@@ -3,6 +3,18 @@ const router = express.Router();
 const User = require("../models/User");
 const { verifyToken } = require("../middlewares/auth");
 
+router.get("/", verifyToken, async (req, res) => {
+  const role = req.query.role;
+  try {
+    const users = role
+      ? await User.find({ role })
+      : await User.find();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
+});
+
 // Get user details by UID (for chat display)
 router.get("/:uid", verifyToken, async (req, res) => {
   try {

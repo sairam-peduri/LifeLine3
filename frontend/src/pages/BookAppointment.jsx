@@ -18,7 +18,7 @@ const BookAppointment = () => {
 
   useEffect(() => {
     const fetchDoctors = async () => {
-      const res = await axios.get("https://lifeline3-1.onrender.com/api/users?role=doctor");
+      const res = await axios.get("https://lifeline3-1.onrender.com/api/user?role=doctor");
       const allDoctors = res.data;
       setDoctors(allDoctors);
 
