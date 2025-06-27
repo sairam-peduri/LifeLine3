@@ -18,20 +18,34 @@ const BookAppointment = () => {
 
   useEffect(() => {
     const fetchDoctors = async () => {
-      const res = await axios.get("https://lifeline3-1.onrender.com/api/user?role=doctor");
-      const allDoctors = res.data;
-      setDoctors(allDoctors);
-
-      // Preselect doctor from URL if present
-      if (doctorIdFromUrl) {
-        const doc = allDoctors.find(d => d._id === doctorIdFromUrl);
-        if (doc) {
-          setSelectedDoctor(doc);
+      try {
+        const token = await firebaseUser.getIdToken(); // ✅ get Firebase token
+  
+        const res = await axios.get(
+          "https://lifeline3-1.onrender.com/api/user?role=doctor",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const allDoctors = res.data;
+        setDoctors(allDoctors);
+  
+        // Preselect doctor from URL
+        if (doctorIdFromUrl) {
+          const doc = allDoctors.find(d => d._id === doctorIdFromUrl);
+          if (doc) {
+            setSelectedDoctor(doc);
+          }
         }
+      } catch (err) {
+        console.error("Error loading doctors:", err);
       }
     };
+  
     fetchDoctors();
-  }, []);
+  }, [firebaseUser]);  
 
   const fetchSlots = (doctor, date) => {
     const available = doctor.availability?.find((a) => a.date === date);
