@@ -15,4 +15,21 @@ router.get("/:uid", verifyToken, async (req, res) => {
   }
 });
 
+// Update user profile by UID
+router.put("/update/:uid", verifyToken, async (req, res) => {
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { uid: req.params.uid },
+      { $set: req.body },
+      { new: true }
+    );
+    res.json(updatedUser);
+  } catch (error) {
+    console.error("Update error:", error);
+    res.status(500).json({ error: "Profile update failed" });
+  }
+});
+
+
 module.exports = router;
+

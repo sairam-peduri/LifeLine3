@@ -66,7 +66,20 @@ const Profile = () => {
           <p><strong>Gender:</strong> {user.gender}</p>
           <p><strong>DOB:</strong> {user.dob}</p>
         </div>
+        <div className="profile-button-container">
+        <button className="edit-profile-btn" onClick={() => navigate("/edit-profile")}>
+        Edit
+        </button>
+        </div>
       </div>
+      {user.role === "doctor" && (
+  <>
+    <p><strong>Specialization:</strong> {user.specialization}</p>
+    <p><strong>Workplace:</strong> {user.workplace}</p>
+    <p><strong>About:</strong> {user.about}</p>
+    <p><strong>Consultation Fee:</strong> ₹{user.consultationFee}</p>
+  </>
+)}
 
       {history.length > 0 && (
         <div className="profile-card">

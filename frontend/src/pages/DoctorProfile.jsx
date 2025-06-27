@@ -56,6 +56,14 @@ const DoctorProfile = () => {
           <button className="pay-btn" onClick={() => navigate(`/pay/${doctor.uid}`)}>
             💰 Pay Consultation Fee
           </button>
+          {user?.role === "patient" && (
+            <button
+            className="appoint-btn"
+            onClick={() => navigate(`/book-appointment?doctorId=${doctor._id}`)}
+          >
+             Book Appointment
+          </button>          
+          )}
         </div>
       </div>
     </div>

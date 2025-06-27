@@ -10,6 +10,8 @@ const { Server } = require("socket.io");
 const path = require("path");
 const User = require("./models/User");
 
+
+
 dotenv.config();
 
 // ✅ Firebase Admin Initialization
@@ -47,6 +49,7 @@ app.use("/api/chat", require("./routes/chat"));
 app.use("/api/transactions", require("./routes/transactions"));
 app.use("/uploads", express.static("uploads"));
 app.use("/api", require("./routes/prediction"));
+require("./reminderCron");
 
 const FLASK_API_URL = "https://lifeline3.onrender.com/api";
 

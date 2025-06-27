@@ -19,7 +19,13 @@ const userSchema = new mongoose.Schema({
     ],
     default: [],
   },
-  
+  availability: [
+    {
+      date: String, // format: YYYY-MM-DD
+      slots: [String] // format: "10:00", "15:30", etc.
+    }
+  ]  
+  ,
   healthRecords: [
     {
       filename: String,

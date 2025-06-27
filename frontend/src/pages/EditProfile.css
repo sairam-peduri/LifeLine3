@@ -1,0 +1,29 @@
+.edit-profile-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: #111;
+    padding: 2rem;
+    border-radius: 10px;
+    color: #fff;
+  }
+  .edit-form input,
+  .edit-form select,
+  .edit-form textarea {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #222;
+    color: #fff;
+  }
+  .edit-form button {
+    padding: 10px 20px;
+    background: #00d2ff;
+    border: none;
+    border-radius: 5px;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
