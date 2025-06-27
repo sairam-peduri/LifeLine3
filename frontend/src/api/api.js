@@ -30,6 +30,19 @@ export const signup = async (userData) => {
   }
 };
 
+// api.js
+export const updateUserProfile = async (uid, data, token) => {
+  return axios.put(
+    `https://lifeline3-1.onrender.com/api/user/update/${uid}`,
+    data,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    }
+  );
+};
+
 /* ---------------- DISEASE PREDICTION APIs ---------------- */
 
 export const getSymptoms = async () => {

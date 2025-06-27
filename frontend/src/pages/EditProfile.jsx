@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const EditProfile = () => {
-  const { user, token } = useAuth();
+  const { user, firebaseUser } = useAuth(); // ✅ Get firebaseUser for token
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -38,16 +38,24 @@ const EditProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
+      const token = await firebaseUser.getIdToken(); // ✅ Get token inside handler
+
       await axios.put(
         `https://lifeline3-1.onrender.com/api/user/update/${user.uid}`,
         formData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+
       alert("Profile updated successfully");
       navigate("/profile");
     } catch (err) {
-      console.error(err);
+      console.error("Update failed:", err);
       alert("Failed to update profile");
     }
   };
@@ -56,19 +64,55 @@ const EditProfile = () => {
     <div className="edit-profile-container">
       <h2>Edit Profile</h2>
       <form onSubmit={handleSubmit} className="edit-form">
-        <input name="name" value={formData.name} onChange={handleChange} placeholder="Name" />
-        <input type="date" name="dob" value={formData.dob} onChange={handleChange} />
-        <select name="gender" value={formData.gender} onChange={handleChange}>
+        <input
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="Name"
+        />
+        <input
+          type="date"
+          name="dob"
+          value={formData.dob}
+          onChange={handleChange}
+        />
+        <select
+          name="gender"
+          value={formData.gender}
+          onChange={handleChange}
+        >
           <option value="">Gender</option>
           <option value="male">Male</option>
           <option value="female">Female</option>
         </select>
+
         {user.role === "doctor" && (
           <>
-            <input name="specialization" value={formData.specialization} onChange={handleChange} placeholder="Specialization" />
-            <input name="workplace" value={formData.workplace} onChange={handleChange} placeholder="Workplace" />
-            <textarea name="about" value={formData.about} onChange={handleChange} placeholder="About you..." />
-            <input type="number" name="consultationFee" value={formData.consultationFee} onChange={handleChange} placeholder="Consultation Fee" />
+            <input
+              name="specialization"
+              value={formData.specialization}
+              onChange={handleChange}
+              placeholder="Specialization"
+            />
+            <input
+              name="workplace"
+              value={formData.workplace}
+              onChange={handleChange}
+              placeholder="Workplace"
+            />
+            <textarea
+              name="about"
+              value={formData.about}
+              onChange={handleChange}
+              placeholder="About you..."
+            />
+            <input
+              type="number"
+              name="consultationFee"
+              value={formData.consultationFee}
+              onChange={handleChange}
+              placeholder="Consultation Fee"
+            />
           </>
         )}
         <button type="submit">Save Changes</button>

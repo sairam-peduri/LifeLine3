@@ -17,18 +17,20 @@ router.get("/:uid", verifyToken, async (req, res) => {
 
 // Update user profile by UID
 router.put("/update/:uid", verifyToken, async (req, res) => {
+  const { uid } = req.params;
   try {
-    const updatedUser = await User.findOneAndUpdate(
-      { uid: req.params.uid },
+    const updated = await User.findOneAndUpdate(
+      { uid },
       { $set: req.body },
       { new: true }
     );
-    res.json(updatedUser);
-  } catch (error) {
-    console.error("Update error:", error);
-    res.status(500).json({ error: "Profile update failed" });
+    if (!updated) return res.status(404).json({ error: "User not found" });
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: "Update failed" });
   }
 });
+
 
 
 module.exports = router;
