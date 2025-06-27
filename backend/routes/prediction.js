@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { verifyToken } = require("../middleware/auth");
+const { verifyToken } = require("../middlewares/auth");
 const User = require("../models/User");
 
 // ✅ GET /api/history/:id
