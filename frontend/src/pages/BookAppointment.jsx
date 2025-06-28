@@ -16,42 +16,57 @@ const BookAppointment = () => {
   const [reason, setReason] = useState("");
   const [showPopup, setShowPopup] = useState(false);
 
-  // Fetch doctor list & set selected doctor if ID is passed in URL
+  // 📌 Format date to YYYY-MM-DD (used when converting from input)
+  const formatDate = (dateObj) => {
+    const iso = new Date(dateObj).toISOString();
+    return iso.split("T")[0]; // Get YYYY-MM-DD
+  };
+
+  // 🔄 Fetch list of doctors
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
         const res = await axios.get(
           "https://lifeline3-1.onrender.com/api/user?role=doctor",
-          { headers: { Authorization: `Bearer ${token}` } }
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
-        const allDoctors = res.data;
-        setDoctors(allDoctors);
+        setDoctors(res.data);
 
         if (doctorIdFromUrl) {
-          const doc = allDoctors.find((d) => d._id === doctorIdFromUrl);
-          if (doc) setSelectedDoctor(doc);
+          const found = res.data.find((d) => d._id === doctorIdFromUrl);
+          if (found) setSelectedDoctor(found);
         }
       } catch (err) {
-        console.error("Failed to fetch doctors:", err);
+        console.error("❌ Failed to fetch doctors:", err);
       }
     };
 
     if (token) fetchDoctors();
   }, [token]);
 
+  // 🕓 Fetch available slots when doctor and date are selected
+  useEffect(() => {
+    if (selectedDoctor && selectedDate) {
+      fetchSlots(selectedDoctor._id, selectedDate);
+    }
+  }, [selectedDoctor, selectedDate]);
+
   const fetchSlots = async (doctorId, date) => {
-    if (!doctorId || !date) return;
     try {
       const res = await axios.get(
-        `https://lifeline3-1.onrender.com/api/appointments/available`,
+        "https://lifeline3-1.onrender.com/api/appointments/available",
         {
           headers: { Authorization: `Bearer ${token}` },
           params: { doctorId, date },
         }
       );
+      console.log("✅ Available slots:", res.data);
       setSlots(res.data);
     } catch (err) {
-      console.error("Failed to fetch slots:", err);
+      console.error("❌ Failed to fetch slots:", err);
+      setSlots([]);
     }
   };
 
@@ -68,15 +83,18 @@ const BookAppointment = () => {
           time,
           reason,
         },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       setShowPopup(true);
       setTimeout(() => setShowPopup(false), 4000);
       setSelectedDate("");
       setTime("");
       setReason("");
+      setSlots([]);
     } catch (err) {
-      console.error("Booking failed:", err);
+      console.error("❌ Booking failed:", err);
       alert("Booking failed.");
     }
   };
@@ -85,18 +103,18 @@ const BookAppointment = () => {
     <div className="max-w-xl mx-auto p-6 text-white bg-gray-900 mt-10 rounded relative">
       <h2 className="text-xl font-bold mb-4">📅 Book Appointment</h2>
 
-      {/* Doctor dropdown if not selected from URL */}
+      {/* 👨‍⚕️ Doctor dropdown */}
       {!doctorIdFromUrl && (
         <select
           className="w-full mb-4 p-2 bg-gray-800 rounded"
+          value={selectedDoctor?._id || ""}
           onChange={(e) => {
             const doc = doctors.find((d) => d._id === e.target.value);
             setSelectedDoctor(doc);
             setSelectedDate("");
-            setSlots([]);
             setTime("");
+            setSlots([]);
           }}
-          value={selectedDoctor?._id || ""}
         >
           <option value="">Select Doctor</option>
           {doctors.map((doc) => (
@@ -107,7 +125,7 @@ const BookAppointment = () => {
         </select>
       )}
 
-      {/* Date and slot selection */}
+      {/* 📆 Date Picker */}
       {selectedDoctor && (
         <>
           <input
@@ -115,24 +133,26 @@ const BookAppointment = () => {
             className="w-full mb-4 p-2 bg-gray-800 rounded"
             value={selectedDate}
             onChange={(e) => {
-              const rawDate = new Date(e.target.value);
-              const formatted = rawDate.toISOString().split("T")[0]; // Ensure YYYY-MM-DD
+              const formatted = formatDate(e.target.value);
               setSelectedDate(formatted);
-              fetchSlots(selectedDoctor._id, formatted);
+              setTime("");
+              setSlots([]);
             }}
           />
 
-          {/* Optional Debug Info */}
+          {/* 🗓️ Optional Debug Info */}
           {selectedDate && (
             <p className="text-sm text-gray-400 mb-2">
               Selected Date: {selectedDate} (
               {new Date(selectedDate).toLocaleDateString("en-US", {
                 weekday: "long",
+                timeZone: "Asia/Kolkata",
               })}
               )
             </p>
           )}
 
+          {/* ⏰ Slot Picker */}
           {slots.length > 0 ? (
             <select
               className="w-full mb-4 p-2 bg-gray-800 rounded"
@@ -146,10 +166,11 @@ const BookAppointment = () => {
             </select>
           ) : selectedDate && (
             <p className="text-yellow-400 mb-4">
-              No slots available for this date.
+              ⚠️ No slots available for this date.
             </p>
           )}
 
+          {/* ✏️ Reason */}
           <textarea
             value={reason}
             onChange={(e) => setReason(e.target.value)}
