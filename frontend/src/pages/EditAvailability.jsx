@@ -1,3 +1,4 @@
+// src/pages/EditAvailability.jsx
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
@@ -13,23 +14,16 @@ const EditAvailability = () => {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (user && typeof user.availability === "object" && user.availability !== null) {
-      setDays(Array.isArray(user.availability.days) ? user.availability.days : []);
+    if (user && user.availability) {
+      setDays(user.availability.days || []);
       setFromTime(user.availability.fromTime || "");
       setToTime(user.availability.toTime || "");
       setSlotDuration(user.availability.slotDuration || 30);
-    } else {
-      // fallback defaults
-      setDays([]);
-      setFromTime("");
-      setToTime("");
-      setSlotDuration(30);
     }
   }, [user]);
-  
 
-  const toggleDay = d => {
-    setDays(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]);
+  const toggleDay = (d) => {
+    setDays((prev) => (prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]));
   };
 
   const handleSave = async () => {
@@ -54,7 +48,7 @@ const EditAvailability = () => {
       <div className="mb-4">
         <label className="font-semibold">Days:</label>
         <div className="grid grid-cols-3 gap-2 mt-2">
-          {WEEKDAYS.map(d => (
+          {WEEKDAYS.map((d) => (
             <label key={d} className="inline-flex items-center">
               <input
                 type="checkbox"
@@ -70,24 +64,22 @@ const EditAvailability = () => {
 
       <div className="mb-4">
         <label>From:</label>
-        <input type="time" value={fromTime} onChange={e => setFromTime(e.target.value)}
-               className="ml-2 bg-gray-800 p-2 rounded"/>
+        <input type="time" value={fromTime} onChange={(e) => setFromTime(e.target.value)} className="ml-2 bg-gray-800 p-2 rounded" />
       </div>
 
       <div className="mb-4">
         <label>To:</label>
-        <input type="time" value={toTime} onChange={e => setToTime(e.target.value)}
-               className="ml-2 bg-gray-800 p-2 rounded"/>
+        <input type="time" value={toTime} onChange={(e) => setToTime(e.target.value)} className="ml-2 bg-gray-800 p-2 rounded" />
       </div>
 
       <div className="mb-4">
         <label>Slot Duration (min):</label>
-        <select
-          value={slotDuration}
-          onChange={e => setSlotDuration(Number(e.target.value))}
-          className="ml-2 bg-gray-800 p-2 rounded"
-        >
-          {[15,30,45,60].map(v => <option key={v} value={v}>{v}</option>)}
+        <select value={slotDuration} onChange={(e) => setSlotDuration(Number(e.target.value))} className="ml-2 bg-gray-800 p-2 rounded">
+          {[15, 30, 45, 60].map((v) => (
+            <option key={v} value={v}>
+              {v}
+            </option>
+          ))}
         </select>
       </div>
 
