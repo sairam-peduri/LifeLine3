@@ -75,15 +75,25 @@ router.get("/available", verifyToken, async (req, res) => {
     }
 
     const weekly = doctor.availability?.weekly;
-    if (!weekly) return res.json([]); // No availability set
+    if (!weekly) {
+      console.log("❌ No availability set for doctor.");
+      return res.json([]);
+    }
 
-    // 🔍 Convert string date to Date object with timezone fix
+    console.log("📅 Raw doctor availability:", weekly);
+
+    // Ensure fromTime and toTime are present
+    if (!weekly.fromTime || !weekly.toTime || !Array.isArray(weekly.days)) {
+      console.log("❌ Invalid time/day configuration:", weekly);
+      return res.json([]);
+    }
+
+    // Convert string date to Date object and extract weekday in IST
     const validDate = new Date(date + "T00:00:00");
     if (isNaN(validDate)) {
       return res.status(400).json({ error: "Invalid date format" });
     }
 
-    // ✅ Get weekday from date in IST
     const weekday = validDate.toLocaleDateString("en-US", {
       weekday: "long",
       timeZone: "Asia/Kolkata",
@@ -93,24 +103,37 @@ router.get("/available", verifyToken, async (req, res) => {
     console.log("🗓️ Weekday:", weekday);
     console.log("👨‍⚕️ Available Days:", weekly.days);
 
-    if (!weekly.days?.includes(weekday)) {
-      return res.json([]); // Doctor not available on this day
+    if (!weekly.days.includes(weekday)) {
+      console.log("❌ Doctor not available on this weekday.");
+      return res.json([]);
     }
 
-    const slotDuration = weekly.slotDuration || 30; // default to 30 mins
+    const slotDuration = parseInt(weekly.slotDuration) || 30;
+
     const start = new Date(`${date}T${weekly.fromTime}`);
     const end = new Date(`${date}T${weekly.toTime}`);
     const slots = [];
 
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      console.log("❌ Invalid fromTime or toTime:", weekly.fromTime, weekly.toTime);
+      return res.json([]);
+    }
+
     for (let t = new Date(start); t < end; t.setMinutes(t.getMinutes() + slotDuration)) {
-      const slotTime = t.toTimeString().slice(0, 5); // "HH:MM"
+      const slotTime = t.toTimeString().slice(0, 5); // HH:MM
       slots.push(slotTime);
     }
 
-    // ❌ Remove already booked slots
+    console.log("⏳ Generated Slots:", slots);
+
+    // Remove booked slots
     const booked = await Appointment.find({ doctorId, date }).select("time");
     const bookedTimes = booked.map((b) => b.time);
+
+    console.log("📌 Already booked:", bookedTimes);
+
     const available = slots.filter((t) => !bookedTimes.includes(t));
+    console.log("✅ Available slots:", available);
 
     res.json(available);
   } catch (err) {
