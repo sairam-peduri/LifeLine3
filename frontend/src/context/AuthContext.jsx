@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
 
   const syncWalletAddress = async () => {
     if (!wallet.publicKey || !firebaseUser) return;
-
     const currentAddress = wallet.publicKey.toBase58();
     if (user?.walletAddress === currentAddress) return; 
 
@@ -38,7 +37,7 @@ export const AuthProvider = ({ children }) => {
       const token = await result.user.getIdToken();
 
       const res = await axios.post(
-        "https://llifeline3-1.onrender.com/api/auth/login",
+        "https://lifeline3-1.onrender.com/api/auth/login",
         {
           email: result.user.email,
           name: result.user.displayName,
@@ -67,6 +66,27 @@ export const AuthProvider = ({ children }) => {
     window.location.href = "/login";
   };
 
+  const getFreshToken = async () => {
+    const current = auth.currentUser;
+    if (!current) return null;
+    return await current.getIdToken(true); // force refresh
+  };
+
+  const refreshUser = async () => {
+    const current = auth.currentUser;
+    if (!current) return;
+    try {
+      const token = await current.getIdToken(true);
+      const res = await axios.get("https://lifeline3-1.onrender.com/api/auth/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setFirebaseUser(current);
+      setUser(res.data.user);
+    } catch (err) {
+      console.error("Failed to refresh user:", err);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
@@ -92,30 +112,24 @@ export const AuthProvider = ({ children }) => {
 
     return unsubscribe;
   }, []);
+
   useEffect(() => {
     if (wallet.connected && firebaseUser) {
       syncWalletAddress();
     }
   }, [wallet.publicKey, wallet.connected, firebaseUser]);
 
-  const refreshUser = async () => {
-    const current = auth.currentUser;
-    if (!current) return;
-    try {
-      const token = await current.getIdToken(true);
-      const res = await axios.get("https://lifeline3-1.onrender.com/api/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setFirebaseUser(current);
-      setUser(res.data.user);
-    } catch (err) {
-      console.error("Failed to refresh user:", err);
-    }
-  };
-
   return (
     <AuthContext.Provider
-      value={{ user, firebaseUser, loading, loginWithGoogle, logout, refreshUser }}
+      value={{
+        user,
+        firebaseUser,
+        loading,
+        loginWithGoogle,
+        logout,
+        refreshUser,
+        getFreshToken, // ✅ Exposed here
+      }}
     >
       {!loading && children}
     </AuthContext.Provider>

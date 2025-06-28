@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const EditAvailability = () => {
-  const { user, token } = useAuth();
+  const { user, getFreshToken } = useAuth(); // ✅ use getFreshToken
   const [days, setDays] = useState([]);
   const [fromTime, setFromTime] = useState("");
   const [toTime, setToTime] = useState("");
@@ -27,22 +27,27 @@ const EditAvailability = () => {
 
   const save = async () => {
     try {
+      const token = await getFreshToken(); // ✅ Fetch fresh token
+
       const newAvailability = {
-        weekly: { days, fromTime, toTime, slotDuration }
+        weekly: { days, fromTime, toTime, slotDuration },
       };
-  
+
       await axios.put(
         `https://lifeline3-1.onrender.com/api/user/${user.uid}/availability`,
         { availability: newAvailability },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       setMsg("✅ Saved");
-    } catch {
+    } catch (err) {
+      console.error("Save failed:", err);
       setMsg("❌ Failed");
     }
     setTimeout(() => setMsg(""), 3000);
   };
-  
+
   return (
     <div className="p-6 bg-gray-900 text-white rounded max-w-xl mx-auto mt-10">
       <h2 className="text-2xl mb-4">Set Weekly Availability</h2>
