@@ -27,12 +27,10 @@ const EditAvailability = () => {
 
   const save = async () => {
     try {
-      const existingPerDate = user?.availability?.perDate || [];
       const newAvailability = {
-        weekly: { days, fromTime, toTime, slotDuration },
-        perDate: existingPerDate,
+        weekly: { days, fromTime, toTime, slotDuration }
       };
-
+  
       await axios.put(
         `https://lifeline3-1.onrender.com/api/user/${user.uid}/availability`,
         { availability: newAvailability },
@@ -44,7 +42,7 @@ const EditAvailability = () => {
     }
     setTimeout(() => setMsg(""), 3000);
   };
-
+  
   return (
     <div className="p-6 bg-gray-900 text-white rounded max-w-xl mx-auto mt-10">
       <h2 className="text-2xl mb-4">Set Weekly Availability</h2>
