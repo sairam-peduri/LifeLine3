@@ -43,6 +43,22 @@ router.put("/update/:uid", verifyToken, async (req, res) => {
   }
 });
 
+router.put("/:uid/availability", verifyToken, async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const { availability } = req.body;
+    const updated = await User.findOneAndUpdate(
+      { uid },
+      { $set: { availability } },
+      { new: true }
+    );
+    if (!updated) return res.status(404).json({ error: "User not found" });
+    res.json({ message: "Availability updated", availability: updated.availability });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error updating availability" });
+  }
+});
 
 
 module.exports = router;
