@@ -4,12 +4,11 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const BookAppointment = () => {
-  const { user, getFreshToken } = useAuth();
+  const { user, token } = useAuth();
   const [doctors, setDoctors] = useState([]);
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const doctorIdFromUrl = params.get("doctorId");
-
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [slots, setSlots] = useState([]);
@@ -20,7 +19,6 @@ const BookAppointment = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const token = await getFreshToken();
         const res = await axios.get("https://lifeline3-1.onrender.com/api/user?role=doctor", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -38,12 +36,12 @@ const BookAppointment = () => {
       }
     };
 
-    if (user) fetchDoctors();
-  }, [user, doctorIdFromUrl]);
+    if (token) fetchDoctors();
+  }, [token, doctorIdFromUrl]);
 
   const fetchSlots = async (doctorId, date) => {
+    if (!doctorId || !date) return; // ✅ Prevent 400 error
     try {
-      const token = await getFreshToken();
       const res = await axios.get(`https://lifeline3-1.onrender.com/api/appointments/available`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { doctorId, date }
@@ -55,8 +53,12 @@ const BookAppointment = () => {
   };
 
   const handleBook = async () => {
+    if (!selectedDate || !time) {
+      alert("Please select both date and time before booking.");
+      return;
+    }
+
     try {
-      const token = await getFreshToken();
       await axios.post(
         "https://lifeline3-1.onrender.com/api/appointments",
         {
@@ -111,7 +113,7 @@ const BookAppointment = () => {
             onChange={(e) => {
               const date = e.target.value;
               setSelectedDate(date);
-              fetchSlots(selectedDoctor._id, date);
+              if (date) fetchSlots(selectedDoctor._id, date); // ✅ Only call if date is not empty
             }}
           />
 

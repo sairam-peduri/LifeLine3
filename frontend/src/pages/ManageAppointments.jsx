@@ -9,14 +9,13 @@ const ManageAppointments = () => {
   const [updatingId, setUpdatingId] = useState(null);
 
   const fetchAppointments = async () => {
+    if (!user || !token) return;
     try {
       setLoading(true);
       const res = await axios.get(
         `https://lifeline3-1.onrender.com/api/appointments/user/${user._id}?role=doctor`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       const sorted = res.data.sort((a, b) =>
@@ -24,7 +23,8 @@ const ManageAppointments = () => {
       );
       setAppointments(sorted);
     } catch (err) {
-      console.error("Failed to load appointments:", err);
+      console.error("❌ Failed to load appointments:", err);
+      alert("Error fetching appointments. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -35,7 +35,9 @@ const ManageAppointments = () => {
   }, []);
 
   const handleUpdate = async (id, status) => {
-    if (!window.confirm(`Are you sure you want to ${status} this appointment?`)) return;
+    const confirmed = window.confirm(`Are you sure you want to ${status} this appointment?`);
+    if (!confirmed) return;
+
     try {
       setUpdatingId(id);
       await axios.put(
@@ -43,9 +45,10 @@ const ManageAppointments = () => {
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchAppointments();
+      await fetchAppointments(); // Refresh list
     } catch (err) {
-      alert("Update failed");
+      console.error("❌ Failed to update appointment:", err);
+      alert("Update failed. Please try again.");
     } finally {
       setUpdatingId(null);
     }
@@ -53,7 +56,7 @@ const ManageAppointments = () => {
 
   return (
     <div className="max-w-3xl mx-auto mt-10 text-white p-6 bg-gray-900 rounded">
-      <h2 className="text-2xl font-bold mb-6">Manage Appointments</h2>
+      <h2 className="text-2xl font-bold mb-6">🩺 Manage Appointments</h2>
 
       {loading ? (
         <p className="text-gray-400">Loading appointments...</p>
@@ -62,12 +65,12 @@ const ManageAppointments = () => {
       ) : (
         appointments.map((appt) => (
           <div key={appt._id} className="border-b border-gray-700 py-4">
-            <p><strong>Patient:</strong> {appt.patientId.name}</p>
-            <p><strong>Date:</strong> {appt.date}</p>
-            <p><strong>Time:</strong> {appt.time}</p>
-            <p><strong>Reason:</strong> {appt.reason || "N/A"}</p>
+            <p><strong>👤 Patient:</strong> {appt.patientId?.name || "Unknown"}</p>
+            <p><strong>📅 Date:</strong> {appt.date}</p>
+            <p><strong>⏰ Time:</strong> {appt.time}</p>
+            <p><strong>📝 Reason:</strong> {appt.reason || "N/A"}</p>
             <p>
-              <strong>Status:</strong>{" "}
+              <strong>📌 Status:</strong>{" "}
               <span className={
                 appt.status === "accepted" ? "text-green-400" :
                 appt.status === "rejected" ? "text-red-400" :
@@ -78,20 +81,20 @@ const ManageAppointments = () => {
             </p>
 
             {appt.status === "pending" && (
-              <div className="mt-2">
+              <div className="mt-3 flex gap-2">
                 <button
                   onClick={() => handleUpdate(appt._id, "accepted")}
-                  className="bg-green-600 px-4 py-1 mr-2 rounded hover:bg-green-700"
+                  className="bg-green-600 px-4 py-1 rounded hover:bg-green-700"
                   disabled={updatingId === appt._id}
                 >
-                  Accept
+                  ✅ Accept
                 </button>
                 <button
                   onClick={() => handleUpdate(appt._id, "rejected")}
                   className="bg-red-600 px-4 py-1 rounded hover:bg-red-700"
                   disabled={updatingId === appt._id}
                 >
-                  Reject
+                  ❌ Reject
                 </button>
               </div>
             )}
