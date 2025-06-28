@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   dob: String,
   walletAddress: { type: String, default: null },
   tier: { type: String, enum: ["free", "advanced", "prime"], default: "free" },
+
   predictionHistory: {
     type: [
       {
@@ -19,20 +20,16 @@ const userSchema = new mongoose.Schema({
     ],
     default: [],
   },
+
   availability: {
     weekly: {
-      days: [String],
-      fromTime: String,
-      toTime: String,
-      slotDuration: { type: Number, default: 30 }
-    },
-    perDate: [
-      {
-        date: String, // YYYY-MM-DD
-        slots: [String] // e.g., ["10:00", "10:30"]
-      }
-    ]
-  },  
+      days: [String],          // e.g. ["Monday", "Wednesday"]
+      fromTime: String,        // e.g. "10:00"
+      toTime: String,          // e.g. "13:00"
+      slotDuration: { type: Number, default: 30 } // in minutes
+    }
+  },
+
   healthRecords: [
     {
       filename: String,
@@ -40,6 +37,7 @@ const userSchema = new mongoose.Schema({
       uploadedAt: { type: Date, default: Date.now }
     }
   ],
+
   chatRooms: [{ type: String }],
   isProfileComplete: { type: Boolean, default: false },
   specialization: String,

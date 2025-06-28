@@ -8,9 +8,9 @@ import BookAppointment from "./pages/BookAppointment";
 import ChatList from "./pages/ChatList";
 import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
-import DoctorAvailability from "./pages/DoctorAvailability";
 import DoctorDirectory from "./pages/DoctorDirectory";
 import DoctorProfile from "./pages/DoctorProfile";
+import EditAvailability from "./pages/EditAvailability";
 import EditProfile from "./pages/EditProfile";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -44,7 +44,7 @@ function App() {
           <Route path="/doctors" element={<ProtectedRoute><DoctorDirectory /></ProtectedRoute>} />
           <Route path="/doctor/:uid" element={<ProtectedRoute><DoctorProfile /></ProtectedRoute>} />
           <Route path="/chat" element={<ProtectedRoute><ChatList /></ProtectedRoute>} />
-          <Route path="/set-availability" element={<ProtectedRoute><DoctorAvailability /></ProtectedRoute>} />
+          <Route path="/set-availability" element={<ProtectedRoute><EditAvailability /></ProtectedRoute>} />
           <Route path="/book-appointment" element={<ProtectedRoute><BookAppointment /></ProtectedRoute>} />
           <Route path="/manage-appointments" element={<ProtectedRoute><ManageAppointments /></ProtectedRoute>} />
           <Route path="/my-appointments" element={<ProtectedRoute><MyAppointments /></ProtectedRoute>} />
