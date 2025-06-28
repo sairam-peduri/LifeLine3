@@ -115,11 +115,23 @@ const BookAppointment = () => {
             className="w-full mb-4 p-2 bg-gray-800 rounded"
             value={selectedDate}
             onChange={(e) => {
-              const date = e.target.value;
-              setSelectedDate(date);
-              fetchSlots(selectedDoctor._id, date);
+              const rawDate = new Date(e.target.value);
+              const formatted = rawDate.toISOString().split("T")[0]; // Ensure YYYY-MM-DD
+              setSelectedDate(formatted);
+              fetchSlots(selectedDoctor._id, formatted);
             }}
           />
+
+          {/* Optional Debug Info */}
+          {selectedDate && (
+            <p className="text-sm text-gray-400 mb-2">
+              Selected Date: {selectedDate} (
+              {new Date(selectedDate).toLocaleDateString("en-US", {
+                weekday: "long",
+              })}
+              )
+            </p>
+          )}
 
           {slots.length > 0 ? (
             <select
@@ -133,7 +145,9 @@ const BookAppointment = () => {
               ))}
             </select>
           ) : selectedDate && (
-            <p className="text-yellow-400 mb-4">No slots available for this date.</p>
+            <p className="text-yellow-400 mb-4">
+              No slots available for this date.
+            </p>
           )}
 
           <textarea
