@@ -5,10 +5,10 @@ import { useAuth } from "../context/AuthContext";
 
 const BookAppointment = () => {
   const { user, token } = useAuth();
-  const [doctors, setDoctors] = useState([]);
   const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const doctorIdFromUrl = params.get("doctorId");
+  const doctorIdFromUrl = new URLSearchParams(location.search).get("doctorId");
+
+  const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [slots, setSlots] = useState([]);
@@ -16,36 +16,39 @@ const BookAppointment = () => {
   const [reason, setReason] = useState("");
   const [showPopup, setShowPopup] = useState(false);
 
+  // Fetch doctor list & set selected doctor if ID is passed in URL
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const res = await axios.get("https://lifeline3-1.onrender.com/api/user?role=doctor", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          "https://lifeline3-1.onrender.com/api/user?role=doctor",
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         const allDoctors = res.data;
         setDoctors(allDoctors);
 
         if (doctorIdFromUrl) {
-          const doc = allDoctors.find(d => d._id === doctorIdFromUrl);
-          if (doc) {
-            setSelectedDoctor(doc);
-          }
+          const doc = allDoctors.find((d) => d._id === doctorIdFromUrl);
+          if (doc) setSelectedDoctor(doc);
         }
       } catch (err) {
-        console.error("Error loading doctors:", err);
+        console.error("Failed to fetch doctors:", err);
       }
     };
 
     if (token) fetchDoctors();
-  }, [token, doctorIdFromUrl]);
+  }, [token]);
 
   const fetchSlots = async (doctorId, date) => {
-    if (!doctorId || !date) return; // ✅ Prevent 400 error
+    if (!doctorId || !date) return;
     try {
-      const res = await axios.get(`https://lifeline3-1.onrender.com/api/appointments/available`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { doctorId, date }
-      });
+      const res = await axios.get(
+        `https://lifeline3-1.onrender.com/api/appointments/available`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { doctorId, date },
+        }
+      );
       setSlots(res.data);
     } catch (err) {
       console.error("Failed to fetch slots:", err);
@@ -53,10 +56,7 @@ const BookAppointment = () => {
   };
 
   const handleBook = async () => {
-    if (!selectedDate || !time) {
-      alert("Please select both date and time before booking.");
-      return;
-    }
+    if (!selectedDoctor || !selectedDate || !time) return;
 
     try {
       await axios.post(
@@ -66,7 +66,7 @@ const BookAppointment = () => {
           doctorId: selectedDoctor._id,
           date: selectedDate,
           time,
-          reason
+          reason,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -77,7 +77,7 @@ const BookAppointment = () => {
       setReason("");
     } catch (err) {
       console.error("Booking failed:", err);
-      alert("Booking failed");
+      alert("Booking failed.");
     }
   };
 
@@ -85,25 +85,29 @@ const BookAppointment = () => {
     <div className="max-w-xl mx-auto p-6 text-white bg-gray-900 mt-10 rounded relative">
       <h2 className="text-xl font-bold mb-4">📅 Book Appointment</h2>
 
-      <select
-        className="w-full mb-4 p-2 bg-gray-800 rounded"
-        onChange={(e) => {
-          const doc = doctors.find(d => d._id === e.target.value);
-          setSelectedDoctor(doc);
-          setSlots([]);
-          setSelectedDate("");
-          setTime("");
-        }}
-        value={selectedDoctor?._id || ""}
-      >
-        <option value="">Select Doctor</option>
-        {doctors.map((doc) => (
-          <option key={doc._id} value={doc._id}>
-            Dr. {doc.name} ({doc.specialization})
-          </option>
-        ))}
-      </select>
+      {/* Doctor dropdown if not selected from URL */}
+      {!doctorIdFromUrl && (
+        <select
+          className="w-full mb-4 p-2 bg-gray-800 rounded"
+          onChange={(e) => {
+            const doc = doctors.find((d) => d._id === e.target.value);
+            setSelectedDoctor(doc);
+            setSelectedDate("");
+            setSlots([]);
+            setTime("");
+          }}
+          value={selectedDoctor?._id || ""}
+        >
+          <option value="">Select Doctor</option>
+          {doctors.map((doc) => (
+            <option key={doc._id} value={doc._id}>
+              Dr. {doc.name} ({doc.specialization})
+            </option>
+          ))}
+        </select>
+      )}
 
+      {/* Date and slot selection */}
       {selectedDoctor && (
         <>
           <input
@@ -113,7 +117,7 @@ const BookAppointment = () => {
             onChange={(e) => {
               const date = e.target.value;
               setSelectedDate(date);
-              if (date) fetchSlots(selectedDoctor._id, date); // ✅ Only call if date is not empty
+              fetchSlots(selectedDoctor._id, date);
             }}
           />
 
