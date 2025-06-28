@@ -10,6 +10,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); 
   const [firebaseUser, setFirebaseUser] = useState(null); 
+  const [token, setToken] = useState(null); // ✅ Token state
   const [loading, setLoading] = useState(true);
   const wallet = useWallet();
 
@@ -19,11 +20,11 @@ export const AuthProvider = ({ children }) => {
     if (user?.walletAddress === currentAddress) return; 
 
     try {
-      const token = await firebaseUser.getIdToken();
+      const freshToken = await firebaseUser.getIdToken();
       const res = await axios.put(
         "https://lifeline3-1.onrender.com/api/auth/wallet",
         { walletAddress: currentAddress },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${freshToken}` } }
       );
       setUser(res.data.user); 
     } catch (err) {
@@ -34,7 +35,8 @@ export const AuthProvider = ({ children }) => {
   const loginWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      const token = await result.user.getIdToken();
+      const freshToken = await result.user.getIdToken();
+      setToken(freshToken); // ✅ Store token
 
       const res = await axios.post(
         "https://lifeline3-1.onrender.com/api/auth/login",
@@ -43,7 +45,7 @@ export const AuthProvider = ({ children }) => {
           name: result.user.displayName,
           uid: result.user.uid,
         },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${freshToken}` } }
       );
 
       setFirebaseUser(result.user);
@@ -63,22 +65,27 @@ export const AuthProvider = ({ children }) => {
     await signOut(auth);
     setUser(null);
     setFirebaseUser(null);
+    setToken(null);
     window.location.href = "/login";
   };
 
   const getFreshToken = async () => {
     const current = auth.currentUser;
     if (!current) return null;
-    return await current.getIdToken(true); // force refresh
+    const freshToken = await current.getIdToken(true);
+    setToken(freshToken); // ✅ Update stored token
+    return freshToken;
   };
 
   const refreshUser = async () => {
     const current = auth.currentUser;
     if (!current) return;
     try {
-      const token = await current.getIdToken(true);
+      const freshToken = await current.getIdToken(true);
+      setToken(freshToken); // ✅ Refresh stored token
+
       const res = await axios.get("https://lifeline3-1.onrender.com/api/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${freshToken}` },
       });
       setFirebaseUser(current);
       setUser(res.data.user);
@@ -91,9 +98,11 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
-          const token = await firebaseUser.getIdToken(true);
+          const freshToken = await firebaseUser.getIdToken(true);
+          setToken(freshToken); // ✅ Set token on session restore
+
           const res = await axios.get("https://lifeline3-1.onrender.com/api/auth/me", {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${freshToken}` },
           });
 
           setFirebaseUser(firebaseUser);
@@ -106,6 +115,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         setFirebaseUser(null);
         setUser(null);
+        setToken(null); // ✅ Clear token
       }
       setLoading(false);
     });
@@ -124,11 +134,12 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         firebaseUser,
+        token, // ✅ Expose token
         loading,
         loginWithGoogle,
         logout,
         refreshUser,
-        getFreshToken, // ✅ Exposed here
+        getFreshToken,
       }}
     >
       {!loading && children}
