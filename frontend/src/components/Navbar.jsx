@@ -1,6 +1,6 @@
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./Navbar.css";
@@ -13,6 +13,7 @@ export default function Navbar() {
   const [balance, setBalance] = useState(null);
   const [loadingBal, setLoadingBal] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef();
 
   useEffect(() => {
     async function fetchBalance() {
@@ -34,6 +35,16 @@ export default function Navbar() {
     }
     fetchBalance();
   }, [wallet.publicKey, connection]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <nav className="navbar-custom">
@@ -57,7 +68,7 @@ export default function Navbar() {
           )}
 
           {user ? (
-            <div className="dropdown">
+            <div className="dropdown" ref={dropdownRef}>
               <span onClick={() => setDropdownOpen(!dropdownOpen)}>☰</span>
               {dropdownOpen && (
                 <div className="dropdown-content">
@@ -67,7 +78,6 @@ export default function Navbar() {
                   <span onClick={() => navigate("/transactions")}>Transactions</span>
                   <span onClick={() => navigate("/history")}>Prediction History 📋</span>
 
-                  {/* Appointment-related */}
                   {user.role === "doctor" ? (
                     <>
                       <span onClick={() => navigate("/set-availability")}>Set Availability 📅</span>

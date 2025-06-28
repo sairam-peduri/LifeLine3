@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const BookAppointment = () => {
-  const { user, token, firebaseUser } = useAuth(); // ✅ Correctly destructured here
+  const { user, token } = useAuth();
   const [doctors, setDoctors] = useState([]);
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -19,32 +19,36 @@ const BookAppointment = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const token = await firebaseUser.getIdToken(); // ✅ Get secure token
-        const res = await axios.get(
-          "https://lifeline3-1.onrender.com/api/user?role=doctor",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const res = await axios.get("https://lifeline3-1.onrender.com/api/user?role=doctor", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const allDoctors = res.data;
         setDoctors(allDoctors);
 
-        // Preselect doctor if passed in URL
         if (doctorIdFromUrl) {
-          const doc = allDoctors.find((d) => d._id === doctorIdFromUrl);
-          if (doc) setSelectedDoctor(doc);
+          const doc = allDoctors.find(d => d._id === doctorIdFromUrl);
+          if (doc) {
+            setSelectedDoctor(doc);
+          }
         }
       } catch (err) {
         console.error("Error loading doctors:", err);
       }
     };
 
-    if (firebaseUser) fetchDoctors();
-  }, [firebaseUser, doctorIdFromUrl]);
+    if (token) fetchDoctors();
+  }, [token]);
 
-  const fetchSlots = (doctor, date) => {
-    const available = doctor.availability?.find((a) => a.date === date);
-    setSlots(available ? available.slots : []);
+  const fetchSlots = async (doctorId, date) => {
+    try {
+      const res = await axios.get(`https://lifeline3-1.onrender.com/api/appointments/available`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { doctorId, date }
+      });
+      setSlots(res.data);
+    } catch (err) {
+      console.error("Failed to fetch slots:", err);
+    }
   };
 
   const handleBook = async () => {
@@ -56,11 +60,9 @@ const BookAppointment = () => {
           doctorId: selectedDoctor._id,
           date: selectedDate,
           time,
-          reason,
+          reason
         },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setShowPopup(true);
       setTimeout(() => setShowPopup(false), 4000);
@@ -69,7 +71,6 @@ const BookAppointment = () => {
       setReason("");
     } catch (err) {
       alert("Booking failed");
-      console.error(err);
     }
   };
 
@@ -80,7 +81,7 @@ const BookAppointment = () => {
       <select
         className="w-full mb-4 p-2 bg-gray-800 rounded"
         onChange={(e) => {
-          const doc = doctors.find((d) => d._id === e.target.value);
+          const doc = doctors.find(d => d._id === e.target.value);
           setSelectedDoctor(doc);
           setSlots([]);
           setSelectedDate("");
@@ -103,8 +104,9 @@ const BookAppointment = () => {
             className="w-full mb-4 p-2 bg-gray-800 rounded"
             value={selectedDate}
             onChange={(e) => {
-              setSelectedDate(e.target.value);
-              fetchSlots(selectedDoctor, e.target.value);
+              const date = e.target.value;
+              setSelectedDate(date);
+              fetchSlots(selectedDoctor._id, date);
             }}
           />
 
@@ -116,16 +118,12 @@ const BookAppointment = () => {
             >
               <option value="">Select Time</option>
               {slots.map((s, idx) => (
-                <option key={idx} value={s}>
-                  {s}
-                </option>
+                <option key={idx}>{s}</option>
               ))}
             </select>
-          ) : selectedDate ? (
-            <p className="text-yellow-400 mb-4">
-              No slots available for this date.
-            </p>
-          ) : null}
+          ) : selectedDate && (
+            <p className="text-yellow-400 mb-4">No slots available for this date.</p>
+          )}
 
           <textarea
             value={reason}

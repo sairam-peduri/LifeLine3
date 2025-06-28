@@ -19,12 +19,12 @@ const userSchema = new mongoose.Schema({
     ],
     default: [],
   },
-  availability: [
-    {
-      date: String, // format: YYYY-MM-DD
-      slots: [String] // format: "10:00", "15:30", etc.
-    }
-  ]  
+  availability: {
+    days: [String], // e.g. ["Monday", "Tuesday", "Wednesday"]
+    fromTime: String, // e.g. "10:00"
+    toTime: String,   // e.g. "13:00"
+    slotDuration: { type: Number, default: 30 } // in minutes
+  }   
   ,
   healthRecords: [
     {

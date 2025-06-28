@@ -3,6 +3,7 @@ const router = express.Router();
 const Appointment = require("../models/Appointment");
 const User = require("../models/User");
 const { verifyToken } = require("../middlewares/auth");
+const moment = require("moment");
 
 // 1. Create Appointment Request (Patient books)
 router.post("/", verifyToken, async (req, res) => {
@@ -46,6 +47,49 @@ router.put("/:id/status", verifyToken, async (req, res) => {
     res.json(updated);
   } catch (err) {
     res.status(500).json({ error: "Failed to update status" });
+  }
+});
+
+// 4. Get available slots for a doctor on a selected date
+router.get("/available", verifyToken, async (req, res) => {
+  const { doctorId, date } = req.query;
+
+  if (!doctorId || !date) {
+    return res.status(400).json({ error: "doctorId and date are required" });
+  }
+
+  try {
+    const doctor = await User.findById(doctorId);
+    if (!doctor || !doctor.availability) {
+      return res.status(404).json({ error: "Doctor not found or availability not set" });
+    }
+
+    const { days, fromTime, toTime, slotDuration } = doctor.availability;
+    const dayName = moment(date).format("dddd"); // e.g. "Monday"
+
+    if (!days.includes(dayName)) {
+      return res.json([]); // Doctor not available on this day
+    }
+
+    const from = moment(`${date} ${fromTime}`, "YYYY-MM-DD HH:mm");
+    const to = moment(`${date} ${toTime}`, "YYYY-MM-DD HH:mm");
+    const duration = slotDuration || 30;
+
+    const allSlots = [];
+    let current = from.clone();
+    while (current.isBefore(to)) {
+      allSlots.push(current.format("HH:mm"));
+      current.add(duration, "minutes");
+    }
+
+    const bookedAppointments = await Appointment.find({ doctorId, date, status: { $in: ["pending", "accepted"] } });
+    const bookedTimes = bookedAppointments.map(app => app.time);
+
+    const availableSlots = allSlots.filter(slot => !bookedTimes.includes(slot));
+    res.json(availableSlots);
+  } catch (err) {
+    console.error("Error fetching slots:", err);
+    res.status(500).json({ error: "Failed to fetch available slots" });
   }
 });
 

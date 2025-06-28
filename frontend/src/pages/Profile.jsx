@@ -77,7 +77,7 @@ const Profile = () => {
     <p><strong>Specialization:</strong> {user.specialization}</p>
     <p><strong>Workplace:</strong> {user.workplace}</p>
     <p><strong>About:</strong> {user.about}</p>
-    <p><strong>Consultation Fee:</strong> ₹{user.consultationFee}</p>
+    <p><strong>Consultation Fee:</strong> {user.consultationFee} SOL</p>
   </>
 )}
 
