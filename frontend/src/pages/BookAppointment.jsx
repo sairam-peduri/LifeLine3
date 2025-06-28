@@ -4,11 +4,12 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const BookAppointment = () => {
-  const { user, token } = useAuth();
+  const { user, getFreshToken } = useAuth();
   const [doctors, setDoctors] = useState([]);
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const doctorIdFromUrl = params.get("doctorId");
+
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [slots, setSlots] = useState([]);
@@ -19,6 +20,7 @@ const BookAppointment = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
+        const token = await getFreshToken();
         const res = await axios.get("https://lifeline3-1.onrender.com/api/user?role=doctor", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -36,11 +38,12 @@ const BookAppointment = () => {
       }
     };
 
-    if (token) fetchDoctors();
-  }, [token]);
+    if (user) fetchDoctors();
+  }, [user, doctorIdFromUrl]);
 
   const fetchSlots = async (doctorId, date) => {
     try {
+      const token = await getFreshToken();
       const res = await axios.get(`https://lifeline3-1.onrender.com/api/appointments/available`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { doctorId, date }
@@ -53,6 +56,7 @@ const BookAppointment = () => {
 
   const handleBook = async () => {
     try {
+      const token = await getFreshToken();
       await axios.post(
         "https://lifeline3-1.onrender.com/api/appointments",
         {
@@ -70,6 +74,7 @@ const BookAppointment = () => {
       setTime("");
       setReason("");
     } catch (err) {
+      console.error("Booking failed:", err);
       alert("Booking failed");
     }
   };
