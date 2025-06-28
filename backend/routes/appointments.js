@@ -60,8 +60,7 @@ router.put("/:id/status", verifyToken, async (req, res) => {
     res.status(500).json({ error: "Failed to update status" });
   }
 });
-
-// 4. Get Available Slots
+// GET Available Slots for a doctor on a given date
 router.get("/available", verifyToken, async (req, res) => {
   const { doctorId, date } = req.query;
 
@@ -76,41 +75,46 @@ router.get("/available", verifyToken, async (req, res) => {
     }
 
     const weekly = doctor.availability?.weekly;
-    if (!weekly) return res.json([]);
+    if (!weekly) return res.json([]); // No availability set
 
-    const validDate = new Date(date);
+    // 🔍 Convert string date to Date object with timezone fix
+    const validDate = new Date(date + "T00:00:00");
     if (isNaN(validDate)) {
       return res.status(400).json({ error: "Invalid date format" });
     }
 
-    const dayOfWeek = validDate.toLocaleDateString("en-US", {
-      weekday: "long"
+    // ✅ Get weekday from date in IST
+    const weekday = validDate.toLocaleDateString("en-US", {
+      weekday: "long",
+      timeZone: "Asia/Kolkata",
     });
 
-    if (!weekly.days?.includes(dayOfWeek)) {
-      return res.json([]); // Not available on this day
+    console.log("➡️ Selected Date:", date);
+    console.log("🗓️ Weekday:", weekday);
+    console.log("👨‍⚕️ Available Days:", weekly.days);
+
+    if (!weekly.days?.includes(weekday)) {
+      return res.json([]); // Doctor not available on this day
     }
 
-    const slotDuration = weekly.slotDuration || 30;
+    const slotDuration = weekly.slotDuration || 30; // default to 30 mins
     const start = new Date(`${date}T${weekly.fromTime}`);
     const end = new Date(`${date}T${weekly.toTime}`);
     const slots = [];
 
-    for (
-      let t = new Date(start);
-      t < end;
-      t.setMinutes(t.getMinutes() + slotDuration)
-    ) {
-      slots.push(t.toTimeString().slice(0, 5));
+    for (let t = new Date(start); t < end; t.setMinutes(t.getMinutes() + slotDuration)) {
+      const slotTime = t.toTimeString().slice(0, 5); // "HH:MM"
+      slots.push(slotTime);
     }
 
+    // ❌ Remove already booked slots
     const booked = await Appointment.find({ doctorId, date }).select("time");
-    const bookedTimes = booked.map(b => b.time);
-    const available = slots.filter(t => !bookedTimes.includes(t));
+    const bookedTimes = booked.map((b) => b.time);
+    const available = slots.filter((t) => !bookedTimes.includes(t));
 
     res.json(available);
   } catch (err) {
-    console.error("Failed to fetch slots:", err);
+    console.error("❌ Error fetching slots:", err);
     res.status(500).json({ error: "Server error fetching slots" });
   }
 });
