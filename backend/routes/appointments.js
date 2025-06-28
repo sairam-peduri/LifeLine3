@@ -51,48 +51,59 @@ router.put("/:id/status", verifyToken, async (req, res) => {
     res.status(500).json({ error: "Failed to update status" });
   }
 });
-
 router.get("/available", verifyToken, async (req, res) => {
   const { doctorId, date } = req.query;
-  if (!doctorId || !date) return res.status(400).json({ error: "Missing parameters" });
+
+  if (!doctorId || !date) {
+    return res.status(400).json({ error: "Missing doctorId or date" });
+  }
 
   try {
-    const doc = await User.findById(doctorId);
-    if (!doc || !doc.availability) return res.status(404).json({ error: "Doctor not found or no availability" });
-
-    const per = doc.availability.perDate.find(p => p.date === date);
-    if (per) {
-      const booked = await Appointment.find({ doctorId, date }).select("time");
-      const bookedTimes = booked.map(b => b.time);
-      const avail = per.slots.filter(t => !bookedTimes.includes(t));
-      return res.json(avail);
+    const doctor = await User.findById(doctorId);
+    if (!doctor || doctor.role !== "doctor") {
+      return res.status(404).json({ error: "Doctor not found" });
     }
 
-    const weekday = new Date(date).toLocaleDateString("en-US", { weekday: "long" });
-    const weekly = doc.availability.weekly;
-    if (!weekly.days.includes(weekday)) return res.json([]);
+    // Get weekly availability
+    const dayOfWeek = new Date(date).toLocaleDateString("en-US", {
+      weekday: "long"
+    });
 
-    const [h1, m1] = weekly.fromTime.split(":").map(Number);
-    const [h2, m2] = weekly.toTime.split(":").map(Number);
-    let current = new Date(date);
-    current.setHours(h1, m1, 0, 0);
-    const end = new Date(date);
-    end.setHours(h2, m2, 0, 0);
+    const weekly = doctor.availability?.weekly || {};
+    if (!weekly.days?.includes(dayOfWeek)) {
+      return res.json([]); // No availability on this day
+    }
 
+    const [fromHour, fromMin] = weekly.fromTime.split(":").map(Number);
+    const [toHour, toMin] = weekly.toTime.split(":").map(Number);
+    const slotDuration = weekly.slotDuration || 30;
+
+    const start = new Date(`${date}T${weekly.fromTime}`);
+    const end = new Date(`${date}T${weekly.toTime}`);
     const slots = [];
-    while (current < end) {
-      slots.push(current.toTimeString().slice(0,5));
-      current.setMinutes(current.getMinutes() + weekly.slotDuration);
+
+    for (
+      let time = new Date(start);
+      time < end;
+      time.setMinutes(time.getMinutes() + slotDuration)
+    ) {
+      const t = time.toTimeString().slice(0, 5); // e.g., "10:30"
+      slots.push(t);
     }
 
-    const booked = await Appointment.find({ doctorId, date }).select("time");
-    const bookedTimes = booked.map(b => b.time);
-    const avail = slots.filter(t => !bookedTimes.includes(t));
+    // Filter out already booked slots
+    const existing = await Appointment.find({
+      doctorId,
+      date,
+    }).select("time");
 
-    res.json(avail);
+    const bookedTimes = existing.map((a) => a.time);
+    const availableSlots = slots.filter((t) => !bookedTimes.includes(t));
+
+    res.json(availableSlots);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Error fetching slots" });
+    console.error("Failed to fetch slots:", err);
+    res.status(500).json({ error: "Server error fetching slots" });
   }
 });
 
