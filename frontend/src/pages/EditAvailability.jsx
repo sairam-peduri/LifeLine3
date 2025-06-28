@@ -13,12 +13,13 @@ const EditAvailability = () => {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (user && typeof user.availability === 'object' && user.availability !== null) {
+    if (user && typeof user.availability === "object" && user.availability !== null) {
       setDays(Array.isArray(user.availability.days) ? user.availability.days : []);
       setFromTime(user.availability.fromTime || "");
       setToTime(user.availability.toTime || "");
       setSlotDuration(user.availability.slotDuration || 30);
     } else {
+      // fallback defaults
       setDays([]);
       setFromTime("");
       setToTime("");
