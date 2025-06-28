@@ -4,26 +4,21 @@ import { useAuth } from "../context/AuthContext";
 
 const DoctorAvailability = () => {
   const { user, token } = useAuth();
-  const [availability, setAvailability] = useState([]);
+  const [perDateAvailability, setPerDateAvailability] = useState([]);
   const [date, setDate] = useState("");
   const [slot, setSlot] = useState("");
 
   useEffect(() => {
-    // Ensure availability is always an array
-    if (user && Array.isArray(user.availability?.perDate)) {
-      setAvailability(user.availability.perDate);
-    } else if (user && Array.isArray(user.availability)) {
-      setAvailability(user.availability); // fallback
-    } else {
-      setAvailability([]);
+    if (user?.availability?.perDate) {
+      setPerDateAvailability(user.availability.perDate);
     }
   }, [user]);
 
   const addSlot = () => {
     if (!date || !slot) return;
-    setAvailability((prev) => {
+    setPerDateAvailability((prev) => {
       const updated = [...prev];
-      const index = updated.findIndex(a => a.date === date);
+      const index = updated.findIndex((a) => a.date === date);
       if (index !== -1) {
         if (!updated[index].slots.includes(slot)) {
           updated[index].slots.push(slot);
@@ -38,15 +33,16 @@ const DoctorAvailability = () => {
   };
 
   const saveAvailability = async () => {
-    if (!Array.isArray(availability)) {
-      alert("Availability format is invalid.");
-      return;
-    }
-
     try {
+      const existingWeekly = user?.availability?.weekly || {};
+      const newAvailability = {
+        weekly: existingWeekly,
+        perDate: perDateAvailability,
+      };
+
       await axios.put(
-        `https://lifeline3-1.onrender.com/api/user/availability/${user.uid}`,
-        { availability },
+        `https://lifeline3-1.onrender.com/api/user/${user.uid}/availability`,
+        { availability: newAvailability },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert("Availability saved.");
@@ -82,10 +78,10 @@ const DoctorAvailability = () => {
       </div>
 
       <ul className="mt-4 space-y-2">
-        {Array.isArray(availability) && availability.length > 0 ? (
-          availability.map((a, i) => (
+        {perDateAvailability.length > 0 ? (
+          perDateAvailability.map((a, i) => (
             <li key={i} className="bg-gray-800 p-3 rounded">
-              <strong>{a.date}</strong>: {Array.isArray(a.slots) ? a.slots.join(", ") : "No slots"}
+              <strong>{a.date}</strong>: {a.slots.join(", ")}
             </li>
           ))
         ) : (

@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
-const WEEKDAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const EditAvailability = () => {
   const { user, token } = useAuth();
@@ -22,13 +22,20 @@ const EditAvailability = () => {
     }
   }, [user]);
 
-  const toggle = d => setDays(prev => prev.includes(d) ? prev.filter(x=>x!==d) : [...prev,d]);
+  const toggle = (d) =>
+    setDays((prev) => (prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]));
 
   const save = async () => {
     try {
+      const existingPerDate = user?.availability?.perDate || [];
+      const newAvailability = {
+        weekly: { days, fromTime, toTime, slotDuration },
+        perDate: existingPerDate,
+      };
+
       await axios.put(
         `https://lifeline3-1.onrender.com/api/user/${user.uid}/availability`,
-        { availability: { weekly: { days, fromTime, toTime, slotDuration } } },
+        { availability: newAvailability },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setMsg("✅ Saved");
@@ -42,28 +49,56 @@ const EditAvailability = () => {
     <div className="p-6 bg-gray-900 text-white rounded max-w-xl mx-auto mt-10">
       <h2 className="text-2xl mb-4">Set Weekly Availability</h2>
       <div className="mb-4">
-        {WEEKDAYS.map(d => (
+        {WEEKDAYS.map((d) => (
           <label key={d} className="inline-flex items-center mr-3">
-            <input type="checkbox" checked={days.includes(d)} onChange={()=>toggle(d)} className="mr-1"/>
+            <input
+              type="checkbox"
+              checked={days.includes(d)}
+              onChange={() => toggle(d)}
+              className="mr-1"
+            />
             {d}
           </label>
         ))}
       </div>
       <div className="mb-4">
         <label>From:</label>
-        <input type="time" value={fromTime} onChange={e => setFromTime(e.target.value)} className="ml-2 bg-gray-800 p-2 rounded"/>
+        <input
+          type="time"
+          value={fromTime}
+          onChange={(e) => setFromTime(e.target.value)}
+          className="ml-2 bg-gray-800 p-2 rounded"
+        />
       </div>
       <div className="mb-4">
         <label>To:</label>
-        <input type="time" value={toTime} onChange={e => setToTime(e.target.value)} className="ml-2 bg-gray-800 p-2 rounded"/>
+        <input
+          type="time"
+          value={toTime}
+          onChange={(e) => setToTime(e.target.value)}
+          className="ml-2 bg-gray-800 p-2 rounded"
+        />
       </div>
       <div className="mb-4">
         <label>Slot Duration:</label>
-        <select value={slotDuration} onChange={e => setSlotDuration(Number(e.target.value))} className="ml-2 bg-gray-800 p-2 rounded">
-          {[15,30,45,60].map(m => <option key={m} value={m}>{m} min</option>)}
+        <select
+          value={slotDuration}
+          onChange={(e) => setSlotDuration(Number(e.target.value))}
+          className="ml-2 bg-gray-800 p-2 rounded"
+        >
+          {[15, 30, 45, 60].map((m) => (
+            <option key={m} value={m}>
+              {m} min
+            </option>
+          ))}
         </select>
       </div>
-      <button onClick={save} className="bg-green-600 px-4 py-2 rounded hover:bg-green-700">Save</button>
+      <button
+        onClick={save}
+        className="bg-green-600 px-4 py-2 rounded hover:bg-green-700"
+      >
+        Save
+      </button>
       {msg && <p className="mt-2">{msg}</p>}
     </div>
   );
