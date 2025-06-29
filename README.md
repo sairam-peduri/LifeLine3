@@ -107,17 +107,7 @@ The platform consists of the following components:
 - Firebase project with service account
 - Python + Flask server deployed
 
-### Installation
 
-```bash
-# Backend Setup
-cd backend
-npm install
-# Create a .env file with:
-# MONGO_URI=
-# FIREBASE_SERVICE_ACCOUNT_JSON=
-# CORS_ORIGIN=https://life-line-sol.vercel.app
-node server.js
 
 ### 🤝 Contributing
 
@@ -142,6 +132,19 @@ See the [LICENSE](LICENSE) file for details.
 - 🔐 **Firebase** – For seamless authentication and secure user management.
 - 🧠 **OpenAI** – For chatbot integration and intelligent responses.
 
+
 ---
 
 ### 🧬 LifeLine — Bridging gaps in healthcare through decentralized, intelligent infrastructure.
+
+### Installation
+
+```bash
+# Backend Setup
+cd backend
+npm install
+# Create a .env file with:
+# MONGO_URI=
+# FIREBASE_SERVICE_ACCOUNT_JSON=
+# CORS_ORIGIN=https://life-line-sol.vercel.app
+node server.js
