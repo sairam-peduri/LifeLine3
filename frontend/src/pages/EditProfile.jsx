@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
+import "./EditProfile.css"; // Import your CSS for styling
 
 const EditProfile = () => {
   const { user, firebaseUser } = useAuth(); // ✅ Get firebaseUser for token

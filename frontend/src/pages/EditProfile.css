@@ -1,29 +1,88 @@
+/* EditProfile.css */
+
 .edit-profile-container {
-    max-width: 600px;
-    margin: 2rem auto;
-    background: #111;
-    padding: 2rem;
-    border-radius: 10px;
-    color: #fff;
+  max-width: 600px;
+  margin: 90px auto 40px auto;
+  background: #111827;
+  padding: 2rem;
+  border-radius: 12px;
+  color: #f3f4f6;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 0 12px rgba(0, 213, 255, 0.08);
+}
+
+.edit-profile-container h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #00d2ff;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.edit-form input,
+.edit-form select,
+.edit-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #1f2937;
+  color: #f9fafb;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.edit-form input:focus,
+.edit-form select:focus,
+.edit-form textarea:focus {
+  outline: none;
+  background-color: #374151;
+}
+
+.edit-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.edit-form button {
+  padding: 12px 20px;
+  background: #00d2ff;
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s ease;
+}
+
+.edit-form button:hover {
+  background: #00b4d8;
+}
+
+@media (max-width: 640px) {
+  .edit-profile-container {
+    margin: 80px 16px 40px 16px;
+    padding: 1.5rem;
   }
+
+  .edit-profile-container h2 {
+    font-size: 1.4rem;
+  }
+
   .edit-form input,
   .edit-form select,
   .edit-form textarea {
-    width: 100%;
-    margin-bottom: 1rem;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background: #222;
-    color: #fff;
+    font-size: 0.9rem;
   }
+
   .edit-form button {
-    padding: 10px 20px;
-    background: #00d2ff;
-    border: none;
-    border-radius: 5px;
-    color: #000;
-    font-weight: bold;
-    cursor: pointer;
+    font-size: 0.95rem;
   }
-  
+}
