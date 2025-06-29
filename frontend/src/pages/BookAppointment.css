@@ -1,0 +1,77 @@
+/* BookAppointment.css */
+
+.book-appointment-container {
+    margin-top: 80px;
+    max-width: 600px;
+    background-color: #111827;
+    color: #f1f5f9;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0, 213, 255, 0.08);
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .book-appointment-container h2 {
+    font-size: 1.6rem;
+    color: #00d2ff;
+    margin-bottom: 20px;
+  }
+  
+  .book-appointment-container select,
+  .book-appointment-container input[type="date"],
+  .book-appointment-container textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 16px;
+    background-color: #1f2937;
+    color: #e5e7eb;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  
+  .book-appointment-container textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  .book-appointment-container button {
+    width: 100%;
+    background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+    color: #fff;
+    font-weight: bold;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .book-appointment-container button:hover {
+    transform: scale(1.02);
+  }
+  
+  .book-appointment-container .popup-success {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: #16a34a;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+  }
+  
+  @media (max-width: 640px) {
+    .book-appointment-container {
+      padding: 20px;
+      margin: 80px 16px 30px 16px;
+    }
+  
+    .book-appointment-container button {
+      font-size: 0.95rem;
+    }
+  }
+  
