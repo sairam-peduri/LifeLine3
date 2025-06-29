@@ -74,19 +74,19 @@ export default function Navbar() {
                 <div className="dropdown-content">
                   <span onClick={() => navigate("/profile")}>Profile</span>
                   <span onClick={() => navigate("/doctors")}>Doctors Directory</span>
-                  <span onClick={() => navigate("/chat")}>Chat Inbox 💬</span>
+                  <span onClick={() => navigate("/chat")}>Chat Inbox</span>
                   <span onClick={() => navigate("/transactions")}>Transactions</span>
-                  <span onClick={() => navigate("/history")}>Prediction History 📋</span>
+                  <span onClick={() => navigate("/history")}>Prediction History</span>
 
                   {user.role === "doctor" ? (
                     <>
-                      <span onClick={() => navigate("/set-availability")}>Set Availability 📅</span>
-                      <span onClick={() => navigate("/manage-appointments")}>Manage Requests ✅</span>
+                      <span onClick={() => navigate("/set-availability")}>Set Availability </span>
+                      <span onClick={() => navigate("/manage-appointments")}>Manage Requests </span>
                     </>
                   ) : (
                     <>
-                      <span onClick={() => navigate("/book-appointment")}>Book Appointment 📆</span>
-                      <span onClick={() => navigate("/my-appointments")}>My Appointments 🗂</span>
+                      <span onClick={() => navigate("/book-appointment")}>Book Appointment </span>
+                      <span onClick={() => navigate("/my-appointments")}>My Appointments </span>
                     </>
                   )}
 
