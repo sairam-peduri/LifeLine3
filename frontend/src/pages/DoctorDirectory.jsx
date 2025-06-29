@@ -41,7 +41,7 @@ const DoctorDirectory = () => {
   return (
     <div className="doctor-directory-wrapper">
       <Navbar user={user} />
-      <div className="doctor-directory">
+      <div style={{ marginTop: "40px" }} className="doctor-directory">
         <h2>🩺 Doctor Directory</h2>
 
         <input

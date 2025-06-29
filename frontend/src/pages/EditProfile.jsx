@@ -64,7 +64,7 @@ const EditProfile = () => {
   return (
     <>
     <Navbar user={user}/>
-    <div className="edit-profile-container">
+    <div style={{ marginTop: "80px" }} className="edit-profile-container">
       <h2>Edit Profile</h2>
       <form onSubmit={handleSubmit} className="edit-form">
         <input

@@ -103,7 +103,7 @@ const BookAppointment = () => {
   return (
     <>
     <Navbar user={user}/>
-    <div className="max-w-xl mx-auto p-6 text-white bg-gray-900 mt-10 rounded relative">
+    <div style={{ marginTop: "80px" }} className="max-w-xl mx-auto p-6 text-white bg-gray-900 mt-10 rounded relative">
       <h2 className="text-xl font-bold mb-4">📅 Book Appointment</h2>
 
       {/* 👨‍⚕️ Doctor dropdown */}

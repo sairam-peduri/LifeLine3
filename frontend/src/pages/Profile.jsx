@@ -57,7 +57,7 @@ const Profile = () => {
       <Navbar />
 
       {/* 👤 Unified Profile Card */}
-      <div className="profile-card">
+      <div style={{ marginTop: "80px" }}className="profile-card">
         <div className="profile-header">
           <img className="avatar" src="/assets/avatar.jpg" alt="User Avatar" />
           <div>
