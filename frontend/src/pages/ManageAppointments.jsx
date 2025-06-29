@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
+import "./ManageAppointments.css";
+
 
 const ManageAppointments = () => {
   const { user, token } = useAuth();
@@ -58,53 +60,59 @@ const ManageAppointments = () => {
   return (
     <>
     <Navbar user={user}/>
-    <div style={{ marginTop: "80px" }} className="max-w-3xl mx-auto mt-10 text-white p-6 bg-gray-900 rounded">
-      <h2 className="text-2xl font-bold mb-6">🩺 Manage Appointments</h2>
+<div className="manage-container mx-auto">
+  <h2 className="manage-title">🩺 Manage Appointments</h2>
 
-      {loading ? (
-        <p className="text-gray-400">Loading appointments...</p>
-      ) : appointments.length === 0 ? (
-        <p className="text-gray-400">No appointment requests found.</p>
-      ) : (
-        appointments.map((appt) => (
-          <div key={appt._id} className="border-b border-gray-700 py-4">
-            <p><strong>👤 Patient:</strong> {appt.patientId?.name || "Unknown"}</p>
-            <p><strong>📅 Date:</strong> {appt.date}</p>
-            <p><strong>⏰ Time:</strong> {appt.time}</p>
-            <p><strong>📝 Reason:</strong> {appt.reason || "N/A"}</p>
-            <p>
-              <strong>📌 Status:</strong>{" "}
-              <span className={
-                appt.status === "accepted" ? "text-green-400" :
-                appt.status === "rejected" ? "text-red-400" :
-                "text-yellow-400"
-              }>
-                {appt.status.toUpperCase()}
-              </span>
-            </p>
+  {loading ? (
+    <p className="text-gray-400">Loading appointments...</p>
+  ) : appointments.length === 0 ? (
+    <p className="text-gray-400">No appointment requests found.</p>
+  ) : (
+    appointments.map((appt) => (
+      <div key={appt._id} className="appointment-card">
+        <div className="appointment-info">
+          <p><strong>👤 Patient:</strong> {appt.patientId?.name || "Unknown"}</p>
+          <p><strong>📅 Date:</strong> {appt.date}</p>
+          <p><strong>⏰ Time:</strong> {appt.time}</p>
+          <p><strong>📝 Reason:</strong> {appt.reason || "N/A"}</p>
+          <p>
+            <strong>📌 Status:</strong>{" "}
+            <span
+              className={`status-text ${
+                appt.status === "accepted"
+                  ? "status-accepted"
+                  : appt.status === "rejected"
+                  ? "status-rejected"
+                  : "status-pending"
+              }`}
+            >
+              {appt.status.toUpperCase()}
+            </span>
+          </p>
+        </div>
 
-            {appt.status === "pending" && (
-              <div className="mt-3 flex gap-2">
-                <button
-                  onClick={() => handleUpdate(appt._id, "accepted")}
-                  className="bg-green-600 px-4 py-1 rounded hover:bg-green-700"
-                  disabled={updatingId === appt._id}
-                >
-                  ✅ Accept
-                </button>
-                <button
-                  onClick={() => handleUpdate(appt._id, "rejected")}
-                  className="bg-red-600 px-4 py-1 rounded hover:bg-red-700"
-                  disabled={updatingId === appt._id}
-                >
-                  ❌ Reject
-                </button>
-              </div>
-            )}
+        {appt.status === "pending" && (
+          <div className="button-group">
+            <button
+              onClick={() => handleUpdate(appt._id, "accepted")}
+              className="button-accept"
+              disabled={updatingId === appt._id}
+            >
+              ✅ Accept
+            </button>
+            <button
+              onClick={() => handleUpdate(appt._id, "rejected")}
+              className="button-reject"
+              disabled={updatingId === appt._id}
+            >
+              ❌ Reject
+            </button>
           </div>
-        ))
-      )}
-    </div>
+        )}
+      </div>
+    ))
+  )}
+</div>
     </>
   );
 };

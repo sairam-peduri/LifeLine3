@@ -1,0 +1,82 @@
+/* EditAvailability.css */
+
+.availability-container {
+    margin-top: 80px;
+    max-width: 600px;
+    background-color: #111827;
+    color: #f1f5f9;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0, 213, 255, 0.08);
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .availability-container h2 {
+    font-size: 1.6rem;
+    color: #00d2ff;
+    margin-bottom: 20px;
+  }
+  
+  .availability-container label {
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    color: #e5e7eb;
+  }
+  
+  .availability-container input[type="checkbox"] {
+    accent-color: #00d2ff;
+    margin-right: 6px;
+  }
+  
+  .availability-container input[type="time"],
+  .availability-container select {
+    background-color: #1f2937;
+    color: #e5e7eb;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 6px;
+    margin-left: 10px;
+    font-size: 1rem;
+  }
+  
+  .availability-container button {
+    width: 100%;
+    background: linear-gradient(90deg, #22c55e, #15803d);
+    color: #fff;
+    font-weight: bold;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    margin-top: 10px;
+  }
+  
+  .availability-container button:hover {
+    background: linear-gradient(90deg, #16a34a, #166534);
+  }
+  
+  .availability-container p {
+    margin-top: 10px;
+    font-weight: 500;
+    color: #00ff88;
+  }
+  
+  @media (max-width: 640px) {
+    .availability-container {
+      margin: 80px 16px 30px 16px;
+      padding: 24px;
+    }
+  
+    .availability-container h2 {
+      font-size: 1.4rem;
+    }
+  
+    .availability-container label {
+      font-size: 0.95rem;
+    }
+  }
+  

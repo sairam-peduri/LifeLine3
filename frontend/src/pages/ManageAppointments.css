@@ -1,0 +1,92 @@
+/* ManageAppointments.css */
+
+.manage-container {
+    margin-top: 80px;
+    max-width: 768px;
+    background-color: #111827;
+    padding: 30px;
+    border-radius: 12px;
+    color: #e5e7eb;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 0 20px rgba(0, 213, 255, 0.05);
+  }
+  
+  .manage-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #00d2ff;
+    margin-bottom: 20px;
+  }
+  
+  .appointment-card {
+    background-color: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .appointment-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 12px rgba(0, 213, 255, 0.1);
+  }
+  
+  .appointment-info p {
+    margin: 6px 0;
+    font-size: 0.95rem;
+  }
+  
+  .status-text {
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 5px;
+    display: inline-block;
+  }
+  
+  .status-accepted {
+    color: #22c55e;
+  }
+  
+  .status-rejected {
+    color: #ef4444;
+  }
+  
+  .status-pending {
+    color: #facc15;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  
+  .button-accept {
+    background-color: #16a34a;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .button-accept:hover {
+    background-color: #15803d;
+  }
+  
+  .button-reject {
+    background-color: #dc2626;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .button-reject:hover {
+    background-color: #b91c1c;
+  }
+  

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
+import "./EditAvailability.css";
 
 const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -52,7 +53,7 @@ const EditAvailability = () => {
   return (
     <>
     <Navbar user={user}/>
-    <div style={{ marginTop: "80px" }} className="p-6 bg-gray-900 text-white rounded max-w-xl mx-auto mt-10">
+    <div className="availability-container mx-auto">
       <h2 className="text-2xl mb-4">Set Weekly Availability</h2>
       <div className="mb-4">
         {WEEKDAYS.map((d) => (
