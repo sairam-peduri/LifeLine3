@@ -119,8 +119,7 @@ npm install
 # CORS_ORIGIN=https://life-line-sol.vercel.app
 node server.js
 
-
-### 🤝 Contributing
+#### 🤝 Contributing
 
 We welcome contributions to improve **LifeLine**!
 
@@ -132,12 +131,12 @@ We welcome contributions to improve **LifeLine**!
 
 Please follow our coding guidelines and submit clear, well-documented PRs.
 
-## 🪪 License
+#### 🪪 License
 
 This project is licensed under the **MIT License**.  
 See the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+#### 🙏 Acknowledgments
 
 - 🤖 **Flask ML Team** – For powering the disease prediction API.
 - 🌐 **Solana Foundation** – For supporting decentralized Web3 infrastructure.
@@ -146,4 +145,4 @@ See the [LICENSE](LICENSE) file for details.
 
 ---
 
-### 🧬 LifeLine — Bridging gaps in healthcare through decentralized, intelligent infrastructure.
+#### 🧬 LifeLine — Bridging gaps in healthcare through decentralized, intelligent infrastructure.
