@@ -10,8 +10,6 @@ const { Server } = require("socket.io");
 const path = require("path");
 const User = require("./models/User");
 
-
-
 dotenv.config();
 
 // ✅ Firebase Admin Initialization
@@ -29,7 +27,12 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-app.set("io", io);
+
+// ✅ Inject io into request
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
 
 // ✅ Middleware
 app.use(cors({ origin: "https://life-line-sol.vercel.app", credentials: true }));
@@ -50,11 +53,10 @@ app.use("/api/transactions", require("./routes/transactions"));
 app.use("/uploads", express.static("uploads"));
 app.use("/api", require("./routes/prediction"));
 require("./reminderCron");
-const appointmentRoutes = require("./routes/appointments");
-app.use("/api/appointments", appointmentRoutes);
-
+app.use("/api/appointments", require("./routes/appointments"));
 
 const FLASK_API_URL = "https://lifeline3.onrender.com/api";
+const { verifyToken } = require("./middlewares/verifyToken");
 
 // ✅ Get Symptoms from Flask
 app.get("/api/get_symptoms", async (req, res) => {
@@ -67,21 +69,13 @@ app.get("/api/get_symptoms", async (req, res) => {
   }
 });
 
-const { verifyToken } = require("./middlewares/verifyToken");
-
+// ✅ Disease Prediction
 app.post("/api/predict", verifyToken, async (req, res) => {
   try {
     const { symptoms } = req.body;
     const uid = req.user.uid;
 
-    console.log("📥 Predict request by UID:", uid);
-    console.log("💊 Symptoms:", symptoms);
-
-    const flaskRes = await axios.post(`${FLASK_API_URL}/predict`, {
-      symptoms,
-      uid, // ✅ Send UID for fallback logging in Flask
-    });
-
+    const flaskRes = await axios.post(`${FLASK_API_URL}/predict`, { symptoms, uid });
     const predictedDisease = flaskRes.data.disease;
 
     const updatedUser = await User.findOneAndUpdate(
@@ -98,13 +92,9 @@ app.post("/api/predict", verifyToken, async (req, res) => {
       { new: true }
     );
 
-    if (!updatedUser) {
-      console.error("❌ No user found to update for uid:", uid);
-      return res.status(404).json({ error: "User not found" });
-    }
+    if (!updatedUser) return res.status(404).json({ error: "User not found" });
 
-    console.log("✅ Prediction stored for:", updatedUser.email);
-    return res.json({ disease: predictedDisease });
+    res.json({ disease: predictedDisease });
   } catch (err) {
     console.error("❌ Prediction failed:", err.message);
     return res.status(500).json({ message: "Prediction failed" });
@@ -127,12 +117,11 @@ app.get("/api/predictions", async (req, res) => {
 
     res.json({ history, total });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: "Server error" });
   }
 });
 
-// ✅ Delete Prediction History Item
+// ✅ Delete Prediction Entry
 app.delete("/api/predictions/:uid/:entryId", async (req, res) => {
   const { uid, entryId } = req.params;
   try {
@@ -143,18 +132,16 @@ app.delete("/api/predictions/:uid/:entryId", async (req, res) => {
     );
     res.json({ success: true, updatedHistory: user.predictionHistory });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: "Could not delete entry" });
   }
 });
 
-// ✅ WebSocket Events
+// ✅ Socket.IO Events
 io.on("connection", (socket) => {
   console.log("🟢 Socket connected:", socket.id);
 
   socket.on("join-room", (roomId) => {
     socket.join(roomId);
-    console.log(`📦 Socket ${socket.id} joined room ${roomId}`);
   });
 
   socket.on("send-message", (msg) => {
@@ -166,10 +153,9 @@ io.on("connection", (socket) => {
   });
 });
 
-// ✅ Root Route
 app.get("/", (req, res) => res.send("✅ LifeLine Backend running..."));
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`🚀 Server running on https://lifeline3-1.onrender.com`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
