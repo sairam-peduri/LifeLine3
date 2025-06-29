@@ -98,10 +98,6 @@ The platform consists of the following components:
 6. **Disease Prediction**: Patient submits symptoms → Flask API → Disease prediction returned.
 7. **Payment Flow**: Patients pay SOL via wallet to doctor's wallet for consultations.
 
-## Screenshots
-
-> *(Add your screenshots here: home page, booking page, chat, dashboard, etc.)*
-
 ## Getting Started
 
 ### Prerequisites
