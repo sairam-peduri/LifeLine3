@@ -1,11 +1,3 @@
-body {
-  background-color: #0c0f1d;
-  font-family: "Poppins", sans-serif;
-  color: #eee;
-  margin: 0;
-  padding: 0;
-}
-
 .profile-wrapper {
   padding: 40px 20px;
   max-width: 1200px;
@@ -17,56 +9,43 @@ body {
   backdrop-filter: blur(12px);
   border-radius: 15px;
   padding: 25px;
-  margin-top:30px;
-  margin-bottom: 30px;
+  margin: 30px 0;
   box-shadow: 0 0 25px rgba(0, 255, 255, 0.08);
 }
 
-.user-card {
+.profile-header {
   display: flex;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 30px;
-}
-
-.profile-sidebar {
-  text-align: center;
-  flex: 1;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
 }
 
 .avatar {
-  width: 110px;
-  height: 110px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   border: 2px solid #00d2ff;
 }
 
 .profile-name {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: bold;
-  margin-top: 12px;
   color: #00ffff;
+  margin: 0;
 }
 
 .profile-role {
   color: #aaa;
   font-size: 0.9rem;
-  margin-top: 5px;
 }
 
-.profile-info {
-  flex: 2;
-}
-
-.profile-info p {
-  margin: 8px 0;
-  font-size: 1rem;
+.profile-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
   color: #ddd;
-}
-
-h2 {
-  color: #00d2ff;
-  margin-bottom: 20px;
+  font-size: 0.95rem;
+  margin-top: 15px;
 }
 
 .recent-predictions {
@@ -87,10 +66,10 @@ h2 {
 
 .prediction-box p {
   margin: 8px 0;
-  font-size: 0.95rem;
 }
 
-.view-history-btn {
+.view-history-btn,
+.edit-profile-btn {
   padding: 12px 25px;
   background: linear-gradient(90deg, #00d2ff, #3a7bd5);
   color: white;
@@ -102,7 +81,8 @@ h2 {
   transition: transform 0.3s ease;
 }
 
-.view-history-btn:hover {
+.view-history-btn:hover,
+.edit-profile-btn:hover {
   transform: scale(1.05);
 }
 
@@ -116,14 +96,4 @@ h2 {
   padding: 100px;
   font-size: 1.2rem;
   color: #00ffff;
-}
-
-.edit-profile-btn {
-  background-color: #00d2ff;
-  color: #000;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
 }

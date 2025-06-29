@@ -8,7 +8,9 @@ import {
   Pie,
   PieChart,
   ResponsiveContainer,
-  Tooltip, XAxis, YAxis
+  Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts";
 import { getPredictionHistory } from "../api/api";
 import Navbar from "../components/Navbar";
@@ -54,33 +56,39 @@ const Profile = () => {
     <div className="profile-wrapper">
       <Navbar />
 
-      <div className="profile-card user-card">
-        <div className="profile-sidebar">
+      {/* 👤 Unified Profile Card */}
+      <div className="profile-card">
+        <div className="profile-header">
           <img className="avatar" src="/assets/avatar.jpg" alt="User Avatar" />
-          <div className="profile-name">{user.name}</div>
-          <div className="profile-role">{user.role || "Patient"}</div>
+          <div>
+            <h2 className="profile-name">{user.name}</h2>
+            <p className="profile-role">{user.role || "Patient"}</p>
+          </div>
         </div>
-        <div className="profile-info">
-          <p><strong>Name:</strong> {user.name}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Gender:</strong> {user.gender}</p>
-          <p><strong>DOB:</strong> {user.dob}</p>
+
+        <div className="profile-info-grid">
+          <div><strong>Email:</strong> {user.email}</div>
+          <div><strong>Gender:</strong> {user.gender}</div>
+          <div><strong>Date of Birth:</strong> {user.dob}</div>
+
+          {user.role === "doctor" && (
+            <>
+              <div><strong>Specialization:</strong> {user.specialization}</div>
+              <div><strong>Workplace:</strong> {user.workplace}</div>
+              <div><strong>Consultation Fee:</strong> {user.consultationFee} SOL</div>
+              <div style={{ gridColumn: "1 / -1" }}><strong>About:</strong> {user.about}</div>
+            </>
+          )}
         </div>
+
         <div className="profile-button-container">
-        <button className="edit-profile-btn" onClick={() => navigate("/edit-profile")}>
-        Edit
-        </button>
+          <button className="edit-profile-btn" onClick={() => navigate("/edit-profile")}>
+            ✏️ Edit Profile
+          </button>
         </div>
       </div>
-      {user.role === "doctor" && (
-  <>
-    <p><strong>Specialization:</strong> {user.specialization}</p>
-    <p><strong>Workplace:</strong> {user.workplace}</p>
-    <p><strong>About:</strong> {user.about}</p>
-    <p><strong>Consultation Fee:</strong> {user.consultationFee} SOL</p>
-  </>
-)}
 
+      {/* 🧾 Recent Predictions */}
       {history.length > 0 && (
         <div className="profile-card">
           <h2>🧾 Recent Predictions</h2>
@@ -96,6 +104,7 @@ const Profile = () => {
         </div>
       )}
 
+      {/* 📊 Charts */}
       {diseaseChart.length > 0 && (
         <div className="profile-card">
           <h2>📊 Most Predicted Diseases</h2>

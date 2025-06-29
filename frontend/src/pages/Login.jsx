@@ -21,11 +21,7 @@ const Login = () => {
           name: user.displayName,
           uid: user.uid,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       const { isNewUser, user: userData } = res.data;
@@ -43,15 +39,14 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-box">
-        <h1>🔐 Login to LifeLine</h1>
-        <p className="login-desc">
-          Securely access your health dashboard with your Google account.
-          We use Firebase Authentication to protect your medical data.
+    <div className="auth-page">
+      <div className="auth-card">
+        <h1>🔐 Sign in to LifeLine</h1>
+        <p className="subtext">
+          Login securely using your Google account to access your Web3 health profile.
         </p>
-        <button className="google-btn" onClick={loginWithGoogle}>
-          <span className="icon">🟦</span> Sign in with Google
+        <button className="auth-btn" onClick={loginWithGoogle}>
+          <span className="icon">🔵</span> Sign in with Google
         </button>
       </div>
     </div>

@@ -28,11 +28,7 @@ export default function SignupDetails() {
 
     try {
       const token = await auth.currentUser.getIdToken(true);
-      const payload = {
-        gender,
-        dob,
-        role,
-      };
+      const payload = { gender, dob, role };
 
       if (role === "doctor") {
         payload.specialization = specialization;
@@ -58,10 +54,10 @@ export default function SignupDetails() {
   };
 
   return (
-    <div className="auth-container">
-      <form className="auth-box" onSubmit={handleSubmit}>
+    <div className="auth-page">
+      <form className="auth-card" onSubmit={handleSubmit}>
         <h2>📝 Complete Your Profile</h2>
-        <p className="subtext">Tell us more about yourself to personalize your experience.</p>
+        <p className="subtext">Help us personalize your LifeLine experience.</p>
 
         {error && <p className="error-text">{error}</p>}
 
@@ -105,7 +101,7 @@ export default function SignupDetails() {
               required
             />
 
-            <label>About You</label>
+            <label>About</label>
             <textarea
               value={about}
               onChange={(e) => setAbout(e.target.value)}

@@ -49,6 +49,8 @@ const EditAvailability = () => {
   };
 
   return (
+    <>
+    <Navbar user={user}/>
     <div className="p-6 bg-gray-900 text-white rounded max-w-xl mx-auto mt-10">
       <h2 className="text-2xl mb-4">Set Weekly Availability</h2>
       <div className="mb-4">
@@ -104,6 +106,7 @@ const EditAvailability = () => {
       </button>
       {msg && <p className="mt-2">{msg}</p>}
     </div>
+    </>
   );
 };
 

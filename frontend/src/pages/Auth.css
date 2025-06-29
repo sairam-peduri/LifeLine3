@@ -1,55 +1,94 @@
-.login-page {
-  height: 100vh;
-  width: 100%;
+.auth-page {
+  min-height: 100vh;
   background: linear-gradient(135deg, #0f0f25, #1a1a3d);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 30px 16px;
+  color: #fff;
 }
 
-.login-box {
+.auth-card {
   background-color: #1e1e3f;
-  border-radius: 12px;
-  padding: 40px;
+  padding: 32px;
+  max-width: 450px;
   width: 100%;
-  max-width: 420px;
+  border-radius: 16px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-card h1,
+.auth-card h2 {
+  font-size: 1.5rem;
   text-align: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-  color: #ffffff;
 }
 
-.login-box h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.login-desc {
-  font-size: 14px;
-  margin-bottom: 30px;
+.subtext {
+  font-size: 0.9rem;
+  text-align: center;
   color: #cccccc;
-  line-height: 1.6;
+  margin-bottom: 12px;
 }
 
-.google-btn {
+.auth-btn {
   background: linear-gradient(90deg, #4c6ef5, #6a70f6);
   border: none;
   color: white;
-  padding: 12px 20px;
-  font-size: 16px;
+  padding: 12px;
+  font-size: 15px;
   border-radius: 8px;
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   transition: background 0.3s ease;
 }
 
-.google-btn:hover {
+.auth-btn:hover {
   background: linear-gradient(90deg, #3f5efb, #5a62ff);
 }
 
-.icon {
-  font-size: 20px;
+.auth-card input,
+.auth-card select,
+.auth-card textarea {
+  background-color: #2a2a4d;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  resize: none;
+}
+
+.auth-card input:focus,
+.auth-card select:focus,
+.auth-card textarea:focus {
+  outline: 2px solid #5a62ff;
+}
+
+.auth-card button[type="submit"] {
+  background-color: #28a745;
+  padding: 12px;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.auth-card button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+.error-text {
+  color: #ff6b6b;
+  background-color: #2e1f1f;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-align: center;
 }

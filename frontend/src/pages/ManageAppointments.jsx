@@ -55,6 +55,8 @@ const ManageAppointments = () => {
   };
 
   return (
+    <>
+    <Navbar user={user}/>
     <div className="max-w-3xl mx-auto mt-10 text-white p-6 bg-gray-900 rounded">
       <h2 className="text-2xl font-bold mb-6">🩺 Manage Appointments</h2>
 
@@ -102,6 +104,7 @@ const ManageAppointments = () => {
         ))
       )}
     </div>
+    </>
   );
 };
 
