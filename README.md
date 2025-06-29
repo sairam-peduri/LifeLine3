@@ -118,3 +118,30 @@ npm install
 # FIREBASE_SERVICE_ACCOUNT_JSON=
 # CORS_ORIGIN=https://life-line-sol.vercel.app
 node server.js
+## 🤝 Contributing
+
+We welcome contributions to improve **LifeLine**!
+
+1. Fork this repository.
+2. Create a new branch: `git checkout -b feature/your-feature-name`
+3. Make your changes and commit: `git commit -m "Add your message"`
+4. Push to your forked repo: `git push origin feature/your-feature-name`
+5. Submit a pull request to the `main` branch.
+
+Please follow our coding guidelines and submit clear, well-documented PRs.
+
+## 🪪 License
+
+This project is licensed under the **MIT License**.  
+See the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- 🤖 **Flask ML Team** – For powering the disease prediction API.
+- 🌐 **Solana Foundation** – For supporting decentralized Web3 infrastructure.
+- 🔐 **Firebase** – For seamless authentication and secure user management.
+- 🧠 **OpenAI** – For chatbot integration and intelligent responses.
+
+---
+
+### 🧬 LifeLine — Bridging gaps in healthcare through decentralized, intelligent infrastructure.
