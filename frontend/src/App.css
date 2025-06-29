@@ -9,4 +9,7 @@ section {
   a { color: #3182ce; text-decoration: none; }
   a:hover { text-decoration: underline; }
   
+  body {
+    padding-top: 70px; /* or whatever height your Navbar is */
+  }
   
