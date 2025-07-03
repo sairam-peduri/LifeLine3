@@ -5,7 +5,7 @@ const User = require("../models/User");
 const Notification = require("../models/Notification");
 const { verifyToken } = require("../middlewares/auth");
 
-// Book Appointment
+// ✅ Book Appointment
 router.post("/", verifyToken, async (req, res) => {
   const { patientId, doctorId, date, time, reason } = req.body;
 
@@ -17,16 +17,17 @@ router.post("/", verifyToken, async (req, res) => {
     const exists = await Appointment.findOne({ doctorId, date, time });
     if (exists) return res.status(400).json({ error: "Slot already booked" });
 
-    const appt = new Appointment({ patientId, doctorId, date, time, reason });
-    await appt.save();
+    const appointment = new Appointment({ patientId, doctorId, date, time, reason });
+    await appointment.save();
 
-    res.json({ message: "Appointment booked", appointment: appt });
+    res.json({ message: "Appointment booked", appointment });
   } catch (err) {
+    console.error("❌ Booking error:", err);
     res.status(500).json({ error: "Booking failed" });
   }
 });
 
-// Get appointments by user
+// ✅ Get Appointments by User
 router.get("/user/:userId", verifyToken, async (req, res) => {
   const { userId } = req.params;
   const role = req.query.role;
@@ -37,13 +38,15 @@ router.get("/user/:userId", verifyToken, async (req, res) => {
       .populate("patientId", "name")
       .populate("doctorId", "name specialization")
       .sort({ date: 1, time: 1 });
+
     res.json(data);
   } catch (err) {
+    console.error("❌ Fetch appointments error:", err);
     res.status(500).json({ error: "Failed to fetch appointments" });
   }
 });
 
-// Update appointment status & notify
+// ✅ Update Appointment Status + Send Notification
 router.put("/:id/status", verifyToken, async (req, res) => {
   const { status } = req.body;
   if (!["accepted", "rejected"].includes(status)) {
@@ -51,33 +54,35 @@ router.put("/:id/status", verifyToken, async (req, res) => {
   }
 
   try {
-    const updated = await Appointment.findByIdAndUpdate(
+    const appointment = await Appointment.findByIdAndUpdate(
       req.params.id,
       { status },
       { new: true }
-    ).populate("patientId");
+    ).populate("patientId doctorId");
 
-    if (!updated) return res.status(404).json({ error: "Appointment not found" });
+    if (!appointment) return res.status(404).json({ error: "Appointment not found" });
 
-    const msg = `Your appointment on ${updated.date} at ${updated.time} has been ${status}.`;
+    const msg = `Your appointment with Dr. ${appointment.doctorId.name} on ${appointment.date} at ${appointment.time} has been ${status.toUpperCase()}.`;
 
+    // Save notification
     await Notification.create({
-      userId: updated.patientId._id,
+      userId: appointment.patientId._id,
       message: msg,
     });
 
-    // Emit real-time notification if socket is connected
+    // Emit socket notification if available
     if (req.io) {
-      req.io.to(updated.patientId._id.toString()).emit("new_notification", msg);
+      req.io.to(appointment.patientId._id.toString()).emit("new_notification", msg);
     }
 
-    res.json(updated);
+    res.json(appointment);
   } catch (err) {
+    console.error("❌ Status update failed:", err);
     res.status(500).json({ error: "Failed to update status" });
   }
 });
 
-// Available slots
+// ✅ Get Available Slots for a Doctor on a Specific Date
 router.get("/available", verifyToken, async (req, res) => {
   const { doctorId, date } = req.query;
 
@@ -96,8 +101,8 @@ router.get("/available", verifyToken, async (req, res) => {
       return res.json([]);
     }
 
-    const validDate = new Date(date + "T00:00:00");
-    const weekday = validDate.toLocaleDateString("en-US", {
+    const selectedDate = new Date(`${date}T00:00:00`);
+    const weekday = selectedDate.toLocaleDateString("en-US", {
       weekday: "long",
       timeZone: "Asia/Kolkata",
     });
@@ -110,16 +115,17 @@ router.get("/available", verifyToken, async (req, res) => {
     const slots = [];
 
     for (let t = new Date(start); t < end; t.setMinutes(t.getMinutes() + slotDuration)) {
-      const slotTime = t.toTimeString().slice(0, 5);
+      const slotTime = t.toTimeString().slice(0, 5); // HH:MM
       slots.push(slotTime);
     }
 
     const booked = await Appointment.find({ doctorId, date }).select("time");
     const bookedTimes = booked.map((b) => b.time);
-    const available = slots.filter((t) => !bookedTimes.includes(t));
+    const availableSlots = slots.filter((t) => !bookedTimes.includes(t));
 
-    res.json(available);
+    res.json(availableSlots);
   } catch (err) {
+    console.error("❌ Error fetching available slots:", err);
     res.status(500).json({ error: "Server error fetching slots" });
   }
 });

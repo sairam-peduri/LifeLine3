@@ -1,6 +1,9 @@
 import '@solana/wallet-adapter-react-ui/styles.css';
 import React from "react";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 import About from "./pages/About";
@@ -33,6 +36,9 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+        {/* Global Toast Notifications */}
+        <ToastContainer position="top-right" autoClose={4000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
+        
         <Routes>
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<Home />} />
@@ -52,8 +58,8 @@ function App() {
           <Route path="/chat/:doctorId" element={<ProtectedRoute><PatientDoctorChat /></ProtectedRoute>} />
           <Route path="/transactions" element={<ProtectedRoute><TransactionHistory /></ProtectedRoute>} />
           <Route path="/history" element={<ProtectedRoute><PredictionHistory /></ProtectedRoute>} />
-          <Route path="/about" element={<About/>}/>
-          <Route path="/contact" element={<Contact/>}/>
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </Router>
     </AuthProvider>
