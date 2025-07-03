@@ -4,6 +4,7 @@ const Appointment = require("../models/Appointment");
 const User = require("../models/User");
 const Notification = require("../models/Notification");
 const { verifyToken } = require("../middlewares/auth");
+const { sendIncentive } = require("../utils/transferSol"); // ✅ SOL incentive
 
 // ✅ Book Appointment
 router.post("/", verifyToken, async (req, res) => {
@@ -46,7 +47,7 @@ router.get("/user/:userId", verifyToken, async (req, res) => {
   }
 });
 
-// ✅ Update Appointment Status + Send Notification
+// ✅ Update Appointment Status + Notify + Send SOL Incentive
 router.put("/:id/status", verifyToken, async (req, res) => {
   const { status } = req.body;
   if (!["accepted", "rejected"].includes(status)) {
@@ -70,9 +71,29 @@ router.put("/:id/status", verifyToken, async (req, res) => {
       message: msg,
     });
 
-    // Emit socket notification if available
+    // Emit real-time notification
     if (req.io) {
       req.io.to(appointment.patientId._id.toString()).emit("new_notification", msg);
+    }
+
+    // ✅ Send incentive only if accepted
+    if (status === "accepted") {
+      try {
+        const doctorWallet = appointment.doctorId.wallet;
+        const patientWallet = appointment.patientId.wallet;
+
+        if (!doctorWallet || !patientWallet) {
+          console.warn("⚠️ Wallet missing for SOL incentive.");
+        } else {
+          const solAmount = 0.01;
+          const tx1 = await sendIncentive(doctorWallet, solAmount);
+          const tx2 = await sendIncentive(patientWallet, solAmount);
+
+          console.log("✅ Incentive sent. TXs:", tx1, tx2);
+        }
+      } catch (solErr) {
+        console.error("❌ Failed to send SOL incentives:", solErr.message);
+      }
     }
 
     res.json(appointment);
@@ -82,7 +103,7 @@ router.put("/:id/status", verifyToken, async (req, res) => {
   }
 });
 
-// ✅ Get Available Slots for a Doctor on a Specific Date
+// ✅ Get Available Slots
 router.get("/available", verifyToken, async (req, res) => {
   const { doctorId, date } = req.query;
 
@@ -115,7 +136,7 @@ router.get("/available", verifyToken, async (req, res) => {
     const slots = [];
 
     for (let t = new Date(start); t < end; t.setMinutes(t.getMinutes() + slotDuration)) {
-      const slotTime = t.toTimeString().slice(0, 5); // HH:MM
+      const slotTime = t.toTimeString().slice(0, 5);
       slots.push(slotTime);
     }
 

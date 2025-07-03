@@ -1,9 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
 import "./ManageAppointments.css";
-
 
 const ManageAppointments = () => {
   const { user, token } = useAuth();
@@ -27,7 +28,7 @@ const ManageAppointments = () => {
       setAppointments(sorted);
     } catch (err) {
       console.error("❌ Failed to load appointments:", err);
-      alert("Error fetching appointments. Please try again.");
+      toast.error("Error fetching appointments.");
     } finally {
       setLoading(false);
     }
@@ -43,15 +44,22 @@ const ManageAppointments = () => {
 
     try {
       setUpdatingId(id);
-      await axios.put(
+      const res = await axios.put(
         `https://lifeline3-1.onrender.com/api/appointments/${id}/status`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      await fetchAppointments(); // Refresh list
+
+      await fetchAppointments();
+
+      if (status === "accepted") {
+        toast.success("✅ Appointment accepted and SOL incentive sent!");
+      } else {
+        toast.warn("🚫 Appointment rejected.");
+      }
     } catch (err) {
       console.error("❌ Failed to update appointment:", err);
-      alert("Update failed. Please try again.");
+      toast.error("Failed to update appointment.");
     } finally {
       setUpdatingId(null);
     }
@@ -59,60 +67,61 @@ const ManageAppointments = () => {
 
   return (
     <>
-    <Navbar user={user}/>
-<div className="manage-container mx-auto">
-  <h2 className="manage-title">🩺 Manage Appointments</h2>
+      <Navbar user={user} />
+      <ToastContainer position="top-right" autoClose={3000} />
+      <div className="manage-container mx-auto">
+        <h2 className="manage-title">🩺 Manage Appointments</h2>
 
-  {loading ? (
-    <p className="text-gray-400">Loading appointments...</p>
-  ) : appointments.length === 0 ? (
-    <p className="text-gray-400">No appointment requests found.</p>
-  ) : (
-    appointments.map((appt) => (
-      <div key={appt._id} className="appointment-card">
-        <div className="appointment-info">
-          <p><strong>👤 Patient:</strong> {appt.patientId?.name || "Unknown"}</p>
-          <p><strong>📅 Date:</strong> {appt.date}</p>
-          <p><strong>⏰ Time:</strong> {appt.time}</p>
-          <p><strong>📝 Reason:</strong> {appt.reason || "N/A"}</p>
-          <p>
-            <strong>📌 Status:</strong>{" "}
-            <span
-              className={`status-text ${
-                appt.status === "accepted"
-                  ? "status-accepted"
-                  : appt.status === "rejected"
-                  ? "status-rejected"
-                  : "status-pending"
-              }`}
-            >
-              {appt.status.toUpperCase()}
-            </span>
-          </p>
-        </div>
+        {loading ? (
+          <p className="text-gray-400">Loading appointments...</p>
+        ) : appointments.length === 0 ? (
+          <p className="text-gray-400">No appointment requests found.</p>
+        ) : (
+          appointments.map((appt) => (
+            <div key={appt._id} className="appointment-card">
+              <div className="appointment-info">
+                <p><strong>👤 Patient:</strong> {appt.patientId?.name || "Unknown"}</p>
+                <p><strong>📅 Date:</strong> {appt.date}</p>
+                <p><strong>⏰ Time:</strong> {appt.time}</p>
+                <p><strong>📝 Reason:</strong> {appt.reason || "N/A"}</p>
+                <p>
+                  <strong>📌 Status:</strong>{" "}
+                  <span
+                    className={`status-text ${
+                      appt.status === "accepted"
+                        ? "status-accepted"
+                        : appt.status === "rejected"
+                        ? "status-rejected"
+                        : "status-pending"
+                    }`}
+                  >
+                    {appt.status.toUpperCase()}
+                  </span>
+                </p>
+              </div>
 
-        {appt.status === "pending" && (
-          <div className="button-group">
-            <button
-              onClick={() => handleUpdate(appt._id, "accepted")}
-              className="button-accept"
-              disabled={updatingId === appt._id}
-            >
-              ✅ Accept
-            </button>
-            <button
-              onClick={() => handleUpdate(appt._id, "rejected")}
-              className="button-reject"
-              disabled={updatingId === appt._id}
-            >
-              ❌ Reject
-            </button>
-          </div>
+              {appt.status === "pending" && (
+                <div className="button-group">
+                  <button
+                    onClick={() => handleUpdate(appt._id, "accepted")}
+                    className="button-accept"
+                    disabled={updatingId === appt._id}
+                  >
+                    ✅ Accept
+                  </button>
+                  <button
+                    onClick={() => handleUpdate(appt._id, "rejected")}
+                    className="button-reject"
+                    disabled={updatingId === appt._id}
+                  >
+                    ❌ Reject
+                  </button>
+                </div>
+              )}
+            </div>
+          ))
         )}
       </div>
-    ))
-  )}
-</div>
     </>
   );
 };

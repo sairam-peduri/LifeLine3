@@ -1,9 +1,18 @@
-// transferSol.js
-const { Connection, PublicKey, Keypair, LAMPORTS_PER_SOL, Transaction, SystemProgram, sendAndConfirmTransaction } = require("@solana/web3.js");
-const secret = JSON.parse(process.env.SOLANA_PRIVATE_KEY); // Load from env
+// utils/transferSol.js
+const {
+  Connection,
+  PublicKey,
+  Keypair,
+  LAMPORTS_PER_SOL,
+  Transaction,
+  SystemProgram,
+  sendAndConfirmTransaction,
+} = require("@solana/web3.js");
+
+const secret = JSON.parse(process.env.SOLANA_PRIVATE_KEY); // From .env
 const sender = Keypair.fromSecretKey(Uint8Array.from(secret));
 
-const connection = new Connection("https://api.mainnet-beta.solana.com"); // or devnet for testing
+const connection = new Connection("https://api.devnet.solana.com"); // Use devnet
 
 async function sendIncentive(recipientAddress, amountSol) {
   const recipient = new PublicKey(recipientAddress);
