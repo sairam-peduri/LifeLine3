@@ -65,7 +65,7 @@ router.put("/:id/status", verifyToken, async (req, res) => {
 
     const msg = `Your appointment with Dr. ${appointment.doctorId.name} on ${appointment.date} at ${appointment.time} has been ${status.toUpperCase()}.`;
 
-    // Save notification
+    // Patient Notification
     await Notification.create({
       userId: appointment.patientId._id,
       message: msg,
@@ -86,10 +86,22 @@ router.put("/:id/status", verifyToken, async (req, res) => {
           console.warn("⚠️ Wallet missing for SOL incentive.");
         } else {
           const solAmount = 0.01;
-          const tx1 = await sendIncentive(doctorWallet, solAmount);
-          const tx2 = await sendIncentive(patientWallet, solAmount);
 
-          console.log("✅ Incentive sent. TXs:", tx1, tx2);
+          const txDoctor = await sendIncentive(doctorWallet, solAmount);
+          const txPatient = await sendIncentive(patientWallet, solAmount);
+
+          console.log("✅ Incentive sent. TXs:", txDoctor, txPatient);
+
+          // Save incentive TX notifications
+          await Notification.create({
+            userId: appointment.patientId._id,
+            message: `🎉 You received 0.01 SOL incentive for your appointment. TX: ${txPatient}`,
+          });
+
+          await Notification.create({
+            userId: appointment.doctorId._id,
+            message: `🎉 You received 0.01 SOL incentive for accepting appointment. TX: ${txDoctor}`,
+          });
         }
       } catch (solErr) {
         console.error("❌ Failed to send SOL incentives:", solErr.message);
