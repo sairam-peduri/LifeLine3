@@ -16,6 +16,7 @@ import DoctorProfile from "./pages/DoctorProfile";
 import EditAvailability from "./pages/EditAvailability";
 import EditProfile from "./pages/EditProfile";
 import Home from "./pages/Home";
+import IncentiveHistory from "./pages/IncentiveHistory";
 import Login from "./pages/Login";
 import ManageAppointments from "./pages/ManageAppointments";
 import MyAppointments from "./pages/MyAppointments";

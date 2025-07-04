@@ -1,52 +1,81 @@
-import { useEffect, useState } from "react";
-import { getIncentiveHistory } from "../api";
+// src/pages/IncentiveHistory.jsx
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
-function IncentiveHistory() {
-  const { user, token } = useAuth();
+const IncentiveHistory = () => {
+  const { user } = useAuth();
   const [incentives, setIncentives] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchIncentives = async () => {
       try {
-        const data = await getIncentiveHistory(user._id, token);
-        setIncentives(data);
+        const res = await axios.get(`/api/incentives/${user._id}`);
+        setIncentives(res.data);
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching incentives:", err);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchIncentives();
-  }, [user, token]);
+
+    if (user?._id) {
+      fetchIncentives();
+    }
+  }, [user]);
 
   return (
-    <div className="dark-theme">
-      <h2>💸 Incentive Transactions</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Doctor</th>
-            <th>Patient</th>
-            <th>Doctor Tx</th>
-            <th>Patient Tx</th>
-            <th>Sent At</th>
-          </tr>
-        </thead>
-        <tbody>
-          {incentives.map((tx, i) => (
-            <tr key={i}>
-              <td>{tx.date} @ {tx.time}</td>
-              <td>{tx.doctor}</td>
-              <td>{tx.patient}</td>
-              <td><a href={`https://solscan.io/tx/${tx.doctorTx}?cluster=devnet`} target="_blank" rel="noreferrer">🔗</a></td>
-              <td><a href={`https://solscan.io/tx/${tx.patientTx}?cluster=devnet`} target="_blank" rel="noreferrer">🔗</a></td>
-              <td>{new Date(tx.sentAt).toLocaleString()}</td>
+    <div className="container">
+      <h2>💰 Incentive Transaction History</h2>
+      {loading ? (
+        <p>Loading...</p>
+      ) : incentives.length === 0 ? (
+        <p>No incentive transactions found.</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Doctor</th>
+              <th>Patient</th>
+              <th>Appointment Date</th>
+              <th>Time</th>
+              <th>Doctor Tx</th>
+              <th>Patient Tx</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {incentives.map((tx) => (
+              <tr key={tx._id}>
+                <td>{tx.doctorId?.name}</td>
+                <td>{tx.patientId?.name}</td>
+                <td>{tx.date}</td>
+                <td>{tx.time}</td>
+                <td>
+                  <a
+                    href={`https://explorer.solana.com/tx/${tx.incentiveTx?.doctorTx}?cluster=devnet`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View
+                  </a>
+                </td>
+                <td>
+                  <a
+                    href={`https://explorer.solana.com/tx/${tx.incentiveTx?.patientTx}?cluster=devnet`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
-}
+};
 
 export default IncentiveHistory;
