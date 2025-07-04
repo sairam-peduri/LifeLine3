@@ -1,28 +1,32 @@
+// utils/transferSol.js
 const {
   Connection,
-  PublicKey,
   Keypair,
+  PublicKey,
   LAMPORTS_PER_SOL,
-  Transaction,
-  SystemProgram,
   sendAndConfirmTransaction,
+  SystemProgram,
+  Transaction,
 } = require("@solana/web3.js");
 
-const secret = JSON.parse(process.env.SOLANA_PRIVATE_KEY); // 👈 Must be JSON array
-const sender = Keypair.fromSecretKey(Uint8Array.from(secret));
-const connection = new Connection("https://api.devnet.solana.com");
+const secret = JSON.parse(process.env.SOLANA_PRIVATE_KEY); // MUST be a JSON array
+const payer = Keypair.fromSecretKey(Uint8Array.from(secret));
+const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 
-async function sendIncentive(recipientAddress, amountSol) {
-  const recipient = new PublicKey(recipientAddress);
-  const transaction = new Transaction().add(
+async function sendIncentive(receiverAddress, solAmount) {
+  console.log("💸 Sending incentive to:", receiverAddress);
+  const receiver = new PublicKey(receiverAddress);
+
+  const tx = new Transaction().add(
     SystemProgram.transfer({
-      fromPubkey: sender.publicKey,
-      toPubkey: recipient,
-      lamports: amountSol * LAMPORTS_PER_SOL,
+      fromPubkey: payer.publicKey,
+      toPubkey: receiver,
+      lamports: solAmount * LAMPORTS_PER_SOL,
     })
   );
 
-  const signature = await sendAndConfirmTransaction(connection, transaction, [sender]);
+  const signature = await sendAndConfirmTransaction(connection, tx, [payer]);
+  console.log("✅ Transaction signature:", signature);
   return signature;
 }
 
