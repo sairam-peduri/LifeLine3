@@ -165,37 +165,24 @@ router.get("/available", verifyToken, async (req, res) => {
   }
 });
 
-// ✅ Get Incentive History for a User (doctor or patient)
+// Get incentive transactions for a user
 router.get("/incentives/:userId", verifyToken, async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const appointments = await Appointment.find({
+    const incentives = await Appointment.find({
       status: "accepted",
-      $or: [
-        { doctorId: userId },
-        { patientId: userId }
-      ],
+      $or: [{ patientId: userId }, { doctorId: userId }],
       incentiveTx: { $exists: true }
     })
-    .populate("doctorId", "name walletAddress")
-    .populate("patientId", "name walletAddress")
-    .sort({ "incentiveTx.sentAt": -1 });
-
-    const incentives = appointments.map((appt) => ({
-      date: appt.date,
-      time: appt.time,
-      doctor: appt.doctorId.name,
-      patient: appt.patientId.name,
-      doctorTx: appt.incentiveTx?.doctorTx || null,
-      patientTx: appt.incentiveTx?.patientTx || null,
-      sentAt: appt.incentiveTx?.sentAt,
-    }));
+      .populate("patientId", "name")
+      .populate("doctorId", "name")
+      .sort({ "incentiveTx.sentAt": -1 });
 
     res.json(incentives);
   } catch (err) {
-    console.error("❌ Error fetching incentive history:", err);
-    res.status(500).json({ error: "Failed to fetch incentive data" });
+    console.error("❌ Error fetching incentives:", err);
+    res.status(500).json({ error: "Failed to fetch incentive transactions" });
   }
 });
 

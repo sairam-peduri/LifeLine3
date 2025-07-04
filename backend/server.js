@@ -53,7 +53,7 @@ app.use("/api/transactions", require("./routes/transactions"));
 app.use("/uploads", express.static("uploads"));
 app.use("/api", require("./routes/prediction"));
 require("./reminderCron");
-app.use("/api/appointments", require("./routes/appointments"));
+app.use("/api", require("./routes/appointments"));
 
 const FLASK_API_URL = "https://lifeline3.onrender.com/api";
 const { verifyToken } = require("./middlewares/verifyToken");
