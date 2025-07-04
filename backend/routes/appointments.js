@@ -86,8 +86,8 @@ router.put("/:id/status", verifyToken, async (req, res) => {
       try {
         console.log("💸 Preparing to send SOL incentives...");
 
-        const doctorWallet = appointment.doctorId.wallet;
-        const patientWallet = appointment.patientId.wallet;
+        const doctorWallet = appointment.doctorId.walletAddress;
+        const patientWallet = appointment.patientId.walletAddress;
         const solAmount = 0.01;
 
         console.log("👨‍⚕️ Doctor Wallet:", doctorWallet);
