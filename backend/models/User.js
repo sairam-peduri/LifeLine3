@@ -28,7 +28,18 @@ const userSchema = new mongoose.Schema({
       toTime: String,          // e.g. "13:00"
       slotDuration: { type: Number, default: 30 } // in minutes
     }
-  },
+  },incentives: [
+    {
+      type: {
+        type: String, // "patient" or "doctor"
+        enum: ["patient", "doctor"]
+      },
+      appointmentId: { type: mongoose.Schema.Types.ObjectId, ref: "Appointment" },
+      amount: Number,
+      txId: String,
+      receivedAt: { type: Date, default: Date.now }
+    }
+  ],  
 
   healthRecords: [
     {

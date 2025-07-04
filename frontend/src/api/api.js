@@ -88,6 +88,22 @@ export const getPredictionHistory = async (email, token) => {
   }
 };
 
+// 🔹 Fetch Incentive History
+export const getIncentiveHistory = async (userId, token) => {
+  try {
+    const response = await AuthAPI.get(`/appointments/incentives/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Error in getIncentiveHistory:", err);
+    throw err.response?.data?.error || "Failed to fetch incentive history";
+  }
+};
+
+
 export const chatWithBot = async (data, token) => {
   try {
     const response = await PredictionAPI.post("/chat", data, {

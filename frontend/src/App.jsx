@@ -58,6 +58,7 @@ function App() {
           <Route path="/chat/:doctorId" element={<ProtectedRoute><PatientDoctorChat /></ProtectedRoute>} />
           <Route path="/transactions" element={<ProtectedRoute><TransactionHistory /></ProtectedRoute>} />
           <Route path="/history" element={<ProtectedRoute><PredictionHistory /></ProtectedRoute>} />
+          <Route path="/incentives" element={<ProtectedRoute><IncentiveHistory /></ProtectedRoute>} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>

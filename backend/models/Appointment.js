@@ -10,9 +10,11 @@ const appointmentSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   reminderSent: { type: Boolean, default: false },
   incentiveTx: {
-    doctorTx: { type: String },
-    patientTx: { type: String },
+    doctorTx: String,
+    patientTx: String,
+    sentAt: Date,
   },
+  
   
 });
 

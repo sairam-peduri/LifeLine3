@@ -4,7 +4,7 @@ const Appointment = require("../models/Appointment");
 const User = require("../models/User");
 const Notification = require("../models/Notification");
 const { verifyToken } = require("../middlewares/auth");
-const { sendIncentive } = require("../utils/transferSol"); // ✅ SOL incentive
+const { sendIncentive } = require("../utils/transferSol");
 
 // ✅ Book Appointment
 router.post("/", verifyToken, async (req, res) => {
@@ -36,8 +36,8 @@ router.get("/user/:userId", verifyToken, async (req, res) => {
 
   try {
     const data = await Appointment.find(filter)
-      .populate("patientId", "name")
-      .populate("doctorId", "name specialization")
+      .populate("patientId", "name walletAddress")
+      .populate("doctorId", "name specialization walletAddress")
       .sort({ date: 1, time: 1 });
 
     res.json(data);
@@ -47,7 +47,7 @@ router.get("/user/:userId", verifyToken, async (req, res) => {
   }
 });
 
-// ✅ Update Appointment Status + Notify + Send SOL Incentive
+// ✅ Update Appointment Status + Incentive + Notification
 router.put("/:id/status", verifyToken, async (req, res) => {
   const { status } = req.body;
   console.log("📥 Status update request received:", req.params.id, status);
@@ -57,21 +57,19 @@ router.put("/:id/status", verifyToken, async (req, res) => {
   }
 
   try {
-    const appointment = await Appointment.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true }
-    ).populate("patientId doctorId");
+    const appointment = await Appointment.findById(req.params.id).populate("patientId doctorId");
 
     if (!appointment) {
       console.error("❌ Appointment not found");
       return res.status(404).json({ error: "Appointment not found" });
     }
 
-    console.log("🩺 Appointment updated. Notifying patient...");
+    // Update status
+    appointment.status = status;
 
     const msg = `Your appointment with Dr. ${appointment.doctorId.name} on ${appointment.date} at ${appointment.time} has been ${status.toUpperCase()}.`;
 
+    // Notify patient
     await Notification.create({
       userId: appointment.patientId._id,
       message: msg,
@@ -81,46 +79,43 @@ router.put("/:id/status", verifyToken, async (req, res) => {
       req.io.to(appointment.patientId._id.toString()).emit("new_notification", msg);
     }
 
-    // ✅ Send incentive if accepted
+    // ✅ Send incentive and store transaction hashes
     if (status === "accepted") {
-      try {
-        console.log("💸 Preparing to send SOL incentives...");
+      const doctorWallet = appointment.doctorId.walletAddress;
+      const patientWallet = appointment.patientId.walletAddress;
+      const solAmount = 0.01;
 
-        const doctorWallet = appointment.doctorId.walletAddress;
-        const patientWallet = appointment.patientId.walletAddress;
-        const solAmount = 0.01;
+      console.log("💸 Sending SOL incentives...");
+      console.log("👨‍⚕️ Doctor Wallet:", doctorWallet);
+      console.log("🧑 Patient Wallet:", patientWallet);
 
-        console.log("👨‍⚕️ Doctor Wallet:", doctorWallet);
-        console.log("🧑 Patient Wallet:", patientWallet);
-
-        if (!doctorWallet || !patientWallet) {
-          console.warn("⚠️ Missing wallet addresses.");
-        } else {
+      if (!doctorWallet || !patientWallet) {
+        console.warn("⚠️ Missing wallet addresses.");
+      } else {
+        try {
           const txDoctor = await sendIncentive(doctorWallet, solAmount);
           const txPatient = await sendIncentive(patientWallet, solAmount);
 
-          console.log("✅ SOL sent to Doctor:", txDoctor);
-          console.log("✅ SOL sent to Patient:", txPatient);
-
-          // Optional: Save transaction IDs to appointment record
           appointment.incentiveTx = {
             doctorTx: txDoctor,
             patientTx: txPatient,
+            sentAt: new Date(),
           };
-          await appointment.save();
+
+          console.log("✅ Incentives sent.");
+        } catch (err) {
+          console.error("❌ Error sending SOL:", err.message);
         }
-      } catch (err) {
-        console.error("❌ Error sending SOL:", err.message);
       }
     }
 
+    await appointment.save();
     res.json(appointment);
   } catch (err) {
     console.error("❌ Status update failed:", err);
     res.status(500).json({ error: "Failed to update status" });
   }
 });
-
 
 // ✅ Get Available Slots
 router.get("/available", verifyToken, async (req, res) => {
@@ -167,6 +162,40 @@ router.get("/available", verifyToken, async (req, res) => {
   } catch (err) {
     console.error("❌ Error fetching available slots:", err);
     res.status(500).json({ error: "Server error fetching slots" });
+  }
+});
+
+// ✅ Get Incentive History for a User (doctor or patient)
+router.get("/incentives/:userId", verifyToken, async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const appointments = await Appointment.find({
+      status: "accepted",
+      $or: [
+        { doctorId: userId },
+        { patientId: userId }
+      ],
+      incentiveTx: { $exists: true }
+    })
+    .populate("doctorId", "name walletAddress")
+    .populate("patientId", "name walletAddress")
+    .sort({ "incentiveTx.sentAt": -1 });
+
+    const incentives = appointments.map((appt) => ({
+      date: appt.date,
+      time: appt.time,
+      doctor: appt.doctorId.name,
+      patient: appt.patientId.name,
+      doctorTx: appt.incentiveTx?.doctorTx || null,
+      patientTx: appt.incentiveTx?.patientTx || null,
+      sentAt: appt.incentiveTx?.sentAt,
+    }));
+
+    res.json(incentives);
+  } catch (err) {
+    console.error("❌ Error fetching incentive history:", err);
+    res.status(500).json({ error: "Failed to fetch incentive data" });
   }
 });
 
