@@ -50,6 +50,8 @@ router.get("/user/:userId", verifyToken, async (req, res) => {
 // ✅ Update Appointment Status + Notify + Send SOL Incentive
 router.put("/:id/status", verifyToken, async (req, res) => {
   const { status } = req.body;
+  console.log("📥 Status update request received:", req.params.id, status);
+
   if (!["accepted", "rejected"].includes(status)) {
     return res.status(400).json({ error: "Invalid status" });
   }
@@ -61,50 +63,54 @@ router.put("/:id/status", verifyToken, async (req, res) => {
       { new: true }
     ).populate("patientId doctorId");
 
-    if (!appointment) return res.status(404).json({ error: "Appointment not found" });
+    if (!appointment) {
+      console.error("❌ Appointment not found");
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    console.log("🩺 Appointment updated. Notifying patient...");
 
     const msg = `Your appointment with Dr. ${appointment.doctorId.name} on ${appointment.date} at ${appointment.time} has been ${status.toUpperCase()}.`;
 
-    // Patient Notification
     await Notification.create({
       userId: appointment.patientId._id,
       message: msg,
     });
 
-    // Emit real-time notification
     if (req.io) {
       req.io.to(appointment.patientId._id.toString()).emit("new_notification", msg);
     }
 
-    // ✅ Send incentive only if accepted
+    // ✅ Send incentive if accepted
     if (status === "accepted") {
       try {
+        console.log("💸 Preparing to send SOL incentives...");
+
         const doctorWallet = appointment.doctorId.wallet;
         const patientWallet = appointment.patientId.wallet;
+        const solAmount = 0.01;
+
+        console.log("👨‍⚕️ Doctor Wallet:", doctorWallet);
+        console.log("🧑 Patient Wallet:", patientWallet);
 
         if (!doctorWallet || !patientWallet) {
-          console.warn("⚠️ Wallet missing for SOL incentive.");
+          console.warn("⚠️ Missing wallet addresses.");
         } else {
-          const solAmount = 0.01;
-
           const txDoctor = await sendIncentive(doctorWallet, solAmount);
           const txPatient = await sendIncentive(patientWallet, solAmount);
 
-          console.log("✅ Incentive sent. TXs:", txDoctor, txPatient);
+          console.log("✅ SOL sent to Doctor:", txDoctor);
+          console.log("✅ SOL sent to Patient:", txPatient);
 
-          // Save incentive TX notifications
-          await Notification.create({
-            userId: appointment.patientId._id,
-            message: `🎉 You received 0.01 SOL incentive for your appointment. TX: ${txPatient}`,
-          });
-
-          await Notification.create({
-            userId: appointment.doctorId._id,
-            message: `🎉 You received 0.01 SOL incentive for accepting appointment. TX: ${txDoctor}`,
-          });
+          // Optional: Save transaction IDs to appointment record
+          appointment.incentiveTx = {
+            doctorTx: txDoctor,
+            patientTx: txPatient,
+          };
+          await appointment.save();
         }
-      } catch (solErr) {
-        console.error("❌ Failed to send SOL incentives:", solErr.message);
+      } catch (err) {
+        console.error("❌ Error sending SOL:", err.message);
       }
     }
 
@@ -114,6 +120,7 @@ router.put("/:id/status", verifyToken, async (req, res) => {
     res.status(500).json({ error: "Failed to update status" });
   }
 });
+
 
 // ✅ Get Available Slots
 router.get("/available", verifyToken, async (req, res) => {
