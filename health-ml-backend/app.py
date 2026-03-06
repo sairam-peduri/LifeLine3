@@ -164,7 +164,7 @@ def disease_details():
         "Do not use asterisks or markdown symbols like *, **, #, etc."
         )
 
-        model = genai.GenerativeModel("gemini-2.0-flash")
+        model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(prompt)  
         print("🔍 Gemini raw response:", response)
 
@@ -202,7 +202,7 @@ def chat():
             return jsonify({"response": "Please enter a message."}), 400
 
         prompt = f"You are a helpful health assistant. Reply clearly to: {user_message}"
-        model = genai.GenerativeModel("gemini-2.0-flash")
+        model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(prompt)
 
         if not hasattr(response, "text") or not response.text:
