@@ -20,7 +20,7 @@ MONGO_URI = os.getenv("MONGO_URI")
 
 # Gemini API Setup
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 # MongoDB Setup
 client = MongoClient(MONGO_URI)
