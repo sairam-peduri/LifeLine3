@@ -63,7 +63,7 @@ export default function Navbar() {
           <WalletMultiButton />
           {wallet.connected && (
             <span className="balance">
-              {loadingBal ? "Loading..." : `${balance?.toFixed(4)} SOL`}
+              {loadingBal ? "Loading..." : `${balance?.toFixed(4)} Rs.`}
             </span>
           )}
 
