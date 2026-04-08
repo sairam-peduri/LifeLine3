@@ -4,7 +4,7 @@ import numpy as np
 from flask_cors import CORS
 from scipy import stats
 import pandas as pd
-import google.generativeai as genai
+from groq import Groq
 from dotenv import load_dotenv
 import os
 from pymongo import MongoClient
@@ -15,12 +15,14 @@ CORS(app)
 
 # Load environment variables
 load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 MONGO_URI = os.getenv("MONGO_URI")
 
-# Gemini API Setup
-genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-flash-latest')
+# Groq API Setup
+groq_client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
+if not GROQ_API_KEY:
+    print("⚠️ GROQ_API_KEY is not set. AI routes will return an error until configured.")
 
 # MongoDB Setup
 client = MongoClient(MONGO_URI)
@@ -32,6 +34,26 @@ try:
     print("✅ Connected to MongoDB")
 except Exception as e:
     print(f"❌ MongoDB connection failed: {str(e)}")
+
+
+def generate_groq_response(system_prompt, user_prompt):
+    if not groq_client:
+        raise RuntimeError("GROQ_API_KEY is not configured")
+
+    completion = groq_client.chat.completions.create(
+        model=GROQ_MODEL,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        temperature=0.3
+    )
+
+    if not completion.choices or not completion.choices[0].message:
+        return ""
+
+    content = completion.choices[0].message.content
+    return content.strip() if content else ""
 
 # Load ML models and data
 try:
@@ -164,17 +186,14 @@ def disease_details():
         "Do not use asterisks or markdown symbols like *, **, #, etc."
         )
 
-        model = genai.GenerativeModel("gemini-flash-latest")
-        response = model.generate_content(prompt)  
-        print("🔍 Gemini raw response:", response)
-
-        if not hasattr(response, "text") or not response.text:
-            return jsonify({"error": "AI returned no text"}), 500
-
-        raw_text = response.text.strip()
+        raw_text = generate_groq_response(
+            "You are a helpful health assistant who provides clear, structured medical information for educational use.",
+            prompt
+        )
+        print("🔍 Groq raw response:", raw_text)
 
         if not raw_text:
-            return jsonify({"error": "Empty Gemini response"}), 500
+            return jsonify({"error": "AI returned no text"}), 500
 
         headings = ["Symptoms", "Causes", "Diagnosis", "Treatment", "Prevention"]
         structured = {}
@@ -201,14 +220,15 @@ def chat():
         if not user_message:
             return jsonify({"response": "Please enter a message."}), 400
 
-        prompt = f"You are a helpful health assistant. Reply clearly to: {user_message}"
-        model = genai.GenerativeModel("gemini-flash-latest")
-        response = model.generate_content(prompt)
+        response_text = generate_groq_response(
+            "You are a helpful health assistant. Keep answers concise, safe, and easy to understand.",
+            user_message
+        )
 
-        if not hasattr(response, "text") or not response.text:
+        if not response_text:
             return jsonify({"response": "AI did not return a response."}), 500
 
-        return jsonify({"response": response.text.strip()})
+        return jsonify({"response": response_text})
 
     except Exception as e:
         print("❌ Chat error:", e)
