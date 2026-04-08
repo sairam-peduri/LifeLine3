@@ -51,18 +51,49 @@ const handlePredict = async () => {
     console.log("✅ Prediction request sent:", selectedSymptoms.map((s) => s.value));
 
     if (disease) {
-      setPrediction(disease);
-      const res = await fetch("https://lifeline3.onrender.com/api/details", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ disease }),
-      });
-      const info = await res.json();
-      setDetails(info?.details || (info?.summary ? { Summary: info.summary } : {}));
-    } else {
-      setError("No prediction. Try chat.");
-      setChatbotSuggested(true);
-    }
+
+  const SENSITIVE_DISEASES = ["aids", "heart attack", "myocardial infarction"];
+  if (SENSITIVE_DISEASES.includes(disease.toLowerCase())) {
+
+    const geminiRes = await fetch("https://lifeline3.onrender.com/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: `User has symptoms: ${selectedSymptoms
+          .map((s) => s.value)
+          .join(", ")}. Suggest possible conditions and advice. Do NOT assume serious diseases directly.`
+      }),
+    });
+
+    const geminiData = await geminiRes.json();
+
+    setPrediction("⚠️ AI-Based Health Suggestion");
+    setDetails({
+      Explanation: geminiData.response || "No response from AI",
+    });
+
+  } else {
+    setPrediction(disease);
+
+    const res = await fetch("https://lifeline3.onrender.com/api/details", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ disease }),
+    });
+
+    const info = await res.json();
+    setDetails(
+      info?.details ||
+      (info?.summary ? { Summary: info.summary } : {})
+    );
+  }
+
+} else {
+  setError("No prediction. Try chat.");
+  setChatbotSuggested(true);
+}
   } catch {
     setError("Prediction failed. Try again later.");
   }
